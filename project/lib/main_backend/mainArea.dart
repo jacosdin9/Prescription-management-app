@@ -10,7 +10,7 @@ class MainArea extends StatefulWidget {
 }
 
 class _MainAreaState extends State<MainArea> {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
   final List<Widget> _children = [
     CalendarPage(),
     DashboardPage(),
@@ -22,7 +22,7 @@ class _MainAreaState extends State<MainArea> {
     return MaterialApp(
       theme: ThemeData(
         brightness: Brightness.light,
-        primaryColor: Colors.blueGrey,
+        primaryColor: Colors.red,
       ),
       home: Scaffold(
         appBar: AppBar(
