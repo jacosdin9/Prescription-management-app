@@ -68,7 +68,7 @@ class _MainAreaState extends State<MainArea> {
 
       home: Scaffold(
         appBar: AppBar(
-          title: Text('MAIN AREA'),
+          title: Text('PRESCRIPTION MANAGEMENT'),
         ),
 
         //DRAWER MENU

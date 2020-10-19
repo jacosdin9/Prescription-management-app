@@ -31,7 +31,7 @@ class PrescriptionPage extends StatelessWidget {
           children: [
             Expanded(
               child: new Container(
-                color: new Color(0xFF0c6f96),
+                color: Colors.white,
                 child: new CustomScrollView(
                   scrollDirection: Axis.vertical,
                   shrinkWrap: false,

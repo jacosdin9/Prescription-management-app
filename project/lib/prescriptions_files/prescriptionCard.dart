@@ -9,7 +9,7 @@ class PrescriptionCard extends StatelessWidget {
   double dosage;
   String measurement;
   int noOfReminders;
-  int stock;
+  double stock;
 
   PrescriptionCard(this.id, this.name, this.dosage, this.measurement, this.noOfReminders, this.stock);
 
@@ -23,7 +23,7 @@ class PrescriptionCard extends StatelessWidget {
       alignment: FractionalOffset.centerLeft,
       child: RawMaterialButton(
         elevation: 0.0,
-        fillColor: Colors.white,
+        fillColor: Colors.amber,
         child: Icon(
           Icons.album,
           size: 40.0,

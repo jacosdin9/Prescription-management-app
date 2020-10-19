@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/dashboard_files/addPrescription.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/objects/prescription.dart';
 
@@ -13,7 +14,10 @@ class DashboardPage extends StatelessWidget {
       children: <Widget>[
         RaisedButton(
           onPressed: () {
-            FirebasePage().addPrescription(test1);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AddPrescription()),
+            );
           },
           child: Text("Add prescription"),
         ),
