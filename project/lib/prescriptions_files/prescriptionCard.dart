@@ -4,13 +4,14 @@ import 'package:project/objects/prescription.dart';
 
 class PrescriptionCard extends StatelessWidget {
 
+  String id;
   String name;
   double dosage;
   String measurement;
   int noOfReminders;
   int stock;
 
-  PrescriptionCard(this.name, this.dosage, this.measurement, this.noOfReminders, this.stock);
+  PrescriptionCard(this.id, this.name, this.dosage, this.measurement, this.noOfReminders, this.stock);
 
   @override
   Widget build(BuildContext context) {
@@ -40,8 +41,10 @@ class PrescriptionCard extends StatelessWidget {
         children: <Widget>[
           new Container(height: 4.0),
           new Text(name),
-          new Container(height: 10.0),
+          new Container(height: 7.0),
           new Text(dosage.toString() + measurement),
+          new Container(height: 7.0),
+          new Text(id),
           new Container(
             margin: new EdgeInsets.symmetric(vertical: 8.0),
             height: 2.0,

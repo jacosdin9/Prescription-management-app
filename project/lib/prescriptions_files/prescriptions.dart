@@ -42,7 +42,7 @@ class PrescriptionPage extends StatelessWidget {
                       sliver: new SliverList(
                         delegate: new SliverChildBuilderDelegate(
                               (context, index) =>
-                          new PrescriptionCard(results[index]['name'], results[index]['dosage'], results[index]['measurement'], results[index]['noOfReminders'], results[index]['stock']),
+                          new PrescriptionCard(results[index].reference.id, results[index]['name'], results[index]['dosage'], results[index]['measurement'], results[index]['noOfReminders'], results[index]['stock']),
                           childCount: results.length,
                         ),
                       ),
