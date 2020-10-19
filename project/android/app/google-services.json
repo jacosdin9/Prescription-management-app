@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "991900730830",
+    "firebase_url": "https://prescription-management-app.firebaseio.com",
+    "project_id": "prescription-management-app",
+    "storage_bucket": "prescription-management-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:991900730830:android:323956bf47c6570401579f",
+        "android_client_info": {
+          "package_name": "com.example.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "991900730830-6cdah4hlokmv189ikcd9bg5npk13megq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGEx9BYQXAndBckBYLZqYh8zBYvvYA36I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "991900730830-6cdah4hlokmv189ikcd9bg5npk13megq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
