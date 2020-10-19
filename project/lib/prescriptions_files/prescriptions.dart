@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/prescriptions_files/prescriptionCard.dart';
 
 class PrescriptionPage extends StatelessWidget {
   @override
@@ -23,15 +24,48 @@ class PrescriptionPage extends StatelessWidget {
           );
         }
 
+        var results = snapshot.data.docs;
+
         //PRINT DATABASE CONTENTS
-        return new ListView(
-          children: snapshot.data.docs.map((DocumentSnapshot document) {
-            return new ListTile(
-              title: new Text(document.data()['name']),
-              subtitle: new Text(document.data()['dosage'].toString()),
-            );
-          }).toList(),
+        return Row(
+          children: [
+            Expanded(
+              child: new Container(
+                color: new Color(0xFF0c6f96),
+                child: new CustomScrollView(
+                  scrollDirection: Axis.vertical,
+                  shrinkWrap: false,
+                  slivers: <Widget>[
+                    new SliverPadding(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 24.0),
+                      sliver: new SliverList(
+                        delegate: new SliverChildBuilderDelegate(
+                              (context, index) =>
+                          new PrescriptionCard(results[index]['name'], results[index]['dosage'], results[index]['measurement'], results[index]['noOfReminders'], results[index]['stock']),
+                          childCount: results.length,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ]
         );
+
+
+
+
+
+        // ListView(
+        //   children: snapshot.data.docs.map((DocumentSnapshot document) {
+        //     return new ListTile(
+        //       title: new Text(document.data()['name']),
+        //       subtitle: new Text(document.reference.id),
+        //     );
+        //   }).toList(),
+        // );
       },
     );
   }

@@ -17,6 +17,7 @@ class DashboardPage extends StatelessWidget {
           },
           child: Text("Add prescription"),
         ),
+        SizedBox(height: 30),
       ],
     );
   }
