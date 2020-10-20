@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:project/objects/prescription.dart';
+import 'package:project/prescriptions_files/prescriptionPopup.dart';
 
 class PrescriptionCard extends StatelessWidget {
 
@@ -57,7 +58,17 @@ class PrescriptionCard extends StatelessWidget {
     );
 
     final prescriptionCard = new GestureDetector(
+        onTap: () {
+          var popUp = PrescriptionPopup(id, name, dosage, measurement, noOfReminders, stock);
 
+          showDialog(
+            context: context,
+            barrierDismissible: true,
+            builder: (BuildContext context){
+              return popUp;
+            },
+          );
+        },
         child: new Container(
           child: prescriptionCardContent,
           height: 124.0,
