@@ -38,47 +38,6 @@ class _AddPrescriptionState extends State<AddPrescription>{
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
-          // floatingActionButton: Stack(
-          //   children: <Widget>[
-          //
-          //     //CANCEL BUTTON
-          //     Positioned(
-          //       left: 20,
-          //       bottom: 20,
-          //       child: FloatingActionButton(
-          //         backgroundColor: Colors.red,
-          //         child: Icon(Icons.cancel),
-          //         onPressed: () {
-          //           Navigator.pop(context);
-          //         },
-          //       ),
-          //     ),
-          //
-          //     //DONE BUTTON
-          //     Positioned(
-          //       right: 20,
-          //       bottom: 20,
-          //       child: FloatingActionButton(
-          //         backgroundColor: Colors.green,
-          //         child: Icon(Icons.done),
-          //         onPressed: () {
-          //           // Validate returns true if the form is valid, otherwise false.
-          //           if (_formKey.currentState.validate()) {
-          //             _formKey.currentState.save();
-          //             print(pName);
-          //             print(pDosage);
-          //             print(pMeasurement);
-          //             print(pNoOfReminders);
-          //             print(pStock);
-          //             FirebasePage().addPrescription(pName, pDosage, pMeasurement, pNoOfReminders, pStock);
-          //             Navigator.pop(context);
-          //           }
-          //         },
-          //       ),
-          //     ),
-          //   ],
-          // ),
-
           appBar: AppBar(
             bottom: TabBar(
               tabs: [

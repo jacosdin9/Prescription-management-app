@@ -1,6 +1,9 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'mainArea.dart';
+import 'package:project/authentication_files/logInPageRedirect.dart';
 
-void main() {
-  runApp(MainArea());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  runApp(LogInPageRedirect());
 }
