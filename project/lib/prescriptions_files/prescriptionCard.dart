@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:project/objects/prescription.dart';
 import 'package:project/prescriptions_files/prescriptionPopup.dart';
 
 class PrescriptionCard extends StatelessWidget {

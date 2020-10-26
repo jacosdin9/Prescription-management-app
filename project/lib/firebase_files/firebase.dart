@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/main_backend/mainArea.dart';
-import 'package:project/objects/prescription.dart';
 
 class FirebasePage {
   static FirebaseFirestore firestoreDB = FirebaseFirestore.instance;

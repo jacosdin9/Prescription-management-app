@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project/dashboard_files/addPrescription.dart';
-import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/objects/prescription.dart';
-import 'package:project/patient_files/changeUser.dart';
+import 'package:project/prescriptions_files/addPrescription.dart';
 
 Prescription test1 = Prescription(name: "test", dosage: 0.05, measurement: "mg", noOfReminders: 3, stock: 100);
 
