@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:project/dashboard_files/addPrescription.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/objects/prescription.dart';
+import 'package:project/patient_files/changeUser.dart';
 
 Prescription test1 = Prescription(name: "test", dosage: 0.05, measurement: "mg", noOfReminders: 3, stock: 100);
 

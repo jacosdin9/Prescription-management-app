@@ -55,9 +55,6 @@ class PrescriptionPage extends StatelessWidget {
         );
 
 
-
-
-
         // ListView(
         //   children: snapshot.data.docs.map((DocumentSnapshot document) {
         //     return new ListTile(

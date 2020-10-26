@@ -1,16 +1,19 @@
+import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project/authentication_files/logInPage.dart';
 import 'package:project/authentication_files/logInPageRedirect.dart';
 import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
+import 'package:project/firebase_files/firebase.dart';
+import 'package:project/patient_files/changeUser.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:provider/provider.dart';
 
 bool signedInBool = false;
 User fbUser;
+String deviceID = "";
 
 class MainArea extends StatefulWidget {
   final bool _signedInBool;
@@ -35,13 +38,13 @@ class _MainAreaState extends State<MainArea> {
   ];
 
   @override
-  void initState() {
+  initState() {
     super.initState();
+    initialiseDeviceID();
   }
 
   @override
   Widget build(BuildContext context) {
-    // Show error message if initialization failed
     return MaterialApp(
       theme: ThemeData(
         primarySwatch: Colors.red,
@@ -80,6 +83,9 @@ class _MainAreaState extends State<MainArea> {
                 leading: Icon(Icons.settings),
                 title: Text('Settings'),
               ),
+
+              //if not signed in, show sign in button and if signed in, show sign out button.
+              signedInBool == false ?
               ListTile(
                 onTap: () {
                   Navigator.push(
@@ -88,14 +94,26 @@ class _MainAreaState extends State<MainArea> {
                   );
                 },
                 leading: Icon(Icons.login),
-                title: Text('Log in'),
-              ),
+                title: Text('Log in as carer'),
+              ) :
               ListTile(
                 onTap: () {
                   context.read<AuthenticationService>().signOut();
                 },
                 leading: Icon(Icons.logout),
                 title: Text('Log out'),
+              ),
+
+              //Choose a patient (offline)
+              ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ChangeUserPage()),
+                  );
+                },
+                leading: Icon(Icons.swap_horiz),
+                title: Text('Switch user'),
               ),
             ],
           ),
@@ -133,3 +151,9 @@ class _MainAreaState extends State<MainArea> {
   }
 }
 
+Future<void> initialiseDeviceID() async {
+  var deviceInfo = DeviceInfoPlugin();
+  var androidDeviceInfo = await deviceInfo.androidInfo;
+  FirebasePage().createDevice(androidDeviceInfo.androidId);
+  deviceID = androidDeviceInfo.androidId;
+}

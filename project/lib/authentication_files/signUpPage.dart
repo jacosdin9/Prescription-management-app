@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/authentication_files/authentication.dart';
+import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:provider/provider.dart';
 
@@ -81,11 +82,12 @@ class SignUpPage extends StatelessWidget {
                     side: BorderSide(color: Colors.red),
                   ),
                   padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                  onPressed: () {
-                    context.read<AuthenticationService>().signUp(
+                  onPressed: () async {
+                    await context.read<AuthenticationService>().signUp(
                       email: emailController.text.trim(),
                       password: passwordController.text.trim(),
                     );
+                    FirebasePage().createCarer(context.read<User>().uid);
                     Navigator.pop(context);
                   },
                   child: Text(
