@@ -29,7 +29,7 @@ class AuthenticationService {
 
   Future<String> signUp({String email, String password}) async{
     try {
-      await fbAuth.signInWithEmailAndPassword(email: email, password: password);
+      await fbAuth.createUserWithEmailAndPassword(email: email, password: password);
       return "Signed up!";
     }
     on FirebaseAuthException catch(e) {

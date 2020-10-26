@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/authentication_files/authentication.dart';
+import 'package:project/authentication_files/signUpPage.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:provider/provider.dart';
 
@@ -108,6 +109,26 @@ class LogInPage extends StatelessWidget {
                     },
                     child: Text(
                       "LOG IN AS GUEST",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.red),
+                    ),
+                    padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                      );
+                    },
+                    child: Text(
+                      "SIGN UP",
                       style: TextStyle(
                         fontSize: 20,
                       ),
