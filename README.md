@@ -1,2 +1,2 @@
 # Prescription-management-app
-Level 4 Honours Project
+Level 4 Honours Dissertation Project
