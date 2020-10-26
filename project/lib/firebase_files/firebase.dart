@@ -5,13 +5,11 @@ import 'package:project/objects/prescription.dart';
 class FirebasePage {
   static FirebaseFirestore firestoreDB = FirebaseFirestore.instance;
 
-  CollectionReference carersTable = firestoreDB.collection('carers');
   CollectionReference devicesTable = firestoreDB.collection('devices');
-
-  CollectionReference prescriptionsTable = firestoreDB.collection('prescriptions');
 
   //ADD PRESCRIPTION
   Future<void> addPrescription(String name, double dosage, String measurement, int noOfReminders, double stock){
+    CollectionReference prescriptionsTable = firestoreDB.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('prescriptions');
     return prescriptionsTable.
       add({
         'name' : name,
@@ -26,6 +24,7 @@ class FirebasePage {
 
   //DELETE PRESCRIPTION
   Future<void> deletePrescription(String id){
+    CollectionReference prescriptionsTable = firestoreDB.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('prescriptions');
     return prescriptionsTable.
       doc(id).
       delete().
@@ -35,6 +34,7 @@ class FirebasePage {
 
   //CREATE CARER USER
   Future<void> createCarer(String id){
+    CollectionReference carersTable = firestoreDB.collection('carers');
     return carersTable.doc(id).set({}).
     then((value) => print("CARER USER CREATED")).
     catchError((error) => print("FAILED TO CREATE USER: $error"));
