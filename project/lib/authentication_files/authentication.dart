@@ -7,6 +7,16 @@ class AuthenticationService {
 
   Stream<User> get authStateChanges => fbAuth.authStateChanges();
 
+  Future<String> signInAnon() async {
+    try {
+      await fbAuth.signInAnonymously();
+      return "Signed in as guest!";
+    }
+    on FirebaseAuthException catch(e) {
+      return e.message;
+    }
+  }
+
   Future<String> signIn({String email, String password}) async{
     try {
       await fbAuth.signInWithEmailAndPassword(email: email, password: password);
@@ -25,6 +35,10 @@ class AuthenticationService {
     on FirebaseAuthException catch(e) {
       return e.message;
     }
+  }
+
+  Future<void> signOut() async {
+    await fbAuth.signOut();
   }
 
 }

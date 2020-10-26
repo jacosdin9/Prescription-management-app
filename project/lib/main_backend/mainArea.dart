@@ -1,16 +1,32 @@
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/authentication_files/logInPage.dart';
+import 'package:project/authentication_files/logInPageRedirect.dart';
 import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
+import 'package:project/authentication_files/authentication.dart';
+import 'package:provider/provider.dart';
+
+bool signedInBool = false;
+User fbUser;
 
 class MainArea extends StatefulWidget {
+  final bool _signedInBool;
+  final User _fbUser;
+
+  MainArea(this._signedInBool, this._fbUser);
+
   @override
-  _MainAreaState createState() => _MainAreaState();
+  _MainAreaState createState() => _MainAreaState(_signedInBool, _fbUser);
 }
 
 class _MainAreaState extends State<MainArea> {
+  bool _signedInBool;
+  User _fbUser;
+  _MainAreaState(this._signedInBool, this._fbUser);
+
   int _currentIndex = 1;
   final List<Widget> _children = [
     CalendarPage(),
@@ -32,14 +48,14 @@ class _MainAreaState extends State<MainArea> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: Text('PRESCRIPTION MANAGEMENT'),
+          title: signedInBool == false ? Text('PRESCRIPTION MANAGEMENT') : Text("LOGGED IN AS: " + (fbUser.isAnonymous==false ? fbUser.email.toString() : "GUEST")),
         ),
 
         //DRAWER MENU
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
-            children: const <Widget>[
+            children: <Widget>[
               DrawerHeader(
                 decoration: BoxDecoration(
                   color: Colors.blue,
@@ -63,6 +79,23 @@ class _MainAreaState extends State<MainArea> {
               ListTile(
                 leading: Icon(Icons.settings),
                 title: Text('Settings'),
+              ),
+              ListTile(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LogInPageRedirect()),
+                  );
+                },
+                leading: Icon(Icons.login),
+                title: Text('Log in'),
+              ),
+              ListTile(
+                onTap: () {
+                  context.read<AuthenticationService>().signOut();
+                },
+                leading: Icon(Icons.logout),
+                title: Text('Log out'),
               ),
             ],
           ),
