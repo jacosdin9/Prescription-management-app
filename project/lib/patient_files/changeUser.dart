@@ -7,14 +7,20 @@ import 'createUser.dart';
 class ChangeUserPage extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
-    CollectionReference localPatientsRef = FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients');
+
+    //if logged in, show carer's assignedPatients list. else show local device's patients.
+    CollectionReference patientsIdList = fbUser != null ?
+    FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('assignedPatients')
+        :
+    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients')
+    ;
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
           title: Text("Switch user"),
         ),
         body: StreamBuilder<QuerySnapshot>(
-          stream: localPatientsRef.snapshots(),
+          stream: patientsIdList.snapshots(),
           builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
             //IF THERE'S AN ERROR:
@@ -54,7 +60,7 @@ class ChangeUserPage extends StatelessWidget{
                                         currentPatientID = results[index].id;
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => MainArea(signedInBool, fbUser)),
+                                          MaterialPageRoute(builder: (context) => MainArea()),
                                         );
                                       },
                                       child: Container(
@@ -91,6 +97,26 @@ class ChangeUserPage extends StatelessWidget{
                       ),
                     ),
                   ),
+
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.red),
+                    ),
+                    padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => MainArea()),
+                      );
+                    },
+                    child: Text(
+                      "BACK",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
                 ]
               ) :
                 Column(
@@ -110,6 +136,26 @@ class ChangeUserPage extends StatelessWidget{
                       },
                       child: Text(
                         "CREATE USER",
+                        style: TextStyle(
+                          fontSize: 20,
+                        ),
+                      ),
+                    ),
+
+                    RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.red),
+                      ),
+                      padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => MainArea()),
+                        );
+                      },
+                      child: Text(
+                        "BACK",
                         style: TextStyle(
                           fontSize: 20,
                         ),

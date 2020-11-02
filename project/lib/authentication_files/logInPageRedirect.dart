@@ -39,17 +39,16 @@ class AuthenticationWrapper extends StatelessWidget{
   Widget build(BuildContext context) {
     final firebaseUser = context.watch<User>();
 
+    fbUser = firebaseUser;
+
     //if user is logged in
     if(firebaseUser != null){
-      signedInBool = true;
-      fbUser = firebaseUser;
-      return MainArea(signedInBool, fbUser);
+      currentPatientID = "";
+      return MainArea();
     }
 
     //if user is not logged in
     else{
-      signedInBool = false;
-      fbUser = null;
       return LogInPage();
     }
   }

@@ -101,24 +101,6 @@ class LogInPage extends StatelessWidget {
 
                   SizedBox(height: 50),
 
-                  // RaisedButton(
-                  //   shape: RoundedRectangleBorder(
-                  //     borderRadius: BorderRadius.circular(18.0),
-                  //     side: BorderSide(color: Colors.red),
-                  //   ),
-                  //   padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                  //   onPressed: () async {
-                  //     await context.read<AuthenticationService>().signInAnon();
-                  //     FirebasePage().createCarer(await _getId());
-                  //   },
-                  //   child: Text(
-                  //     "LOG IN AS GUEST",
-                  //     style: TextStyle(
-                  //       fontSize: 20,
-                  //     ),
-                  //   ),
-                  // ),
-
                   RaisedButton(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
@@ -149,9 +131,10 @@ class LogInPage extends StatelessWidget {
                   backgroundColor: Colors.red,
                   child: Icon(Icons.cancel),
                   onPressed: () {
+                    User fbUser = FirebaseAuth.instance.currentUser;
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MainArea(signedInBool, fbUser)),
+                      MaterialPageRoute(builder: (context) => MainArea()),
                     );
                   },
                 ),

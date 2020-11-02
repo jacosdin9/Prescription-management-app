@@ -47,8 +47,8 @@ class FirebasePage {
   }
 
   //CREATE LOCAL PATIENT COLLECTION
-  Future<void> createPatient(String id, String name, int age, double weight, String measurement){
-    CollectionReference patientTable = firestoreDB.collection('devices').doc(id).collection('patients');
+  Future<void> createPatient(String deviceId, String name, int age, double weight, String measurement){
+    CollectionReference patientTable = firestoreDB.collection('devices').doc(deviceId).collection('patients');
 
     return patientTable.add({
       'name' : name,
@@ -59,6 +59,27 @@ class FirebasePage {
 
     then((value) => print("PATIENT CREATED")).
     catchError((error) => print("FAILED TO CREATE PATIENT: $error"));
+  }
+
+  //CREATE CONTROLLED PATIENT COLLECTION
+  Future<void> createControlledPatient(String carerID, String name, int age, double weight, String measurement){
+    CollectionReference controlledPatientTable = firestoreDB.collection('controlledPatients');
+    CollectionReference carerTable = firestoreDB.collection('carers').doc(fbUser.uid).collection('assignedPatients');
+
+    //create new controlled patient
+    var newCP = controlledPatientTable.doc();
+    newCP.set({
+      'name' : name,
+      'age' : age,
+      'weight' : weight,
+      'measurement' : measurement,
+      'carers' : [carerID],
+    });
+
+    //add new patient ID to carers assignedPatients list
+    return carerTable.doc(newCP.id).set({}).
+    then((value) => print("CONTROLLED PATIENT CREATED")).
+    catchError((error) => print("FAILED TO CREATE CONTROLLED PATIENT: $error"));
   }
 
 

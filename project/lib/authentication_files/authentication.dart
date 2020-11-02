@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:project/main_backend/mainArea.dart';
 
 class AuthenticationService {
   final FirebaseAuth fbAuth;
@@ -20,6 +21,7 @@ class AuthenticationService {
   Future<String> signIn({String email, String password}) async{
     try {
       await fbAuth.signInWithEmailAndPassword(email: email, password: password);
+      User fbUser = FirebaseAuth.instance.currentUser;
       return "Signed in!";
     }
     on FirebaseAuthException catch(e) {
@@ -38,6 +40,7 @@ class AuthenticationService {
   }
 
   Future<void> signOut() async {
+    print("user: " + fbUser.uid);
     await fbAuth.signOut();
   }
 

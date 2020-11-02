@@ -34,7 +34,6 @@ class _CreateUserState extends State<CreateUser>{
     }
 
     return MaterialApp(
-      title: "Add Prescription",
       home: DefaultTabController(
         length: 3,
         child: Scaffold(
@@ -225,7 +224,14 @@ class _CreateUserState extends State<CreateUser>{
                     // Validate returns true if the form is valid, otherwise false.
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
-                      FirebasePage().createPatient(deviceID, uName, uAge, uWeight, uMeasurement);
+
+                      //if not logged in, create local patient to deviceID. else, created controlled patient with user as carer
+                      fbUser == null ?
+                      FirebasePage().createPatient(deviceID, uName, uAge, uWeight, uMeasurement)
+                      :
+                      FirebasePage().createControlledPatient(fbUser.uid, uName, uAge, uWeight, uMeasurement)
+                      ;
+
                       Navigator.pop(context);
                     }
                   },

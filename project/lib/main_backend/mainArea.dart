@@ -11,25 +11,18 @@ import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:provider/provider.dart';
 
-bool signedInBool = false;
 User fbUser;
 String deviceID = "";
 String currentPatientID = "";
 
 class MainArea extends StatefulWidget {
-  final bool _signedInBool;
-  final User _fbUser;
-
-  MainArea(this._signedInBool, this._fbUser);
 
   @override
-  _MainAreaState createState() => _MainAreaState(_signedInBool, _fbUser);
+  _MainAreaState createState() => _MainAreaState();
 }
 
 class _MainAreaState extends State<MainArea> {
-  bool _signedInBool;
-  User _fbUser;
-  _MainAreaState(this._signedInBool, this._fbUser);
+  _MainAreaState();
 
   int _currentIndex = 1;
   final List<Widget> _children = [
@@ -42,6 +35,7 @@ class _MainAreaState extends State<MainArea> {
   initState() {
     super.initState();
     initialiseDeviceID();
+    fbUser = FirebaseAuth.instance.currentUser;
   }
 
   @override
@@ -52,7 +46,7 @@ class _MainAreaState extends State<MainArea> {
       ),
       home: Scaffold(
         appBar: AppBar(
-          title: signedInBool == false ? Text('PRESCRIPTION MANAGEMENT') : Text("LOGGED IN AS: " + (fbUser.isAnonymous==false ? fbUser.email.toString() : "GUEST")),
+          title: fbUser == null ? Text('PRESCRIPTION MANAGEMENT') : Text("LOGGED IN AS: " + fbUser.email.toString()),
         ),
 
         //DRAWER MENU
@@ -86,7 +80,7 @@ class _MainAreaState extends State<MainArea> {
               ),
 
               //if not signed in, show sign in button and if signed in, show sign out button.
-              signedInBool == false ?
+              fbUser == null ?
               ListTile(
                 onTap: () {
                   Navigator.push(
@@ -100,12 +94,17 @@ class _MainAreaState extends State<MainArea> {
               ListTile(
                 onTap: () {
                   context.read<AuthenticationService>().signOut();
+                  currentPatientID = "";
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LogInPageRedirect()),
+                  );
                 },
                 leading: Icon(Icons.logout),
                 title: Text('Log out'),
               ),
 
-              //Choose a patient (offline)
+              //Choose a patient
               ListTile(
                 onTap: () {
                   Navigator.push(

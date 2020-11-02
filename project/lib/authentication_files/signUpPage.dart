@@ -110,7 +110,7 @@ class SignUpPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => MainArea(signedInBool, fbUser)),
+                    MaterialPageRoute(builder: (context) => MainArea()),
                   );
                 },
               ),
