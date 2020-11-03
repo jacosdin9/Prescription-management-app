@@ -71,7 +71,9 @@ class ChangeUserPage extends StatelessWidget{
                                         height: 30,
                                         margin: new EdgeInsets.symmetric(vertical: 8.0),
                                         color: Colors.grey,
-                                        child: Text(results[index].id),
+                                        child: fbUser != null ?
+                                          Text("Controlled patient?: " + results[index].get('controlled').toString() + "   ---   ID: " + results[index].id) :
+                                          Text(results[index].id),
                                       ),
                                     ),
                                 childCount: results.length,
@@ -84,6 +86,7 @@ class ChangeUserPage extends StatelessWidget{
                   ) :
                       Text("NO USERS FOUND"),
 
+                  fbUser != null ?
                   RaisedButton(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(18.0),
@@ -102,7 +105,8 @@ class ChangeUserPage extends StatelessWidget{
                         fontSize: 20,
                       ),
                     ),
-                  ),
+                  ) :
+                      SizedBox(height:0,),
 
                   RaisedButton(
                     shape: RoundedRectangleBorder(

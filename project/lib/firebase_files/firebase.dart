@@ -24,7 +24,7 @@ class FirebasePage {
 
   //DELETE PRESCRIPTION
   Future<void> deletePrescription(String id){
-    CollectionReference prescriptionsTable = firestoreDB.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('prescriptions');
+    CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
     return prescriptionsTable.
       doc(id).
       delete().
