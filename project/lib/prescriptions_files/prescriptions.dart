@@ -10,7 +10,8 @@ class PrescriptionPage extends StatelessWidget {
 
     //devices>deviceID - patients>patientID - prescriptions
     //if patient selected, create proper file path. else make a dummy one.
-    CollectionReference prescriptionsRef = currentPatientID != "" ?
+    CollectionReference prescriptionsRef =
+    currentPatientID != "" ?
     FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('prescriptions') :
     FirebaseFirestore.instance.collection('devices');
 

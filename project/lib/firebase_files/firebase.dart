@@ -77,9 +77,40 @@ class FirebasePage {
     });
 
     //add new patient ID to carers assignedPatients list
-    return carerTable.doc(newCP.id).set({}).
+    return carerTable.doc(newCP.id).set({
+      'controlled' : true,
+      'deviceId' : "",
+    }).
     then((value) => print("CONTROLLED PATIENT CREATED")).
     catchError((error) => print("FAILED TO CREATE CONTROLLED PATIENT: $error"));
+  }
+
+  //add existing patient to carer's list of patients.
+  //now I need to add carerID to the selected patients list of carers.
+  Future<void> addExistingPatient(String deviceId, patientId){
+    CollectionReference carerTable = firestoreDB.collection('carers').doc(fbUser.uid).collection('assignedPatients');
+    DocumentReference patientPath;
+
+    //if no deviceId supplied it must be a controlled patient.
+    deviceId == null ?
+    patientPath = firestoreDB.collection('controlledPatients').doc(patientId) :
+    patientPath = firestoreDB.collection('devices').doc(deviceId).collection('patients').doc(patientId);
+
+    //if patient found in DB, add patientID to carer's patients list
+    patientPath.get().
+    then((docSnapshot)=> {
+      if(docSnapshot.exists){
+        carerTable.doc(patientPath.id).set({
+          'controlled' : deviceId == null ? true : false,
+          'deviceId' : deviceId,
+        }).
+        then((value) => print("EXISTING PATIENT ADDED")).
+        catchError((error) => print("FAILED TO ADD EXISTING PATIENT: $error")),
+      }
+      else{
+        print("PATIENT NOT FOUND")
+      }
+    });
   }
 
 

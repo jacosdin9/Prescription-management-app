@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'addExistingPatient.dart';
 import 'createUser.dart';
 
 class ChangeUserPage extends StatelessWidget{
@@ -39,10 +40,10 @@ class ChangeUserPage extends StatelessWidget{
 
             //PRINT DATABASE CONTENTS
             return
-              //If no patients created yet, ask user to create one. Else display users
-              results.length != 0 ?
               Column(
                 children: [
+                  //If no patients created yet, ask user to create one. Else display users
+                  results.length != 0 ?
                   Expanded(
                     child: new Container(
                       child: new CustomScrollView(
@@ -77,7 +78,29 @@ class ChangeUserPage extends StatelessWidget{
                         ],
                       ),
                     ),
+                  ) :
+                      Text("NO USERS FOUND"),
+
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.red),
+                    ),
+                    padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => AddExistingPatient()),
+                      );
+                    },
+                    child: Text(
+                      "ADD EXISTING PATIENT",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
                   ),
+
                   RaisedButton(
                     shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(18.0),
@@ -118,51 +141,7 @@ class ChangeUserPage extends StatelessWidget{
                     ),
                   ),
                 ]
-              ) :
-                Column(
-                  children:[
-                    Text("PLEASE CREATE A USER"),
-                    RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.red),
-                      ),
-                      padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => CreateUser()),
-                        );
-                      },
-                      child: Text(
-                        "CREATE USER",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-
-                    RaisedButton(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(18.0),
-                        side: BorderSide(color: Colors.red),
-                      ),
-                      padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => MainArea()),
-                        );
-                      },
-                      child: Text(
-                        "BACK",
-                        style: TextStyle(
-                          fontSize: 20,
-                        ),
-                      ),
-                    ),
-                  ],
-                );
+              );
           }
         ),
       ),
