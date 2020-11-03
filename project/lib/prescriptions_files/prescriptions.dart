@@ -10,9 +10,8 @@ class PrescriptionPage extends StatelessWidget {
 
     //devices>deviceID - patients>patientID - prescriptions
     //if patient selected, create proper file path. else make a dummy one.
-    CollectionReference prescriptionsRef =
-    currentPatientID != "" ?
-    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('prescriptions') :
+    CollectionReference prescriptionsRef = currentPatientID != "" ?
+    findPrescriptionsRef(deviceID, currentPatientID) :
     FirebaseFirestore.instance.collection('devices');
 
     return
@@ -66,5 +65,14 @@ class PrescriptionPage extends StatelessWidget {
       },
     ) :
     Text("SELECT A PATIENT SO SEE THEIR PRESCRIPTIONS");
+  }
+}
+
+CollectionReference findPrescriptionsRef(String deviceID, patientID){
+  if(deviceID == ""){
+    return FirebaseFirestore.instance.collection('controlledPatients').doc(currentPatientID).collection('prescriptions');
+  }
+  else{
+    return FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('prescriptions');
   }
 }

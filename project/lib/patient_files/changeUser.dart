@@ -59,6 +59,9 @@ class ChangeUserPage extends StatelessWidget{
                                     GestureDetector(
                                       onTap: () {
                                         currentPatientID = results[index].id;
+                                        if(fbUser!=null){
+                                          deviceID = results[index].get('deviceId');
+                                        }
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(builder: (context) => MainArea()),

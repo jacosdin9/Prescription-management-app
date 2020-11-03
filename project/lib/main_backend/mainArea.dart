@@ -34,8 +34,10 @@ class _MainAreaState extends State<MainArea> {
   @override
   initState() {
     super.initState();
-    initialiseDeviceID();
     fbUser = FirebaseAuth.instance.currentUser;
+    if(fbUser==null){
+      initialiseDeviceID();
+    }
   }
 
   @override

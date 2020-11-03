@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/prescriptions_files/prescriptions.dart';
 
 class FirebasePage {
   static FirebaseFirestore firestoreDB = FirebaseFirestore.instance;
@@ -8,7 +9,7 @@ class FirebasePage {
 
   //ADD PRESCRIPTION
   Future<void> addPrescription(String name, double dosage, String measurement, int noOfReminders, double stock){
-    CollectionReference prescriptionsTable = firestoreDB.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('prescriptions');
+    CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
     return prescriptionsTable.
       add({
         'name' : name,
