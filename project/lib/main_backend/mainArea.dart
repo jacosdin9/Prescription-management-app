@@ -153,7 +153,6 @@ class _MainAreaState extends State<MainArea> {
   }
 }
 
-//find way to make sure this is run before pages load - like in init state except its a future
 Future<void> initialiseDeviceID() async {
   var deviceInfo = DeviceInfoPlugin();
   var androidDeviceInfo = await deviceInfo.androidInfo;

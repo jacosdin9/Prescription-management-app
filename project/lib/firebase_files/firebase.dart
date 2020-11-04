@@ -57,7 +57,6 @@ class FirebasePage {
       'weight' : weight,
       'measurement' : measurement,
     }).
-
     then((value) => print("PATIENT CREATED")).
     catchError((error) => print("FAILED TO CREATE PATIENT: $error"));
   }
@@ -87,7 +86,7 @@ class FirebasePage {
   }
 
   //add existing patient to carer's list of patients.
-  //now I need to add carerID to the selected patients list of carers.
+  //now I need to add carerID to the selected patients list of carers. - issue
   Future<void> addExistingPatient(String deviceId, patientId){
     CollectionReference carerTable = firestoreDB.collection('carers').doc(fbUser.uid).collection('assignedPatients');
     DocumentReference patientPath;
@@ -113,6 +112,5 @@ class FirebasePage {
       }
     });
   }
-
 
 }

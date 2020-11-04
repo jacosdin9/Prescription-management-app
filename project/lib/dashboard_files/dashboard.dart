@@ -1,11 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/main_backend/mainArea.dart';
-import 'package:project/objects/prescription.dart';
 import 'package:project/prescriptions_files/addPrescription.dart';
-
-Prescription test1 = Prescription(name: "test", dosage: 0.05, measurement: "mg", noOfReminders: 3, stock: 100);
-
 
 class DashboardPage extends StatelessWidget {
   @override
@@ -17,6 +13,7 @@ class DashboardPage extends StatelessWidget {
           //show current patient id
           currentPatientID == "" ? Text("NO PATIENT SELECTED") : Text(currentPatientID),
 
+          //if a patient has been selected already, show add prescription button
           currentPatientID != "" ?
           RaisedButton(
             shape: RoundedRectangleBorder(

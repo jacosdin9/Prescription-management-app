@@ -8,7 +8,6 @@ class AddPrescription extends StatefulWidget{
 }
 
 class _AddPrescriptionState extends State<AddPrescription>{
-
   String pName;
   double pDosage;
   String pMeasurement;
@@ -266,19 +265,10 @@ class _AddPrescriptionState extends State<AddPrescription>{
                   },
                 ),
               ),
-
             ],
           ),
-
-
         ),
       ),
-
-
     );
-
-
-
   }
-
 }

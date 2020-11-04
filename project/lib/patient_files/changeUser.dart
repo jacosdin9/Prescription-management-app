@@ -51,8 +51,7 @@ class ChangeUserPage extends StatelessWidget{
                         shrinkWrap: false,
                         slivers: <Widget>[
                           new SliverPadding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 24.0),
+                            padding: const EdgeInsets.symmetric(vertical: 24.0),
                             sliver: new SliverList(
                               delegate: new SliverChildBuilderDelegate(
                                     (context, index) =>
@@ -106,12 +105,12 @@ class ChangeUserPage extends StatelessWidget{
                       ),
                     ),
                   ) :
-                      SizedBox(height:0,),
+                      SizedBox(height:0),
 
                   RaisedButton(
                     shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(18.0),
-                    side: BorderSide(color: Colors.red),
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.red),
                     ),
                     padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
                     onPressed: () {
