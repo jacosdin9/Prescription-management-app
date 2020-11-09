@@ -10,7 +10,6 @@ class CarerRequestNotification extends StatelessWidget{
   final String patientId;
 
   CarerRequestNotification(this.carerId, this.notificationId, this.patientId);
-
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -98,7 +97,7 @@ class CarerRequestNotification extends StatelessWidget{
                     side: BorderSide(color: Colors.red),
                   ),
                   onPressed: () {
-                    FirebasePage().deleteCarerRequest(deviceID, patientId, fbUser.uid, notificationId);
+                    FirebasePage().deleteCarerRequest(deviceID, patientId, fbUser!=null ? fbUser.uid : "", notificationId);
                     Navigator.pop(context);
                   },
                   child: Text(

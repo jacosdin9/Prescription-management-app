@@ -124,24 +124,32 @@ class FirebasePage {
       leadCarerId = await findLeadCarerId(device, patient);
     }
 
+    //create path to designated notifications area
     DocumentReference notificationPath = device!="" ?
       FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient) :
         FirebaseFirestore.instance.collection('carers').doc(leadCarerId);
 
-    notificationPath.get().
-    then((docSnapshot)=> {
-      if(docSnapshot.exists){
+    //create path to carer's assignedPatients area so we can check if patient already exists there
+    DocumentReference carerPath = FirebaseFirestore.instance.collection('carers').doc(carer).collection('assignedPatients').doc(patient);
+
+    //if patient does not already exist in carer's assignedPatient list, add it.
+    if(!(await checkIfDocExists(carerPath))){
+      //check if patient exists so we can add notification to their profile
+      if(await checkIfDocExists(notificationPath)){
         notificationPath.collection('notifications').add({
           'type' : "carer_request",
           'carerId' : carer,
           'patientId' : patient,
         }).then((value) => print("NOTIFICATION CREATED")).
-        catchError((error) => print("FAILED TO CREATE NOTIFICATION: $error")),
+        catchError((error) => print("FAILED TO CREATE NOTIFICATION: $error"));
       }
       else{
-        print("PATIENT/LEAD CARER NOT FOUND")
+        print("PATIENT/LEAD CARER NOT FOUND");
       }
-    });
+    }
+    else{
+      print("PATIENT ALREADY EXISTS IN CARERS ASSIGNED PATIENTS LIST");
+    }
 
   }
 
@@ -161,4 +169,12 @@ findLeadCarerId(String device, String patient) async {
     DocumentReference patientReference = FirebaseFirestore.instance.collection('controlledPatients').doc(patient);
     DocumentSnapshot patientRef = await patientReference.get();
     return patientRef.get('leadCarer');
+}
+
+Future<bool> checkIfDocExists(DocumentReference docRef) async {
+  DocumentSnapshot docSnapshot = await docRef.get();
+  if(docSnapshot.exists){
+    return true;
+  }
+  return false;
 }
