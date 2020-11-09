@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/prescriptions_files/prescriptionCard.dart';
 
+import 'addPrescription.dart';
+
 class PrescriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -36,35 +38,56 @@ class PrescriptionPage extends StatelessWidget {
         var results = snapshot.data.docs;
 
         //PRINT DATABASE CONTENTS
-        return Row(
-          children: [
-            Expanded(
-              child: new Container(
-                color: Colors.white,
-                child: new CustomScrollView(
-                  scrollDirection: Axis.vertical,
-                  shrinkWrap: false,
-                  slivers: <Widget>[
-                    new SliverPadding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 24.0),
-                      sliver: new SliverList(
-                        delegate: new SliverChildBuilderDelegate(
-                              (context, index) =>
-                          new PrescriptionCard(results[index].reference.id, results[index]['name'], results[index]['dosage'], results[index]['measurement'], results[index]['noOfReminders'], results[index]['stock']),
-                          childCount: results.length,
+        return
+          Column(
+            children: [
+              Expanded(
+                child: new Container(
+                  child: new CustomScrollView(
+                    scrollDirection: Axis.vertical,
+                    shrinkWrap: false,
+                    slivers: <Widget>[
+                      new SliverPadding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 24.0),
+                        sliver: new SliverList(
+                          delegate: new SliverChildBuilderDelegate(
+                                (context, index) =>
+                            new PrescriptionCard(results[index].reference.id, results[index]['name'], results[index]['dosage'], results[index]['measurement'], results[index]['noOfReminders'], results[index]['stock']),
+                            childCount: results.length,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ]
-        );
+
+              RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.red),
+                ),
+                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => AddPrescription()),
+                  );
+                },
+                child: Text(
+                  "Add prescription",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              )
+            ],
+          );
+
       },
     ) :
-    Text("SELECT A PATIENT SO SEE THEIR PRESCRIPTIONS");
+    Text("SELECT A PATIENT TO SEE THEIR PRESCRIPTIONS");
   }
 }
 
