@@ -153,7 +153,7 @@ class FirebasePage {
 
     //DocumentReference notificationPath = FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient).collection('notifications').doc(notificationId);
     return notificationPath.delete().then((value) => print("NOTIFICATION DELETED")).
-    catchError((error) => print("FAILED TO DELETE NOTIFICATION: $error"));;
+    catchError((error) => print("FAILED TO DELETE NOTIFICATION: $error"));
   }
 }
 

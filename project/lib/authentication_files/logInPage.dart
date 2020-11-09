@@ -1,11 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/authentication_files/signUpPage.dart';
-import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:provider/provider.dart';
 
@@ -131,7 +128,7 @@ class LogInPage extends StatelessWidget {
                   backgroundColor: Colors.red,
                   child: Icon(Icons.cancel),
                   onPressed: () {
-                    User fbUser = FirebaseAuth.instance.currentUser;
+                    fbUser = FirebaseAuth.instance.currentUser;
                     Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => MainArea()),

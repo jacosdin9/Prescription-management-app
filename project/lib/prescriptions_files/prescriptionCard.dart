@@ -21,6 +21,7 @@ class PrescriptionCard extends StatelessWidget {
       ),
       alignment: FractionalOffset.centerLeft,
       child: RawMaterialButton(
+        onPressed: () {},
         elevation: 0.0,
         fillColor: Colors.amber,
         child: Icon(
