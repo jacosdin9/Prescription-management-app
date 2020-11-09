@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/patient_files/changeUser.dart';
 import 'package:project/prescriptions_files/prescriptionCard.dart';
 
 import 'addPrescription.dart';
@@ -87,7 +88,34 @@ class PrescriptionPage extends StatelessWidget {
 
       },
     ) :
-    Text("SELECT A PATIENT TO SEE THEIR PRESCRIPTIONS");
+      Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            //show current patient id
+            Text("SELECT A PATIENT TO SEE THEIR PRESCRIPTIONS HERE"),
+            RaisedButton(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(18.0),
+                side: BorderSide(color: Colors.red),
+              ),
+              padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => ChangeUserPage()),
+                );
+              },
+              child: Text(
+                "Select a patient",
+                style: TextStyle(
+                  fontSize: 20,
+                ),
+              ),
+            )
+          ],
+        ),
+      );
   }
 }
 
