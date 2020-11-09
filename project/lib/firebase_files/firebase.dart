@@ -74,6 +74,7 @@ class FirebasePage {
       'weight' : weight,
       'measurement' : measurement,
       'carers' : [carerID],
+      'leadCarer' : carerID,
     });
 
     //add new patient ID to carers assignedPatients list
@@ -92,7 +93,7 @@ class FirebasePage {
     DocumentReference patientPath;
 
     //if no deviceId supplied it must be a controlled patient.
-    deviceId == null ?
+    deviceId == "" ?
     patientPath = firestoreDB.collection('controlledPatients').doc(patientId) :
     patientPath = firestoreDB.collection('devices').doc(deviceId).collection('patients').doc(patientId);
 
@@ -101,12 +102,12 @@ class FirebasePage {
     then((docSnapshot)=> {
       if(docSnapshot.exists){
         carerTable.doc(patientPath.id).set({
-          'controlled' : deviceId == null ? true : false,
+          'controlled' : deviceId == "" ? true : false,
           'deviceId' : deviceId,
         }).
         then((value) => print("EXISTING PATIENT ADDED")).
         catchError((error) => print("FAILED TO ADD EXISTING PATIENT: $error")),
-        deleteCarerRequest(deviceId, patientId, notificationId)
+        deleteCarerRequest(deviceId, patientId, fbUser.uid, notificationId),
       }
       else{
         print("PATIENT NOT FOUND")
@@ -114,19 +115,50 @@ class FirebasePage {
     });
   }
 
-  Future<void> createCarerRequest(String carer, String device, String patient){
-    CollectionReference notificationPath = FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient).collection('notifications');
+  Future<void> createCarerRequest(String carer, String device, String patient) async {
 
-    return notificationPath.add({
-      'type' : "carer_request",
-      'carerId' : carer,
-    }).then((value) => print("NOTIFICATION CREATED")).
-    catchError((error) => print("FAILED TO CREATE NOTIFICATION: $error"));
+    String leadCarerId = "";
+
+    //check if carer request is going directly to user, or if it is going to lead carer
+    if(device==""){
+      leadCarerId = await findLeadCarerId(device, patient);
+    }
+
+    DocumentReference notificationPath = device!="" ?
+      FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient) :
+        FirebaseFirestore.instance.collection('carers').doc(leadCarerId);
+
+    notificationPath.get().
+    then((docSnapshot)=> {
+      if(docSnapshot.exists){
+        notificationPath.collection('notifications').add({
+          'type' : "carer_request",
+          'carerId' : carer,
+          'patientId' : patient,
+        }).then((value) => print("NOTIFICATION CREATED")).
+        catchError((error) => print("FAILED TO CREATE NOTIFICATION: $error")),
+      }
+      else{
+        print("PATIENT/LEAD CARER NOT FOUND")
+      }
+    });
+
   }
 
-  Future<void> deleteCarerRequest(String device, String patient, String notificationId){
-    DocumentReference notificationPath = FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient).collection('notifications').doc(notificationId);
+  Future<void> deleteCarerRequest(String device, String patient, String leadCarerId, String notificationId){
+
+    DocumentReference notificationPath = device!="" ?
+    FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient).collection('notifications').doc(notificationId) :
+    FirebaseFirestore.instance.collection('carers').doc(leadCarerId).collection('notifications').doc(notificationId);
+
+    //DocumentReference notificationPath = FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient).collection('notifications').doc(notificationId);
     return notificationPath.delete().then((value) => print("NOTIFICATION DELETED")).
     catchError((error) => print("FAILED TO DELETE NOTIFICATION: $error"));;
   }
+}
+
+findLeadCarerId(String device, String patient) async {
+    DocumentReference patientReference = FirebaseFirestore.instance.collection('controlledPatients').doc(patient);
+    DocumentSnapshot patientRef = await patientReference.get();
+    return patientRef.get('leadCarer');
 }

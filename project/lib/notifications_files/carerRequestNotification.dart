@@ -7,8 +7,9 @@ class CarerRequestNotification extends StatelessWidget{
 
   final String carerId;
   final String notificationId;
+  final String patientId;
 
-  CarerRequestNotification(this.carerId, this.notificationId);
+  CarerRequestNotification(this.carerId, this.notificationId, this.patientId);
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +63,7 @@ class CarerRequestNotification extends StatelessWidget{
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(carerId + " has requested to add you as their patient."),
+                  Text(carerId + " has requested to be a carer for " + patientId),
                   Text(""),
                   Text("Would you like to accept their invitation?")
                 ],
@@ -79,7 +80,7 @@ class CarerRequestNotification extends StatelessWidget{
                     side: BorderSide(color: Colors.red),
                   ),
                   onPressed: () {
-                    FirebasePage().addExistingPatient(deviceID, currentPatientID, carerId, notificationId);
+                    FirebasePage().addExistingPatient(deviceID, patientId, carerId, notificationId);
                     Navigator.pop(context);
                   },
                   child: Text(
@@ -97,7 +98,7 @@ class CarerRequestNotification extends StatelessWidget{
                     side: BorderSide(color: Colors.red),
                   ),
                   onPressed: () {
-                    FirebasePage().deleteCarerRequest(deviceID, currentPatientID, notificationId);
+                    FirebasePage().deleteCarerRequest(deviceID, patientId, fbUser.uid, notificationId);
                     Navigator.pop(context);
                   },
                   child: Text(
@@ -110,27 +111,6 @@ class CarerRequestNotification extends StatelessWidget{
                 ),
               ],
             )
-
-            // // dialog bottom
-            // Expanded(
-            //   child: RaisedButton(
-            //     shape: RoundedRectangleBorder(
-            //       borderRadius: BorderRadius.circular(18.0),
-            //       side: BorderSide(color: Colors.red),
-            //     ),
-            //     onPressed: () {
-            //       FirebasePage().deletePrescription(id);
-            //       Navigator.pop(context);
-            //     },
-            //     child: Text(
-            //       "Delete prescription",
-            //       style: TextStyle(
-            //         color: Colors.red,
-            //         fontSize: 20,
-            //       ),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

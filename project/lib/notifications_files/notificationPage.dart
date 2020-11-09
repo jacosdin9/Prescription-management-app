@@ -57,7 +57,7 @@ class NotificationsPage extends StatelessWidget {
                                         GestureDetector(
                                           onTap: () {
                                             if(results[index].get('type')=="carer_request"){
-                                              var popUp = CarerRequestNotification(results[index].get("carerId"), results[index].id);
+                                              var popUp = CarerRequestNotification(results[index].get("carerId"), results[index].id, results[index].get('patientId'));
                                               showDialog(
                                                 context: context,
                                                 barrierDismissible: true,

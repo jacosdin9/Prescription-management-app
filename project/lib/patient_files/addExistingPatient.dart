@@ -63,7 +63,7 @@ class _AddExistingPatient extends State<AddExistingPatient>{
                           ),
                           validator: (value) {
                             if(value.isEmpty){
-                              return "Please enter valid device ID";
+                              deviceId = "";
                             }
                             return null;
                           },
