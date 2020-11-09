@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/main_backend/mainArea.dart';
 
 class AddExistingPatient extends StatefulWidget{
   @override
@@ -130,9 +131,10 @@ class _AddExistingPatient extends State<AddExistingPatient>{
                 // Validate returns true if the form is valid, otherwise false.
                 if (_formKey.currentState.validate()) {
                   _formKey.currentState.save();
+                  print(fbUser.uid);
                   print(deviceId);
                   print(patientId);
-                  FirebasePage().addExistingPatient(deviceId, patientId);
+                  FirebasePage().createCarerRequest(fbUser.uid, deviceId, patientId);
                   Navigator.pop(context);
                 }
               },

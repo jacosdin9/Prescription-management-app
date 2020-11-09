@@ -6,6 +6,7 @@ import 'package:project/authentication_files/logInPageRedirect.dart';
 import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/notifications_files/notificationPage.dart';
 import 'package:project/patient_files/changeUser.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:project/authentication_files/authentication.dart';
@@ -70,7 +71,13 @@ class _MainAreaState extends State<MainArea> {
               ),
               ListTile(
                 leading: Icon(Icons.person),
-                title: Text('Users'),
+                title: Text('Notifications'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NotificationsPage()),
+                  );
+                },
               ),
               ListTile(
                 leading: Icon(Icons.format_paint),

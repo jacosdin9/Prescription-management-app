@@ -87,8 +87,8 @@ class FirebasePage {
 
   //add existing patient to carer's list of patients.
   //now I need to add carerID to the selected patients list of carers. - issue
-  Future<void> addExistingPatient(String deviceId, patientId){
-    CollectionReference carerTable = firestoreDB.collection('carers').doc(fbUser.uid).collection('assignedPatients');
+  Future<void> addExistingPatient(String deviceId, String patientId, String carerId, String notificationId){
+    CollectionReference carerTable = firestoreDB.collection('carers').doc(carerId).collection('assignedPatients');
     DocumentReference patientPath;
 
     //if no deviceId supplied it must be a controlled patient.
@@ -106,6 +106,7 @@ class FirebasePage {
         }).
         then((value) => print("EXISTING PATIENT ADDED")).
         catchError((error) => print("FAILED TO ADD EXISTING PATIENT: $error")),
+        deleteCarerRequest(deviceId, patientId, notificationId)
       }
       else{
         print("PATIENT NOT FOUND")
@@ -113,4 +114,19 @@ class FirebasePage {
     });
   }
 
+  Future<void> createCarerRequest(String carer, String device, String patient){
+    CollectionReference notificationPath = FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient).collection('notifications');
+
+    return notificationPath.add({
+      'type' : "carer_request",
+      'carerId' : carer,
+    }).then((value) => print("NOTIFICATION CREATED")).
+    catchError((error) => print("FAILED TO CREATE NOTIFICATION: $error"));
+  }
+
+  Future<void> deleteCarerRequest(String device, String patient, String notificationId){
+    DocumentReference notificationPath = FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient).collection('notifications').doc(notificationId);
+    return notificationPath.delete().then((value) => print("NOTIFICATION DELETED")).
+    catchError((error) => print("FAILED TO DELETE NOTIFICATION: $error"));;
+  }
 }
