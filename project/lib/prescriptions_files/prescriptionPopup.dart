@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/main_backend/popupAlert.dart';
 
 class PrescriptionPopup extends StatelessWidget{
 
@@ -83,6 +84,14 @@ class PrescriptionPopup extends StatelessWidget{
                 onPressed: () {
                   FirebasePage().deletePrescription(id);
                   Navigator.pop(context);
+                  var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");
+                  showDialog(
+                    context: context,
+                    barrierDismissible: true,
+                    builder: (BuildContext context){
+                      return popUp;
+                    },
+                  );
                 },
                 child: Text(
                   "Delete prescription",

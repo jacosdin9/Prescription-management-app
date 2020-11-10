@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/main_backend/popupAlert.dart';
 
 class CarerRequestNotification extends StatelessWidget{
 
@@ -81,6 +82,14 @@ class CarerRequestNotification extends StatelessWidget{
                   onPressed: () {
                     FirebasePage().addExistingPatient(deviceID, patientId, carerId, notificationId);
                     Navigator.pop(context);
+                    var popUp = PopupAlert("SUCCESS", "Carer has successfully been added");
+                    showDialog(
+                      context: context,
+                      barrierDismissible: true,
+                      builder: (BuildContext context){
+                        return popUp;
+                      },
+                    );
                   },
                   child: Text(
                     "YES",
