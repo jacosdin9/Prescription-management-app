@@ -82,7 +82,9 @@ class NotificationsPage extends StatelessWidget {
                           ),
                         ),
                       ) :
-                      Text("NO NOTIFICATIONS"),
+                        Center(
+                          child: Text("YOU HAVE 0 NOTIFICATIONS"),
+                        ),
 
                       RaisedButton(
                         shape: RoundedRectangleBorder(

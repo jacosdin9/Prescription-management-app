@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/main_backend/popupAlert.dart';
 
 class CreateUser extends StatefulWidget{
   @override
@@ -231,7 +232,14 @@ class _CreateUserState extends State<CreateUser>{
                       :
                       FirebasePage().createControlledPatient(fbUser.uid, uName, uAge, uWeight, uMeasurement)
                       ;
-
+                      var popUp = PopupAlert("SUCCESS", "Patient has successfully been added");
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context){
+                          return popUp;
+                        },
+                      );
                       Navigator.pop(context);
                     }
                   },

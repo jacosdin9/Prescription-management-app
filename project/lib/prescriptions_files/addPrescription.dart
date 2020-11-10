@@ -261,7 +261,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                       print(pNoOfReminders);
                       print(pStock);
                       FirebasePage().addPrescription(pName, pDosage, pMeasurement, pNoOfReminders, pStock);
-                      var popUp = PopupAlert("ALERT", "Prescription has successfully been added");
+                      var popUp = PopupAlert("SUCCESS", "Prescription has successfully been added");
                       showDialog(
                         context: context,
                         barrierDismissible: true,
