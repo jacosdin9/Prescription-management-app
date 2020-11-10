@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/patient_files/addExistingPatient.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
 
 class FirebasePage {
@@ -107,7 +108,7 @@ class FirebasePage {
         }).
         then((value) => print("EXISTING PATIENT ADDED")).
         catchError((error) => print("FAILED TO ADD EXISTING PATIENT: $error")),
-        deleteCarerRequest(deviceId, patientId, fbUser.uid, notificationId),
+        deleteCarerRequest(deviceId, patientId, fbUser!=null ? fbUser.uid : "", notificationId),
       }
       else{
         print("PATIENT NOT FOUND")
@@ -130,12 +131,13 @@ class FirebasePage {
         FirebaseFirestore.instance.collection('carers').doc(leadCarerId);
 
     //create path to carer's assignedPatients area so we can check if patient already exists there
-    DocumentReference carerPath = FirebaseFirestore.instance.collection('carers').doc(carer).collection('assignedPatients').doc(patient);
+    DocumentReference patientExistPath = FirebaseFirestore.instance.collection('carers').doc(carer).collection('assignedPatients').doc(patient);
 
     //if patient does not already exist in carer's assignedPatient list, add it.
-    if(!(await checkIfDocExists(carerPath))){
+    if(!(await checkIfDocExists(patientExistPath))){
       //check if patient exists so we can add notification to their profile
       if(await checkIfDocExists(notificationPath)){
+        sent = 1;
         notificationPath.collection('notifications').add({
           'type' : "carer_request",
           'carerId' : carer,
@@ -144,10 +146,12 @@ class FirebasePage {
         catchError((error) => print("FAILED TO CREATE NOTIFICATION: $error"));
       }
       else{
+        sent = 2;
         print("PATIENT/LEAD CARER NOT FOUND");
       }
     }
     else{
+      sent = 3;
       print("PATIENT ALREADY EXISTS IN CARERS ASSIGNED PATIENTS LIST");
     }
 
@@ -168,7 +172,11 @@ class FirebasePage {
 findLeadCarerId(String device, String patient) async {
     DocumentReference patientReference = FirebaseFirestore.instance.collection('controlledPatients').doc(patient);
     DocumentSnapshot patientRef = await patientReference.get();
-    return patientRef.get('leadCarer');
+
+    if(patientRef.exists){
+      return patientRef.get('leadCarer');
+    }
+    return null;
 }
 
 Future<bool> checkIfDocExists(DocumentReference docRef) async {

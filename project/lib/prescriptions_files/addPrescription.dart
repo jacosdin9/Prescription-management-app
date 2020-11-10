@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/main_backend/popupAlert.dart';
 
 class AddPrescription extends StatefulWidget{
   @override
@@ -260,6 +261,14 @@ class _AddPrescriptionState extends State<AddPrescription>{
                       print(pNoOfReminders);
                       print(pStock);
                       FirebasePage().addPrescription(pName, pDosage, pMeasurement, pNoOfReminders, pStock);
+                      var popUp = PopupAlert("ALERT", "Prescription has successfully been added");
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context){
+                          return popUp;
+                        },
+                      );
                       Navigator.pop(context);
                     }
                   },

@@ -2,6 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/main_backend/popupAlert.dart';
+
+int sent;
+var newPopUp;
 
 class AddExistingPatient extends StatefulWidget{
   @override
@@ -23,6 +27,7 @@ class _AddExistingPatient extends State<AddExistingPatient>{
     void initState() {
       super.initState();
       myFocusNode = FocusNode();
+      sent = 2;
     }
 
     @override
@@ -131,18 +136,41 @@ class _AddExistingPatient extends State<AddExistingPatient>{
                 // Validate returns true if the form is valid, otherwise false.
                 if (_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  print(fbUser.uid);
-                  print(deviceId);
-                  print(patientId);
                   FirebasePage().createCarerRequest(fbUser.uid, deviceId, patientId);
+                  sentState(sent);
                   Navigator.pop(context);
                 }
               },
             ),
           ),
-
         ],
       ),
+    );
+  }
+  sentState(int state){
+    switch(state){
+      case 1: {
+        newPopUp = PopupAlert("SUCCESS", "CARER REQUEST SENT SUCCESSFULLY");
+      }
+      break;
+
+      case 2: {
+        newPopUp = PopupAlert("ERROR", "PATIENT NOT FOUND");
+      }
+      break;
+
+      case 3: {
+        newPopUp = PopupAlert("ERROR", "PATIENT ALREADY EXISTS");
+      }
+      break;
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context){
+        return newPopUp;
+      },
     );
   }
 }
