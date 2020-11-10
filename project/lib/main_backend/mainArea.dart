@@ -10,6 +10,7 @@ import 'package:project/notifications_files/notificationPage.dart';
 import 'package:project/patient_files/changeUser.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:project/authentication_files/authentication.dart';
+import 'package:project/qr_files/generateQrPage.dart';
 import 'package:provider/provider.dart';
 
 User fbUser;
@@ -69,8 +70,11 @@ class _MainAreaState extends State<MainArea> {
                   ),
                 ),
               ),
+
+              //if patient has been selected, show notifications tab
+              currentPatientID != "" ?
               ListTile(
-                leading: Icon(Icons.person),
+                leading: Icon(Icons.notifications),
                 title: Text('Notifications'),
                 onTap: () {
                   Navigator.push(
@@ -78,15 +82,22 @@ class _MainAreaState extends State<MainArea> {
                     MaterialPageRoute(builder: (context) => NotificationsPage()),
                   );
                 },
-              ),
+              ) :
+                  SizedBox(),
+
+              //if patient has been selected, show my details tab
+              currentPatientID != "" ?
               ListTile(
-                leading: Icon(Icons.format_paint),
-                title: Text('Customisation'),
-              ),
-              ListTile(
-                leading: Icon(Icons.settings),
-                title: Text('Settings'),
-              ),
+                leading: Icon(Icons.person),
+                title: Text('My details'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => GenerateQrPage()),
+                  );
+                }
+              ) :
+                  SizedBox(),
 
               //if not signed in, show sign in button and if signed in, show sign out button.
               fbUser == null ?
@@ -122,7 +133,7 @@ class _MainAreaState extends State<MainArea> {
                   );
                 },
                 leading: Icon(Icons.swap_horiz),
-                title: Text('Switch user'),
+                title: Text('Select a patient'),
               ),
             ],
           ),
