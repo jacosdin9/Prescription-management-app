@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/popupAlert.dart';
+import 'package:qrscan/qrscan.dart' as scanner;
 
 int sent;
 var newPopUp;
@@ -16,6 +17,8 @@ class _AddExistingPatient extends State<AddExistingPatient>{
 
   String deviceId;
   String patientId;
+  TextEditingController deviceController = TextEditingController();
+  TextEditingController patientController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -59,6 +62,7 @@ class _AddExistingPatient extends State<AddExistingPatient>{
                       child: Padding(
                         padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                         child: TextFormField(
+                          controller: deviceController,
                           onSaved: (String value){deviceId=value;},
                           focusNode: myFocusNode,
                           decoration: InputDecoration(
@@ -88,6 +92,7 @@ class _AddExistingPatient extends State<AddExistingPatient>{
                       child: Padding(
                         padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                         child: TextFormField(
+                          controller: patientController,
                           onSaved: (String value){patientId=value;},
                           focusNode: myFocusNode,
                           decoration: InputDecoration(
@@ -105,6 +110,28 @@ class _AddExistingPatient extends State<AddExistingPatient>{
                       ),
                     ),
                   ),
+
+                  //QR code scan button
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.red),
+                    ),
+                    padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                    onPressed: () async {
+                      String scanResult = await scanner.scan();
+                      var scanSplit = scanResult.split("***");
+                      deviceController.text = scanSplit[0];
+                      patientController.text = scanSplit[1];
+
+                    },
+                    child: Text(
+                      "Scan QR code",
+                      style: TextStyle(
+                        fontSize: 20,
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),
@@ -132,13 +159,13 @@ class _AddExistingPatient extends State<AddExistingPatient>{
               heroTag: "FAB2",
               backgroundColor: Colors.green,
               child: Icon(Icons.done),
-              onPressed: () {
+              onPressed: () async {
                 // Validate returns true if the form is valid, otherwise false.
                 if (_formKey.currentState.validate()) {
                   _formKey.currentState.save();
-                  FirebasePage().createCarerRequest(fbUser.uid, deviceId, patientId);
-                  sentState(sent);
+                  await FirebasePage().createCarerRequest(fbUser.uid, deviceId, patientId);
                   Navigator.pop(context);
+                  sentState(sent);
                 }
               },
             ),

@@ -23,6 +23,25 @@ class GenerateQrPage extends StatelessWidget {
               ),
               Text("Device ID: " + deviceID),
               Text("Patient ID: " + currentPatientID),
+              RaisedButton(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(18.0),
+                  side: BorderSide(color: Colors.red),
+                ),
+                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainArea()),
+                  );
+                },
+                child: Text(
+                  "BACK",
+                  style: TextStyle(
+                    fontSize: 20,
+                  ),
+                ),
+              ),
             ],
           ),
         )
