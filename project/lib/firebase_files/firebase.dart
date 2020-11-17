@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/patient_files/addExistingPatient.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
@@ -9,15 +10,17 @@ class FirebasePage {
   CollectionReference devicesTable = firestoreDB.collection('devices');
 
   //ADD PRESCRIPTION
-  Future<void> addPrescription(String name, double dosage, String measurement, int noOfReminders, double stock){
+  Future<void> addPrescription(String name, double strength, String units, String reminderFreq, List reminderTimes, List specificDays, int daysInterval){
     CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
     return prescriptionsTable.
       add({
         'name' : name,
-        'dosage' : dosage,
-        'measurement' : measurement,
-        'noOfReminders' : noOfReminders,
-        'stock' : stock,
+        'strength' : strength,
+        'units' : units,
+        'reminderFreq' : reminderFreq,
+        'reminderTimes' : reminderTimes,
+        'specificDays' : specificDays,
+        'daysInterval' : daysInterval
       }).
       then((value) => print("PRESCRIPTION ADDED")).
       catchError((error) => print("FAILED TO ADD PRESCRIPTION: $error"));

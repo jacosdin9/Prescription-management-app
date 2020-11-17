@@ -43,18 +43,18 @@ class PrescriptionPage extends StatelessWidget {
           Column(
             children: [
               Expanded(
-                child: new Container(
-                  child: new CustomScrollView(
+                child: Container(
+                  child: CustomScrollView(
                     scrollDirection: Axis.vertical,
                     shrinkWrap: false,
                     slivers: <Widget>[
-                      new SliverPadding(
+                      SliverPadding(
                         padding: const EdgeInsets.symmetric(
                             vertical: 24.0),
-                        sliver: new SliverList(
-                          delegate: new SliverChildBuilderDelegate(
+                        sliver: SliverList(
+                          delegate: SliverChildBuilderDelegate(
                                 (context, index) =>
-                            new PrescriptionCard(results[index].reference.id, results[index]['name'], results[index]['dosage'], results[index]['measurement'], results[index]['noOfReminders'], results[index]['stock']),
+                            PrescriptionCard(results[index].reference.id, results[index]['name'], results[index]['strength'], results[index]['units'], results[index]['reminderFreq'], results[index]['daysInterval'], results[index]['reminderTimes'], results[index]['specificDays']),
                             childCount: results.length,
                           ),
                         ),

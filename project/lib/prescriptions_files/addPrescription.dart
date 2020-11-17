@@ -1,24 +1,34 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:numberpicker/numberpicker.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/popupAlert.dart';
+import 'package:weekday_selector/weekday_selector.dart';
 
 class AddPrescription extends StatefulWidget{
   @override
   _AddPrescriptionState createState() => _AddPrescriptionState();
 }
 
-class _AddPrescriptionState extends State<AddPrescription>{
+class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAliveClientMixin<AddPrescription>{
+
+  @override
+  bool get wantKeepAlive => true;
+  
   String pName;
-  double pDosage;
-  String pMeasurement;
-  int pNoOfReminders;
-  double pStock;
+  double pStrength;
+  String pStrengthUnits;
+
+  String dropDownValue = 'None';
+  List times = [];
+  var values = List.filled(7, true);
+  int interval = 1;
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     FocusNode myFocusNode;
 
     @override
@@ -61,8 +71,10 @@ class _AddPrescriptionState extends State<AddPrescription>{
             children: <Widget>[
               //CURRENT TAB PAGE VIEW
               TabBarView(
+                physics: NeverScrollableScrollPhysics(),
                 children: [
-                  //PAGE1
+
+                  //PAGE1 ----------------------------------------------------------------------------------------------------------------------
                   Scaffold(
                     body: Form(
                       key: _formKey,
@@ -98,7 +110,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                             ),
                           ),
 
-                          //DOSAGE
+                          //STRENGTH
                           Padding(
                             padding: EdgeInsets.all(10),
                             child: Container(
@@ -109,12 +121,12 @@ class _AddPrescriptionState extends State<AddPrescription>{
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
-                                  onSaved: (String value){pDosage=double.parse(value);},
+                                  onSaved: (String value){pStrength=double.parse(value);},
                                   focusNode: myFocusNode,
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
-                                    labelText: "Dosage",
-                                    hintText: "Enter required dosage",
+                                    labelText: "Strength",
+                                    hintText: "Enter strength of prescription",
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
@@ -139,11 +151,11 @@ class _AddPrescriptionState extends State<AddPrescription>{
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
-                                  onSaved: (String value){pMeasurement=value;},
+                                  onSaved: (String value){pStrengthUnits=value;},
                                   focusNode: myFocusNode,
                                   decoration: InputDecoration(
-                                    labelText: "Measurement",
-                                    hintText: "Enter measurement",
+                                    labelText: "Units",
+                                    hintText: "Enter strength units",
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
@@ -156,75 +168,52 @@ class _AddPrescriptionState extends State<AddPrescription>{
                               ),
                             ),
                           ),
-
-                          //NO OF REMINDERS
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: new BorderRadius.circular(10.0),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                                child: TextFormField(
-                                  onSaved: (String value){pNoOfReminders=int.parse(value);},
-                                  focusNode: myFocusNode,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    labelText: "No. of reminders",
-                                    hintText: "Enter required no. of reminders",
-                                    border: InputBorder.none,
-                                  ),
-                                  validator: (value) {
-                                    if(value.isEmpty){
-                                      return "Please enter a value";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
-
-                          //STOCK
-                          Padding(
-                            padding: EdgeInsets.all(10),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: new BorderRadius.circular(10.0),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.only(left: 15, right: 15, top: 5),
-                                child: TextFormField(
-                                  onSaved: (String value){pStock=double.parse(value);},
-                                  focusNode: myFocusNode,
-                                  keyboardType: TextInputType.number,
-                                  decoration: InputDecoration(
-                                    labelText: "Stock",
-                                    hintText: "Enter stock number",
-                                    border: InputBorder.none,
-                                  ),
-                                  validator: (value) {
-                                    if(value.isEmpty){
-                                      return "Please enter a value";
-                                    }
-                                    return null;
-                                  },
-                                ),
-                              ),
-                            ),
-                          ),
                         ],
                       ),
                     ),
                   ),
 
-                  //PAGE2
-                  Icon(Icons.directions_transit),
+                  //PAGE2------------------------------------------------------------------------------------------------------------------
+                  Scaffold(
+                    body: Column(
+                      children: [
+                        Center(
+                          child: Text(
+                            "How frequently would you like to receive reminders?",
+                          ),
+                        ),
+                        Container(
+                          child: DropdownButton<String>(
+                            value: dropDownValue,
+                            icon: Icon(Icons.arrow_downward),
+                            iconSize: 24,
+                            elevation: 16,
+                            style: TextStyle(color: Colors.deepPurple),
+                            underline: Container(
+                              height: 3,
+                              color: Colors.deepPurpleAccent,
+                            ),
+                            onChanged: (String newValue) {
+                              setState(() {
+                                dropDownValue = newValue;
+                              });
+                            },
+                            items: <String>["None", "Daily", "Specific days", "Days interval"]
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          ),
+                        ),
 
-                  //PAGE 3
+                        renderFreqWidget(dropDownValue),
+                      ],
+                    ),
+                  ),
+
+                  //PAGE 3 ----------------------------------------------------------------------------------------------------------------------
                   Icon(Icons.directions_bike),
                 ],
               ),
@@ -256,11 +245,13 @@ class _AddPrescriptionState extends State<AddPrescription>{
                     if (_formKey.currentState.validate()) {
                       _formKey.currentState.save();
                       print(pName);
-                      print(pDosage);
-                      print(pMeasurement);
-                      print(pNoOfReminders);
-                      print(pStock);
-                      FirebasePage().addPrescription(pName, pDosage, pMeasurement, pNoOfReminders, pStock);
+                      print(pStrength);
+                      print(pStrengthUnits);
+                      print(dropDownValue);
+                      print(times);
+                      print(values);
+                      print(interval);
+                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval);
                       var popUp = PopupAlert("SUCCESS", "Prescription has successfully been added");
                       showDialog(
                         context: context,
@@ -280,4 +271,101 @@ class _AddPrescriptionState extends State<AddPrescription>{
       ),
     );
   }
+
+  renderFreqWidget(String freq) {
+    if(freq == "None"){
+      return Text("NONE SELECTED");
+    }
+
+    else{
+      return Column(
+        children: [
+          renderFreqExtra(freq),
+          Container(
+            height: 200,
+            margin: const EdgeInsets.all(50.0),
+            padding: const EdgeInsets.all(3.0),
+            decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueAccent)
+            ),
+            child: CustomScrollView(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: false,
+              slivers: <Widget>[
+                SliverPadding(
+                  padding: const EdgeInsets.symmetric(vertical: 24.0),
+                  sliver: SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                          (context, index) =>
+                          Text(times[index].toString()),
+                      childCount: times.length,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          RaisedButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(18.0),
+              side: BorderSide(color: Colors.red),
+            ),
+            padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+            onPressed: () async {
+              Future<TimeOfDay> selectedTime = showTimePicker(
+                initialTime: TimeOfDay.now(),
+                context: context,
+              );
+              if(await selectedTime != null){
+                times.add((await selectedTime).toString());
+                setState(() {});
+              }
+            },
+            child: Text(
+              "Add time",
+              style: TextStyle(
+                fontSize: 20,
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+  }
+
+  renderFreqExtra(freq){
+    if(freq == "Specific days"){
+      return Column(
+        children: [
+          WeekdaySelector(
+            onChanged: (int day) {
+              setState(() {
+                final index = day % 7;
+                values[index] = !values[index];
+              });
+            },
+            values: values,
+          ),
+        ],
+      );
+    }
+    else if(freq == "Days interval"){
+      return Column(
+        children: [
+          Text("Select an interval of days"),
+          NumberPicker.integer(
+            initialValue: interval,
+            minValue: 0,
+            maxValue: 6,
+            onChanged: (newValue) =>
+                setState(() => interval = newValue)
+          )
+        ],
+      );
+    }
+    else{
+      return SizedBox();
+    }
+  }
 }
+
