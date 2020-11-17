@@ -10,7 +10,7 @@ class FirebasePage {
   CollectionReference devicesTable = firestoreDB.collection('devices');
 
   //ADD PRESCRIPTION
-  Future<void> addPrescription(String name, double strength, String units, String reminderFreq, List reminderTimes, List specificDays, int daysInterval, List stockReminders){
+  Future<void> addPrescription(String name, double strength, String units, String reminderFreq, List reminderTimes, List specificDays, int daysInterval, List stockReminders, int stockNo){
     CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
     return prescriptionsTable.
       add({
@@ -22,6 +22,7 @@ class FirebasePage {
         'specificDays' : specificDays,
         'daysInterval' : daysInterval,
         'stockReminders' : stockReminders,
+        'stockNo' : stockNo,
       }).
       then((value) => print("PRESCRIPTION ADDED")).
       catchError((error) => print("FAILED TO ADD PRESCRIPTION: $error"));

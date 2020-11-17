@@ -30,6 +30,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   List stockReminders = [];
   int stockNo = 0;
   TimeOfDay stockTime;
+  int currentStock = 0;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController strengthController = TextEditingController();
@@ -259,6 +260,8 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                                   ],
                                 ),
                               ),
+
+                              //Select current stock number
                               RaisedButton(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18.0),
@@ -266,15 +269,35 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                                 ),
                                 padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
                                 onPressed: () {
-                                  _showNumberPicker();
+                                  _currentStockNumberPicker();
                                 },
                                 child: Text(
-                                  "Select stock number",
+                                  "Select current stock number\n" + currentStock.toString(),
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
                                 ),
                               ),
+
+                              //select stock limit number
+                              RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Colors.red),
+                                ),
+                                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                                onPressed: () {
+                                  _stockLimitNumberPicker();
+                                },
+                                child: Text(
+                                  "Select stock limit\n" + stockNo.toString(),
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+
+                              //select stock reminder time
                               RaisedButton(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18.0),
@@ -293,13 +316,14 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                                   }
                                 },
                                 child: Text(
-                                  "Select time for stock reminder",
+                                  "Select time for stock reminder\n" + stockTime.toString(),
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
                                 ),
                               ),
 
+                              //add reminder to list
                               RaisedButton(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(18.0),
@@ -360,7 +384,9 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       print(times);
                       print(values);
                       print(interval);
-                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval, stockReminders);
+                      print(stockReminders);
+                      print(stockNo);
+                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval, stockReminders, stockNo);
                       var popUp = PopupAlert("SUCCESS", "Prescription has successfully been added");
                       showDialog(
                         context: context,
@@ -381,14 +407,32 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     );
   }
 
-  _showNumberPicker() {
+  _currentStockNumberPicker() {
     showDialog(
         context: context,
         builder: (BuildContext context) {
           return NumberPickerDialog.integer(
             minValue: 0,
-            maxValue: 1000,
-            title: new Text("Stock reminder value"),
+            maxValue: 10000,
+            title: Text("Current stock value"),
+            initialIntegerValue: currentStock,
+          );
+        }
+    ).then((value) => {
+      if(value != null){
+        setState(() => currentStock = value),
+      }
+    });
+  }
+
+  _stockLimitNumberPicker() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return NumberPickerDialog.integer(
+            minValue: 0,
+            maxValue: 10000,
+            title: Text("Stock reminder value"),
             initialIntegerValue: stockNo,
           );
         }

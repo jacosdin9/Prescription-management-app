@@ -14,8 +14,9 @@ class PrescriptionPopup extends StatelessWidget{
   List reminderTimes;
   List specificDays;
   List stockReminders;
+  int stockNo;
 
-  PrescriptionPopup(this.id, this.name, this.strength, this.units, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminders);
+  PrescriptionPopup(this.id, this.name, this.strength, this.units, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminders, this.stockNo);
 
   @override
   Widget build(BuildContext context) {
