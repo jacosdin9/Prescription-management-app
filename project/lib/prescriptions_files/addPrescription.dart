@@ -14,17 +14,28 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
 
   @override
   bool get wantKeepAlive => true;
-  
+
+  //page 1 variables
   String pName;
   double pStrength;
   String pStrengthUnits;
 
+  //page 2 variables
   String dropDownValue = 'None';
   List times = [];
   var values = List.filled(7, true);
   int interval = 1;
 
-  final _formKey = GlobalKey<FormState>();
+  //page 3 variables
+  List stockReminders = [];
+  int stockNo = 0;
+  TimeOfDay stockTime;
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController strengthController = TextEditingController();
+  TextEditingController strengthUnitsController = TextEditingController();
+
+  final _formKey1 = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +88,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                   //PAGE1 ----------------------------------------------------------------------------------------------------------------------
                   Scaffold(
                     body: Form(
-                      key: _formKey,
+                      key: _formKey1,
                       child: Column(
                         children: <Widget>[
 
@@ -92,6 +103,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
+                                  controller: nameController,
                                   onSaved: (String value){pName=value;},
                                   focusNode: myFocusNode,
                                   decoration: InputDecoration(
@@ -121,6 +133,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
+                                  controller: strengthController,
                                   onSaved: (String value){pStrength=double.parse(value);},
                                   focusNode: myFocusNode,
                                   keyboardType: TextInputType.number,
@@ -151,6 +164,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
+                                  controller: strengthUnitsController,
                                   onSaved: (String value){pStrengthUnits=value;},
                                   focusNode: myFocusNode,
                                   decoration: InputDecoration(
@@ -214,7 +228,102 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                   ),
 
                   //PAGE 3 ----------------------------------------------------------------------------------------------------------------------
-                  Icon(Icons.directions_bike),
+                  Scaffold(
+                    body: Column(
+                      children: [
+                        Center(
+                          child: Column(
+                            children: [
+                              Text("Would you like to set up a reminder for when stock falls below a certain level?"),
+                              Container(
+                                height: 200,
+                                margin: const EdgeInsets.all(50.0),
+                                padding: const EdgeInsets.all(3.0),
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.blueAccent)
+                                ),
+                                child: CustomScrollView(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: false,
+                                  slivers: <Widget>[
+                                    SliverPadding(
+                                      padding: const EdgeInsets.symmetric(vertical: 24.0),
+                                      sliver: SliverList(
+                                        delegate: SliverChildBuilderDelegate(
+                                              (context, index) =>
+                                              Text(stockReminders[index].toString()),
+                                          childCount: stockReminders.length,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Colors.red),
+                                ),
+                                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                                onPressed: () {
+                                  _showNumberPicker();
+                                },
+                                child: Text(
+                                  "Select stock number",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                              RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Colors.red),
+                                ),
+                                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                                onPressed: () async {
+                                  Future<TimeOfDay> selectedTime = showTimePicker(
+                                    initialTime: TimeOfDay.now(),
+                                    context: context,
+                                  );
+                                  if(await selectedTime != null){
+                                      stockTime = (await selectedTime);
+                                      print(stockTime);
+                                      setState(() {});
+                                  }
+                                },
+                                child: Text(
+                                  "Select time for stock reminder",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+
+                              RaisedButton(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(18.0),
+                                  side: BorderSide(color: Colors.red),
+                                ),
+                                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                                onPressed: () {
+                                  setState(() {
+                                    stockReminders.add(stockNo.toString() + "***" + stockTime.toString());
+                                  });
+                                },
+                                child: Text(
+                                  "Add stock reminder",
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  )
                 ],
               ),
 
@@ -242,8 +351,8 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                   child: Icon(Icons.done),
                   onPressed: () {
                     // Validate returns true if the form is valid, otherwise false.
-                    if (_formKey.currentState.validate()) {
-                      _formKey.currentState.save();
+                    if (_formKey1.currentState.validate()) {
+                      _formKey1.currentState.save();
                       print(pName);
                       print(pStrength);
                       print(pStrengthUnits);
@@ -251,7 +360,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       print(times);
                       print(values);
                       print(interval);
-                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval);
+                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval, stockReminders);
                       var popUp = PopupAlert("SUCCESS", "Prescription has successfully been added");
                       showDialog(
                         context: context,
@@ -270,6 +379,24 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
         ),
       ),
     );
+  }
+
+  _showNumberPicker() {
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return NumberPickerDialog.integer(
+            minValue: 0,
+            maxValue: 1000,
+            title: new Text("Stock reminder value"),
+            initialIntegerValue: stockNo,
+          );
+        }
+    ).then((value) => {
+      if(value != null){
+        setState(() => stockNo = value),
+      }
+    });
   }
 
   renderFreqWidget(String freq) {

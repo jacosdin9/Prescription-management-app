@@ -13,8 +13,9 @@ class PrescriptionPopup extends StatelessWidget{
   int daysInterval;
   List reminderTimes;
   List specificDays;
+  List stockReminders;
 
-  PrescriptionPopup(this.id, this.name, this.strength, this.units, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays);
+  PrescriptionPopup(this.id, this.name, this.strength, this.units, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminders);
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +71,7 @@ class PrescriptionPopup extends StatelessWidget{
                 children: [
                   Text("Strength: " + strength.toString() + units),
                   Text("Reminder frequency: " + reminderFreq.toString()),
-                  Text("Stock remaining: " + reminderTimes.toString()),
+                  Text("Reminder times: " + reminderTimes.toString()),
                 ],
               ),
               flex: 2,
