@@ -5,7 +5,6 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'mainArea.dart';
 
 var flutterLocalNotificationsPlugin;
-int localDevId = 0;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

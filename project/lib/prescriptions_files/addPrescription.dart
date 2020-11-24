@@ -4,6 +4,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
+import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
@@ -556,7 +557,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     }
   }
 
-  createNotifications(String freq, List times, List dayValues, int interval){
+  createNotifications(String freq, List times, List dayValues, int interval) async {
     if(freq == "None"){
       print("No notifications needed");
     }
@@ -564,24 +565,24 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     else if(freq == "Daily"){
       for(String time  in times){
         Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
-        _scheduleDailyNotification("Daily", "This notification will appear daily at " + t.toString(), t);
+        int rId = await getReminderIdNo();
+        _scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
+        FirebasePage().addReminder(currentPatientID, rId, freq, time, dayValues, interval);
       }
     }
   }
 
-  Future _scheduleDailyNotification(name, description, time) async{
+  Future _scheduleDailyNotification(rId, name, description, time) async{
     var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max);
     var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
     flutterLocalNotificationsPlugin.showDailyAtTime(
-      localDevId,
+      rId,
       name,
       description,
       time,
       generalNotificationDetails,
     );
 
-    localDevId += 1;
   }
 }
-

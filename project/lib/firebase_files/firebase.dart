@@ -172,6 +172,22 @@ class FirebasePage {
     return notificationPath.delete().then((value) => print("NOTIFICATION DELETED")).
     catchError((error) => print("FAILED TO DELETE NOTIFICATION: $error"));
   }
+
+  Future<void> addReminder(String patientId, int id, String freq, String time, List days, int interval){
+    CollectionReference reminderPath = deviceID!="" ?
+    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders') :
+    FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('reminders');
+
+    return reminderPath.doc().set({
+      "patientId" : patientId,
+      "id" : id,
+      "frequency" : freq,
+      "time" : time,
+      "days" : days,
+      "interval" : interval,
+    }).then((value) => print("REMINDER ADDED")).
+    catchError((error) => print("FAILED TO CREATE REMINDER: $error"));
+  }
 }
 
 findLeadCarerId(String device, String patient) async {
@@ -190,4 +206,16 @@ Future<bool> checkIfDocExists(DocumentReference docRef) async {
     return true;
   }
   return false;
+}
+
+
+Future<int> getReminderIdNo() async {
+  CollectionReference reminderPath = deviceID!="" ?
+  FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders') :
+  FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('reminders');
+
+  QuerySnapshot remSnapshot = await reminderPath.get();
+  int rSize = remSnapshot.size;
+
+  return rSize;
 }
