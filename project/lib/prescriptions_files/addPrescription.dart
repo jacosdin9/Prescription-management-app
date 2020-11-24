@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 
@@ -47,6 +49,13 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     void initState() {
       super.initState();
       myFocusNode = FocusNode();
+
+      var androidInitialize = AndroidInitializationSettings('android_logo');
+      var initializationSettings = InitializationSettings(android: androidInitialize);
+
+      flutterLocalNotificationsPlugin.initialize(initializationSettings,
+          onSelectNotification: selectNotification
+      );
     }
 
     @override
@@ -387,6 +396,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       print(stockReminders);
                       print(stockNo);
                       FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval, stockReminders, stockNo);
+                      createNotifications(dropDownValue, times, values, interval);
                       var popUp = PopupAlert("SUCCESS", "Prescription has successfully been added");
                       showDialog(
                         context: context,
@@ -404,6 +414,13 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
           ),
         ),
       ),
+    );
+  }
+
+  Future selectNotification(String payload) async {
+    showDialog(
+      context: context,
+      child: Text("Notification selected"),
     );
   }
 
@@ -488,7 +505,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                 context: context,
               );
               if(await selectedTime != null){
-                times.add((await selectedTime).toString());
+                times.add((await selectedTime).format(context));
                 setState(() {});
               }
             },
@@ -537,6 +554,34 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     else{
       return SizedBox();
     }
+  }
+
+  createNotifications(String freq, List times, List dayValues, int interval){
+    if(freq == "None"){
+      print("No notifications needed");
+    }
+
+    else if(freq == "Daily"){
+      for(String time  in times){
+        Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
+        _scheduleDailyNotification("Daily", "This notification will appear daily at " + t.toString(), t);
+      }
+    }
+  }
+
+  Future _scheduleDailyNotification(name, description, time) async{
+    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max);
+    var generalNotificationDetails = NotificationDetails(android: androidDetails);
+
+    flutterLocalNotificationsPlugin.showDailyAtTime(
+      localDevId,
+      name,
+      description,
+      time,
+      generalNotificationDetails,
+    );
+
+    localDevId += 1;
   }
 }
 

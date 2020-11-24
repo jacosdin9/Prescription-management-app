@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:project/deviceNotification_files/devNotificationPage.dart';
+import 'package:project/main_backend/main.dart';
+import 'package:project/main_backend/mainArea.dart';
 
 class DeviceNotifications extends StatefulWidget{
 
@@ -15,7 +18,6 @@ class DeviceNotifications extends StatefulWidget{
 }
 
 class _DeviceNotificationsState extends State<DeviceNotifications> {
-  var flutterLocalNotificationsPlugin;
   String name;
   String description;
   DateTime scheduledTime;
@@ -25,19 +27,33 @@ class _DeviceNotificationsState extends State<DeviceNotifications> {
   @override
   void initState() {
     super.initState();
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
     var androidInitialize = AndroidInitializationSettings('android_logo');
     var initializationSettings = InitializationSettings(android: androidInitialize);
 
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
-        onSelectNotification: selectNotification);
+        onSelectNotification: selectNotification1
+    );
   }
 
   Future _showNotification() async{
     var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max);
     var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
-    flutterLocalNotificationsPlugin.schedule(1, name, description, scheduledTime, generalNotificationDetails);
+    flutterLocalNotificationsPlugin.schedule(0, name, description, scheduledTime, generalNotificationDetails);
+  }
+
+  Future _scheduleDailyNotification() async{
+
+    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max);
+    var generalNotificationDetails = NotificationDetails(android: androidDetails);
+
+    flutterLocalNotificationsPlugin.showDailyAtTime(
+      0,
+      name,
+      description,
+      Time(22,58,00),
+      generalNotificationDetails,
+    );
   }
 
   @override
@@ -49,18 +65,31 @@ class _DeviceNotificationsState extends State<DeviceNotifications> {
       body: Column(
         children: [
           Text("local notifications"),
-          RaisedButton(onPressed: _showNotification),
+          RaisedButton(onPressed: _scheduleDailyNotification, child: Text("Create daily notification") ),
+          RaisedButton(
+            child: Text("See pending notifications"),
+            onPressed: () async {
+              final List<PendingNotificationRequest> pendingNotificationRequests = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+              for(var p in pendingNotificationRequests){
+                print(p.id);
+              }
+            }
+          ),
+          RaisedButton(
+            child: Text("Delete all pending notifications"),
+            onPressed: () async {
+              // cancel the notification with id value of zero
+              await flutterLocalNotificationsPlugin.cancelAll();
+            })
         ],
       ),
     );
   }
 
-  Future selectNotification(String payload) async {
+  Future selectNotification1(String payload) async {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        content: Text("Notification clicked $payload"),
-      )
+      child: Text("Notification selected: "),
     );
   }
 }
