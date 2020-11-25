@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project/deviceNotification_files/deviceNotifications.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/patient_files/changeUser.dart';
 
@@ -43,12 +44,11 @@ class DashboardPage extends StatelessWidget {
               side: BorderSide(color: Colors.red),
             ),
             padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-            onPressed: () {
-              Navigator.push(
-                context,
-                  MaterialPageRoute(builder: (context) => DeviceNotifications("name", "description", DateTime.now()),
-                ),
-              );
+            onPressed: () async {
+              final List<PendingNotificationRequest> pendingNotificationRequests = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+              for(var p in pendingNotificationRequests){
+                print(p.id);
+              }
             },
             child: Text(
               "Local notification test",

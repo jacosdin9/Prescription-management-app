@@ -188,6 +188,14 @@ class FirebasePage {
     }).then((value) => print("REMINDER ADDED")).
     catchError((error) => print("FAILED TO CREATE REMINDER: $error"));
   }
+
+  Future<void> deleteReminder(CollectionReference reminderPath, String id){
+    return reminderPath.
+    doc(id).
+    delete().
+    then((value) => print("REMINDER DELETED")).
+    catchError((error) => print("FAILED TO DELETE REMINDER: $error"));
+  }
 }
 
 findLeadCarerId(String device, String patient) async {

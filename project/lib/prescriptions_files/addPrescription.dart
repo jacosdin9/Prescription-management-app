@@ -563,11 +563,17 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     }
 
     else if(freq == "Daily"){
+      int rId = await getReminderIdNo();
       for(String time  in times){
         Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
-        int rId = await getReminderIdNo();
+
+        //This will create a reminder for the local device. Need to find a good way to link online-
+        //carer to local notifications now as we don't really want it being added straight to local device
         _scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
-        FirebasePage().addReminder(currentPatientID, rId, freq, time, dayValues, interval);
+
+        //add reminder to database. Works for both local and carer so this part is okay
+        await FirebasePage().addReminder(currentPatientID, rId, freq, time, dayValues, interval);
+        rId += 1;
       }
     }
   }

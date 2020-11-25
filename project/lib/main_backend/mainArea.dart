@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:project/authentication_files/logInPageRedirect.dart';
 import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
+import 'package:project/deviceNotification_files/devNotificationPage.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/notifications_files/notificationPage.dart';
 import 'package:project/patient_files/changeUser.dart';
@@ -98,6 +99,20 @@ class _MainAreaState extends State<MainArea> {
                 }
               ) :
                   SizedBox(),
+
+              //if patient has been selected, show reminders tab
+              currentPatientID != "" ?
+              ListTile(
+                  leading: Icon(Icons.alarm_add),
+                  title: Text('Reminders'),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DevNotificationPage()),
+                    );
+                  }
+              ) :
+              SizedBox(),
 
               //if not signed in, show sign in button and if signed in, show sign out button.
               fbUser == null ?
