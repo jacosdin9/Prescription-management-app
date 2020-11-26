@@ -59,7 +59,7 @@ class DevNotificationPage extends StatelessWidget{
                                           (context, index) =>
                                           GestureDetector(
                                             onTap: () {
-                                              var popUp = ReminderPopup(results[index].id, results[index].get('frequency'), results[index].get('id'), results[index].get('patientId'), results[index].get('time'), results[index].get('days'), results[index].get('interval'));
+                                              var popUp = ReminderPopup(results[index].id, results[index].get('frequency'), results[index].get('id'), results[index].get('patientId'), results[index].get('time'), results[index].get('day'), results[index].get('interval'), results[index].get('prescription'));
                                               showDialog(
                                                 context: context,
                                                 barrierDismissible: true,

@@ -503,6 +503,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
             onPressed: () async {
               Future<TimeOfDay> selectedTime = showTimePicker(
                 initialTime: TimeOfDay.now(),
+                
                 context: context,
               );
               if(await selectedTime != null){
@@ -572,8 +573,29 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
         _scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
 
         //add reminder to database. Works for both local and carer so this part is okay
-        await FirebasePage().addReminder(currentPatientID, rId, freq, time, dayValues, interval);
+        await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
         rId += 1;
+      }
+    }
+
+    else if(freq == "Specific days"){
+      int rId = await getReminderIdNo();
+
+      //for dayV in day values
+      for(int day = 0; day<dayValues.length; day++){
+        if(dayValues[day] == true){
+          for(String time  in times){
+            Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
+
+            //This will create a reminder for the local device. Need to find a good way to link online-
+            //carer to local notifications now as we don't really want it being added straight to local device
+            _scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day);
+
+            //add reminder to database. Works for both local and carer so this part is okay
+            await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);
+            rId += 1;
+          }
+        }
       }
     }
   }
@@ -589,6 +611,49 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
       time,
       generalNotificationDetails,
     );
+  }
 
+  Future _scheduleWeeklyNotification(rId, name, description, time, dayV) async{
+    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max);
+    var generalNotificationDetails = NotificationDetails(android: androidDetails);
+    Day day = findDayFromDayValue(dayV);
+
+    flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
+      rId,
+      name,
+      description,
+      day,
+      time,
+      generalNotificationDetails
+    );
+  }
+}
+
+Day findDayFromDayValue(int dayV){
+  switch(dayV){
+    case 0:{
+      return Day.monday;
+    }
+    case 1:{
+      return Day.tuesday;
+    }
+    case 2:{
+      return Day.wednesday;
+    }
+    case 3:{
+      return Day.thursday;
+    }
+    case 4:{
+      return Day.friday;
+    }
+    case 5:{
+      return Day.saturday;
+    }
+    case 6:{
+      return Day.sunday;
+    }
+    default:{
+      return null;
+    }
   }
 }

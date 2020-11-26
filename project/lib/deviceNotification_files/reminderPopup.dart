@@ -13,10 +13,11 @@ class ReminderPopup extends StatelessWidget{
   int rId;
   String patientId;
   String time;
-  List days;
+  String day;
   int interval;
+  String prescription;
 
-  ReminderPopup(this.dbId, this.freq, this.rId, this.patientId, this.time, this.days, this.interval);
+  ReminderPopup(this.dbId, this.freq, this.rId, this.patientId, this.time, this.day, this.interval, this.prescription);
 
   @override
   Widget build(BuildContext context) {
