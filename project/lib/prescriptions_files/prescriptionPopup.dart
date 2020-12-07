@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/calendar_files/calendar.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
@@ -131,6 +132,7 @@ class PrescriptionPopup extends StatelessWidget{
       print("id: " + id);
 
       if(x.get("prescription") == name && x.get("patientId") == currentPatientID){
+        lastSelectedEvents = [];
 
         // delete the reminder from device with id value of rId
         await flutterLocalNotificationsPlugin.cancel(x.get("id"));
