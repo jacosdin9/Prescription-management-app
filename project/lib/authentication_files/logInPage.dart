@@ -131,7 +131,7 @@ class LogInPage extends StatelessWidget {
                     fbUser = FirebaseAuth.instance.currentUser;
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => MainArea()),
+                      MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
                     );
                   },
                 ),

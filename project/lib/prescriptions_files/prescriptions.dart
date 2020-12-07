@@ -11,6 +11,8 @@ class PrescriptionPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
+    recentIndex = 2;
+
     //devices>deviceID - patients>patientID - prescriptions
     //if patient selected, create proper file path. else make a dummy one.
     CollectionReference prescriptionsRef = currentPatientID != "" ?
@@ -82,7 +84,8 @@ class PrescriptionPage extends StatelessWidget {
                     fontSize: 20,
                   ),
                 ),
-              )
+              ),
+              SizedBox(height: 20),
             ],
           );
 

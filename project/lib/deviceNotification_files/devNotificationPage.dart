@@ -67,7 +67,7 @@ class DevNotificationPage extends StatelessWidget{
                                                   return popUp;
                                                 },
                                               );
-                                              },
+                                            },
                                             child: Container(
                                               height: 30,
                                               margin: EdgeInsets.symmetric(vertical: 8.0),
@@ -94,7 +94,7 @@ class DevNotificationPage extends StatelessWidget{
                           onPressed: () {
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => MainArea()),
+                              MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
                             );
                           },
                           child: Text(

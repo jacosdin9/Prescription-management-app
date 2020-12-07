@@ -95,7 +95,7 @@ class NotificationsPage extends StatelessWidget {
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => MainArea()),
+                            MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
                           );
                         },
                         child: Text(

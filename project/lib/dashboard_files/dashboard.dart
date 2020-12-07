@@ -8,6 +8,7 @@ import 'package:project/patient_files/changeUser.dart';
 class DashboardPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    recentIndex = 1;
     return Center(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,

@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/calendar_files/calendar.dart';
 import 'package:project/deviceNotification_files/devNotificationPage.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/popupAlert.dart';
+import 'package:project/prescriptions_files/addPrescription.dart';
 
 class ReminderPopup extends StatelessWidget{
 
@@ -72,6 +74,7 @@ class ReminderPopup extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Reminder frequency: " + freq),
+                  freq == "Specific Day" ? Text("Day: " + findDayStringFromDayValue(int.parse(day))) : Text("Day: Every day"),
                   Text("Time: " + time),
                 ],
               ),
@@ -98,6 +101,11 @@ class ReminderPopup extends StatelessWidget{
 
                   //show success popup
                   var popUp = PopupAlert("SUCCESS", "Reminder has successfully been deleted");
+                  lastSelectedEvents = [];
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
+                  );
                   showDialog(
                     context: context,
                     barrierDismissible: true,

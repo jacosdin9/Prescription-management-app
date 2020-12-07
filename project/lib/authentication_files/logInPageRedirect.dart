@@ -45,7 +45,7 @@ class AuthenticationWrapper extends StatelessWidget{
     if(firebaseUser != null){
       currentPatientID = "";
       deviceID = "";
-      return MainArea();
+      return MainArea(1);
     }
 
     //if user is not logged in

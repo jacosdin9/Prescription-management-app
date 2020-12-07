@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/patient_files/addExistingPatient.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
@@ -31,6 +30,9 @@ class FirebasePage {
   //DELETE PRESCRIPTION
   Future<void> deletePrescription(String id){
     CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
+
+
+
     return prescriptionsTable.
       doc(id).
       delete().
@@ -224,7 +226,12 @@ Future<int> getReminderIdNo() async {
   FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('reminders');
 
   QuerySnapshot remSnapshot = await reminderPath.get();
-  int rSize = remSnapshot.size;
+  int currentMax = 0;
 
-  return rSize;
+  for (QueryDocumentSnapshot x in remSnapshot.docs){
+    if(x.get("id") > currentMax){
+      currentMax = x.get("id");
+    }
+  }
+  return currentMax+1;
 }

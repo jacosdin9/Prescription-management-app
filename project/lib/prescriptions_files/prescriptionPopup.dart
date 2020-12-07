@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/main_backend/main.dart';
+import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/popupAlert.dart';
 
 class PrescriptionPopup extends StatelessWidget{
@@ -86,6 +89,7 @@ class PrescriptionPopup extends StatelessWidget{
                   side: BorderSide(color: Colors.red),
                 ),
                 onPressed: () {
+                  deleteCorrespondingReminders();
                   FirebasePage().deletePrescription(id);
                   Navigator.pop(context);
                   var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");
@@ -110,5 +114,30 @@ class PrescriptionPopup extends StatelessWidget{
         ),
       ),
     );
+  }
+
+  deleteCorrespondingReminders() async {
+    //if logged in, show carer's reminders list. else show local device's patients.
+    CollectionReference cr = fbUser != null ?
+    FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('reminders')
+        :
+    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders')
+    ;
+
+    QuerySnapshot querySnapshot = await cr.get();
+
+    for(QueryDocumentSnapshot x in querySnapshot.docs){
+      print("x: " + x.get("patientId"));
+      print("id: " + id);
+
+      if(x.get("prescription") == name && x.get("patientId") == currentPatientID){
+
+        // delete the reminder from device with id value of rId
+        await flutterLocalNotificationsPlugin.cancel(x.get("id"));
+
+        //delete the reminder from database using the documentId of the reminder in database
+        FirebasePage().deleteReminder(cr, x.id);
+      }
+    }
   }
 }

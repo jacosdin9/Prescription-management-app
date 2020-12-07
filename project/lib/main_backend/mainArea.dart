@@ -17,17 +17,23 @@ import 'package:provider/provider.dart';
 User fbUser;
 String deviceID = "";
 String currentPatientID = "";
+int recentIndex = 1;
 
 class MainArea extends StatefulWidget {
 
+  int currentIndex;
+
+  MainArea(this.currentIndex);
+
   @override
-  _MainAreaState createState() => _MainAreaState();
+  _MainAreaState createState() => _MainAreaState(currentIndex);
 }
 
 class _MainAreaState extends State<MainArea> {
-  _MainAreaState();
 
-  int _currentIndex = 1;
+  int _currentIndex;
+  _MainAreaState(this._currentIndex);
+
   final List<Widget> _children = [
     CalendarPage(),
     DashboardPage(),

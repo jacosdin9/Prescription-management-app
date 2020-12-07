@@ -63,7 +63,7 @@ class ChangeUserPage extends StatelessWidget{
                                         }
                                         Navigator.push(
                                           context,
-                                          MaterialPageRoute(builder: (context) => MainArea()),
+                                          MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
                                         );
                                       },
                                       child: Container(
@@ -136,7 +136,7 @@ class ChangeUserPage extends StatelessWidget{
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => MainArea()),
+                        MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
                       );
                     },
                     child: Text(
