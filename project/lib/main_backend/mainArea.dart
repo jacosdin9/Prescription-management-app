@@ -78,8 +78,9 @@ class _MainAreaState extends State<MainArea> {
                 ),
               ),
 
-              //if patient has been selected, show notifications tab
-              currentPatientID != "" ?
+              //ensure notifications tabs only shows if either: (carer is logged in) OR (offline mode AND patient selected)
+              fbUser == null ?
+              (currentPatientID != "" ?
               ListTile(
                 leading: Icon(Icons.notifications),
                 title: Text('Notifications'),
@@ -90,7 +91,31 @@ class _MainAreaState extends State<MainArea> {
                   );
                 },
               ) :
-                  SizedBox(),
+              SizedBox()) :
+              ListTile(
+                leading: Icon(Icons.notifications),
+                title: Text('Notifications'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => NotificationsPage()),
+                  );
+                },
+              ),
+
+              // //if patient has been selected, show notifications tab
+              // currentPatientID != "" ?
+              // ListTile(
+              //   leading: Icon(Icons.notifications),
+              //   title: Text('Notifications'),
+              //   onTap: () {
+              //     Navigator.push(
+              //       context,
+              //       MaterialPageRoute(builder: (context) => NotificationsPage()),
+              //     );
+              //   },
+              // ) :
+              //     SizedBox(),
 
               //if patient has been selected, show my details tab
               currentPatientID != "" ?

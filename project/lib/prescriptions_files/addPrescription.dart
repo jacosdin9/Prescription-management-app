@@ -503,8 +503,14 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
             onPressed: () async {
               Future<TimeOfDay> selectedTime = showTimePicker(
                 initialTime: TimeOfDay.now(),
-                
                 context: context,
+                //ensure TimePicker is always in 24-hour time format
+                builder: (BuildContext context, Widget child) {
+                  return MediaQuery(
+                    data: MediaQueryData(alwaysUse24HourFormat: true),
+                    child: child,
+                  );
+                },
               );
               if(await selectedTime != null){
                 times.add((await selectedTime).format(context));

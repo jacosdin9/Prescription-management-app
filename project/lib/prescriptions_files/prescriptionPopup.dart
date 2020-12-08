@@ -128,15 +128,11 @@ class PrescriptionPopup extends StatelessWidget{
     QuerySnapshot querySnapshot = await cr.get();
 
     for(QueryDocumentSnapshot x in querySnapshot.docs){
-      print("x: " + x.get("patientId"));
-      print("id: " + id);
-
       if(x.get("prescription") == name && x.get("patientId") == currentPatientID){
         lastSelectedEvents = [];
 
         // delete the reminder from device with id value of rId
         await flutterLocalNotificationsPlugin.cancel(x.get("id"));
-
         //delete the reminder from database using the documentId of the reminder in database
         FirebasePage().deleteReminder(cr, x.id);
       }
