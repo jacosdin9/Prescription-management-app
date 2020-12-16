@@ -50,13 +50,6 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     void initState() {
       super.initState();
       myFocusNode = FocusNode();
-
-      var androidInitialize = AndroidInitializationSettings('android_logo');
-      var initializationSettings = InitializationSettings(android: androidInitialize);
-
-      flutterLocalNotificationsPlugin.initialize(initializationSettings,
-          onSelectNotification: selectNotification
-      );
     }
 
     @override
@@ -383,7 +376,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                   heroTag: "FAB2",
                   backgroundColor: Colors.green,
                   child: Icon(Icons.done),
-                  onPressed: () {
+                  onPressed: () async {
                     // Validate returns true if the form is valid, otherwise false.
                     if (_formKey1.currentState.validate()) {
                       _formKey1.currentState.save();
@@ -396,8 +389,6 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       print(interval);
                       print(stockReminders);
                       print(stockNo);
-                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval, stockReminders, stockNo);
-                      createNotifications(dropDownValue, times, values, interval);
                       var popUp = PopupAlert("SUCCESS", "Prescription has successfully been added");
                       showDialog(
                         context: context,
@@ -407,6 +398,9 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                         },
                       );
                       Navigator.pop(context);
+
+                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval, stockReminders, stockNo);
+                      createNotifications(dropDownValue, times, values, interval);
                     }
                   },
                 ),
@@ -415,13 +409,6 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
           ),
         ),
       ),
-    );
-  }
-
-  Future selectNotification(String payload) async {
-    showDialog(
-      context: context,
-      child: Text("Notification selected"),
     );
   }
 
@@ -607,7 +594,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   }
 
   Future _scheduleDailyNotification(rId, name, description, time) async{
-    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max);
+    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
     var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
     flutterLocalNotificationsPlugin.showDailyAtTime(
@@ -616,6 +603,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
       description,
       time,
       generalNotificationDetails,
+      payload: createPayload(),
     );
   }
 
@@ -632,6 +620,34 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
       time,
       generalNotificationDetails
     );
+  }
+
+  //the payload will help create the CollectionPath by creating a string that can be split up with a delimiter
+  String createPayload(){
+    String payload = "";
+
+    //does prescription belong to controlledPatients or device patients
+    deviceID != "" ? payload += "devices" : payload += "controlledPatients";
+
+    //add delimiter
+    payload += "**";
+
+    if(deviceID != ""){
+      payload += deviceID;
+      payload += "**";
+    }
+
+    //add patientID
+    payload += currentPatientID;
+
+    //add delimiter
+    payload += "**";
+
+    //add name of prescription. We can use this to query for prescriptionID later
+    payload += pName;
+
+    return payload;
+
   }
 }
 

@@ -199,6 +199,10 @@ class FirebasePage {
     then((value) => print("REMINDER DELETED")).
     catchError((error) => print("FAILED TO DELETE REMINDER: $error"));
   }
+
+  Future<void> reduceStock(CollectionReference cr){
+
+  }
 }
 
 findLeadCarerId(String device, String patient) async {

@@ -57,7 +57,28 @@ class DashboardPage extends StatelessWidget {
                 fontSize: 20,
               ),
             ),
-          )
+          ),
+
+          // //TEST -----------------------------------------
+          // //LOCAL NOTIFICATIONS TESTING
+          // RaisedButton(
+          //   shape: RoundedRectangleBorder(
+          //     borderRadius: BorderRadius.circular(18.0),
+          //     side: BorderSide(color: Colors.red),
+          //   ),
+          //   padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+          //   onPressed: () async {
+          //
+          //     flutterLocalNotificationsPlugin.cancelAll();
+          //
+          //   },
+          //   child: Text(
+          //     "create test notification",
+          //     style: TextStyle(
+          //       fontSize: 20,
+          //     ),
+          //   ),
+          // )
         ],
       ),
     );

@@ -9,8 +9,6 @@ var flutterLocalNotificationsPlugin;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
   await Firebase.initializeApp();
   runApp(StartApp());
 }

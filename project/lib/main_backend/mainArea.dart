@@ -2,17 +2,22 @@ import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:project/authentication_files/logInPageRedirect.dart';
 import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/deviceNotification_files/devNotificationPage.dart';
+import 'package:project/deviceNotification_files/onSelectPage.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/main_backend/popupAlert.dart';
 import 'package:project/notifications_files/notificationPage.dart';
 import 'package:project/patient_files/changeUser.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/qr_files/generateQrPage.dart';
 import 'package:provider/provider.dart';
+
+import 'main.dart';
 
 User fbUser;
 String deviceID = "";
@@ -47,6 +52,15 @@ class _MainAreaState extends State<MainArea> {
     if(fbUser==null){
       initialiseDeviceID();
     }
+
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+
+    var androidInitialize = AndroidInitializationSettings('android_logo');
+    var initializationSettings = InitializationSettings(android: androidInitialize);
+
+    flutterLocalNotificationsPlugin.initialize(initializationSettings,
+      onSelectNotification: selectNotification,
+    );
   }
 
   @override
@@ -214,6 +228,28 @@ class _MainAreaState extends State<MainArea> {
     setState(() {
       _currentIndex = index;
     });
+  }
+
+  Future selectNotification(String payload) async {
+    print("NOTIFICATION HAS BEEN SELECTED");
+    if (payload != null) {
+      debugPrint('notification payload: $payload');
+    }
+
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(builder: (context) => OnSelectPage()),
+    // );
+
+    var popUp = PopupAlert("SUCCESS", "Notification has been pressed");
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context){
+        return popUp;
+      },
+    );
+
   }
 }
 
