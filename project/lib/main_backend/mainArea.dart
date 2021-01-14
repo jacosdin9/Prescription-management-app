@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -237,6 +238,23 @@ class _MainAreaState extends State<MainArea> {
     print("NOTIFICATION HAS BEEN SELECTED");
     if (payload != null) {
       debugPrint('notification payload: $payload');
+
+      List split = payload.split("**");
+      CollectionReference cr;
+      String prescriptionName;
+      
+      //if reminder is for a local device
+      if(split[0] == "devices"){
+        cr = FirebaseFirestore.instance.collection("devices").doc(split[1]).collection("patients").doc(split[2]).collection("prescriptions");
+        prescriptionName = split[3];
+        FirebasePage().findStockToReduce(cr, prescriptionName);
+      }
+      else{
+        cr = FirebaseFirestore.instance.collection("controlledPatients").doc(split[1]).collection("prescriptions");
+        prescriptionName = split[2];
+        FirebasePage().findStockToReduce(cr, prescriptionName);
+      }
+      
     }
 
     // Navigator.push(
