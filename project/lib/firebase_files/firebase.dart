@@ -229,23 +229,23 @@ class FirebasePage {
     int newStock = 1010101;
     String id = "";
     return cr.get()
-        .then((QuerySnapshot querySnapshot) =>
-    {
-      querySnapshot.docs.forEach((doc) {
-        if (doc["name"] == prescriptionName) {
-          //newStock = int.parse(doc["stockNo"]) - int.parse(doc["doseNumber"]);
-          id = doc.id;
-          reduceStock(cr.doc(id), newStock);
-        }
-      }),
-    });
+      .then((QuerySnapshot querySnapshot) =>
+        {
+          querySnapshot.docs.forEach((doc) {
+            if (doc["name"] == prescriptionName) {
+              //newStock = int.parse(doc["stockNo"]) - int.parse(doc["doseNumber"]);
+              id = doc.id;
+              reduceStock(cr.doc(id), newStock);
+            }
+          }),
+        });
   }
 
   Future<void> reduceStock(DocumentReference dr, int newStock) {
     return dr
-        .update({'stockNo': newStock})
-        .then((value) => print("REMAINING STOCK UPDATED"))
-        .catchError((error) => print("FAILED TO UPDATE STOCK: $error"));
+      .update({'stockNo': newStock})
+      .then((value) => print("REMAINING STOCK UPDATED"))
+      .catchError((error) => print("FAILED TO UPDATE STOCK: $error"));
   }
 }
 
