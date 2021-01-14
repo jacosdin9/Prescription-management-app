@@ -663,7 +663,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
       androidAllowWhileIdle: true,
       uiLocalNotificationDateInterpretation:
       UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.time,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
       payload: createPayload(),
     );
   }
