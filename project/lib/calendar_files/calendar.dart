@@ -208,7 +208,12 @@ createCalendar(List reminders){
 findNextInstanceOfDay(int day){
   var nowFull = DateTime.now();
   DateTime now = DateTime(nowFull.year, nowFull.month, nowFull.day);
-  while(now.weekday!=(day+1))
+
+  if(day == 0){
+    day = 7;
+  }
+
+  while(now.weekday!=(day))
   {
     now=now.add(Duration(days: 1));
   }

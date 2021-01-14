@@ -7,6 +7,11 @@ import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:weekday_selector/weekday_selector.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:intl/date_symbols.dart';
+import 'package:intl/date_symbol_data_local.dart';
+
 
 class AddPrescription extends StatefulWidget{
   @override
@@ -517,17 +522,28 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   }
 
   renderFreqExtra(freq){
+
+    final locale = Localizations.localeOf(context);
+    final DateSymbols dateSymbols = dateTimeSymbolMap()['$locale'];
+
     if(freq == "Specific days"){
       return Column(
         children: [
           WeekdaySelector(
             onChanged: (int day) {
+              print((dateSymbols.FIRSTDAYOFWEEK).toString());
               setState(() {
-                final index = day % 7;
+                print(day);
+                final index = (day % 7);
                 values[index] = !values[index];
+                //print(index);
+                print(values);
               });
             },
             values: values,
+            firstDayOfWeek: dateSymbols.FIRSTDAYOFWEEK + 1,
+            shortWeekdays: dateSymbols.STANDALONENARROWWEEKDAYS,
+            weekdays: dateSymbols.STANDALONEWEEKDAYS,
           ),
         ],
       );
@@ -593,33 +609,71 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     }
   }
 
-  Future _scheduleDailyNotification(rId, name, description, time) async{
+  //DAILY
+  Future<void> _scheduleDailyNotification(rId, name, description, time) async {
     var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
     var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
-    flutterLocalNotificationsPlugin.showDailyAtTime(
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+        rId,
+        name,
+        description,
+        _nextInstanceOfTime(time),
+        generalNotificationDetails,
+        androidAllowWhileIdle: true,
+        uiLocalNotificationDateInterpretation:
+        UILocalNotificationDateInterpretation.absoluteTime,
+        matchDateTimeComponents: DateTimeComponents.time,
+        payload: createPayload(),
+    );
+  }
+
+  tz.TZDateTime _nextInstanceOfTime(Time t) {
+    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, t.hour, t.minute, t.second);
+    if (scheduledDate.isBefore(now)) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
+  }
+
+  //WEEKLY
+  Future<void> _scheduleWeeklyNotification(rId, name, description, time, dayV) async {
+    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
+    var generalNotificationDetails = NotificationDetails(android: androidDetails);
+
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+    if(dayV == 0){
+      dayV = 7;
+    }
+
+    print(_nextInstanceOfWeekly(time, dayV));
+    
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       rId,
       name,
       description,
-      time,
+      _nextInstanceOfWeekly(time, dayV),
       generalNotificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
       payload: createPayload(),
     );
   }
 
-  Future _scheduleWeeklyNotification(rId, name, description, time, dayV) async{
-    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max);
-    var generalNotificationDetails = NotificationDetails(android: androidDetails);
-    Day day = findDayFromDayValue(dayV);
-
-    flutterLocalNotificationsPlugin.showWeeklyAtDayAndTime(
-      rId,
-      name,
-      description,
-      day,
-      time,
-      generalNotificationDetails
-    );
+  tz.TZDateTime _nextInstanceOfWeekly(Time t, int d) {
+    tz.TZDateTime scheduledDate = _nextInstanceOfTime(t);
+    while (scheduledDate.weekday != d) {
+      scheduledDate = scheduledDate.add(const Duration(days: 1));
+    }
+    return scheduledDate;
   }
 
   //the payload will help create the CollectionPath by creating a string that can be split up with a delimiter

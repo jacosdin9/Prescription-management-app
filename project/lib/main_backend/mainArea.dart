@@ -3,11 +3,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:project/authentication_files/logInPageRedirect.dart';
 import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/deviceNotification_files/devNotificationPage.dart';
-import 'package:project/deviceNotification_files/onSelectPage.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:project/notifications_files/notificationPage.dart';
@@ -16,6 +16,8 @@ import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/qr_files/generateQrPage.dart';
 import 'package:provider/provider.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 import 'main.dart';
 
@@ -23,6 +25,7 @@ User fbUser;
 String deviceID = "";
 String currentPatientID = "";
 int recentIndex = 1;
+String currentTimeZone;
 
 class MainArea extends StatefulWidget {
 
@@ -53,10 +56,10 @@ class _MainAreaState extends State<MainArea> {
       initialiseDeviceID();
     }
 
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+    AndroidInitializationSettings androidInitialize = AndroidInitializationSettings('android_logo');
+    InitializationSettings initializationSettings = InitializationSettings(android: androidInitialize);
 
-    var androidInitialize = AndroidInitializationSettings('android_logo');
-    var initializationSettings = InitializationSettings(android: androidInitialize);
+    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: selectNotification,
@@ -250,12 +253,15 @@ class _MainAreaState extends State<MainArea> {
       },
     );
 
+    return;
   }
 }
 
 Future<void> initialiseDeviceID() async {
   var deviceInfo = DeviceInfoPlugin();
   var androidDeviceInfo = await deviceInfo.androidInfo;
+  currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+
   FirebasePage().createDevice(androidDeviceInfo.androidId);
   deviceID = androidDeviceInfo.androidId;
 }
