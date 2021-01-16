@@ -27,6 +27,12 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   String pName;
   double pStrength;
   String pStrengthUnits;
+  double pUnitsPerDosage;
+
+  TextEditingController nameController = TextEditingController();
+  TextEditingController strengthController = TextEditingController();
+  TextEditingController strengthUnitsController = TextEditingController();
+  TextEditingController unitsPerDosageController = TextEditingController();
 
   //page 2 variables
   String dropDownValue = 'None';
@@ -39,10 +45,6 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   int stockNo = 0;
   TimeOfDay stockTime;
   int currentStock = 0;
-
-  TextEditingController nameController = TextEditingController();
-  TextEditingController strengthController = TextEditingController();
-  TextEditingController strengthUnitsController = TextEditingController();
 
   final _formKey1 = GlobalKey<FormState>();
 
@@ -162,7 +164,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                             ),
                           ),
 
-                          //MEASUREMENT
+                          //STRENGTH UNITS
                           Padding(
                             padding: EdgeInsets.all(10),
                             child: Container(
@@ -177,8 +179,38 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                                   onSaved: (String value){pStrengthUnits=value;},
                                   focusNode: myFocusNode,
                                   decoration: InputDecoration(
-                                    labelText: "Units",
+                                    labelText: "Strength units",
                                     hintText: "Enter strength units",
+                                    border: InputBorder.none,
+                                  ),
+                                  validator: (value) {
+                                    if(value.isEmpty){
+                                      return "Please enter a valid measurement";
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+
+                          //UNITS PER DOSAGE
+                          Padding(
+                            padding: EdgeInsets.all(10),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: new BorderRadius.circular(10.0),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.only(left: 15, right: 15, top: 5),
+                                child: TextFormField(
+                                  controller: unitsPerDosageController,
+                                  onSaved: (String value){pUnitsPerDosage=double.parse(value);},
+                                  focusNode: myFocusNode,
+                                  decoration: InputDecoration(
+                                    labelText: "Units per dosage",
+                                    hintText: "Enter how many units are taken per dosage.",
                                     border: InputBorder.none,
                                   ),
                                   validator: (value) {
@@ -404,7 +436,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       );
                       Navigator.pop(context);
 
-                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, dropDownValue, times, values, interval, stockReminders, stockNo);
+                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockReminders, stockNo);
                       createNotifications(dropDownValue, times, values, interval);
                     }
                   },
