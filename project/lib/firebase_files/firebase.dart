@@ -10,7 +10,7 @@ class FirebasePage {
 
   //ADD PRESCRIPTION
   Future<void> addPrescription(String name, double strength, String strengthUnits,
-      double unitsPerDosage, String reminderFreq, List reminderTimes, List specificDays,
+      int unitsPerDosage, String reminderFreq, List reminderTimes, List specificDays,
       int daysInterval, List stockReminders, int stockNo) {
     CollectionReference prescriptionsTable = findPrescriptionsRef(
         deviceID, currentPatientID);
@@ -234,7 +234,7 @@ class FirebasePage {
         {
           querySnapshot.docs.forEach((doc) {
             if (doc["name"] == prescriptionName) {
-              //newStock = int.parse(doc["stockNo"]) - int.parse(doc["doseNumber"]);
+              newStock = doc["stockNo"] - doc["unitsPerDosage"];
               id = doc.id;
               reduceStock(cr.doc(id), newStock);
             }

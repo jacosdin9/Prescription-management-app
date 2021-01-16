@@ -7,7 +7,7 @@ class PrescriptionCard extends StatelessWidget {
   String name;
   double strength;
   String strengthUnits;
-  double unitsPerDosage;
+  int unitsPerDosage;
   String reminderFreq;
   int daysInterval;
   List reminderTimes;

@@ -27,7 +27,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   String pName;
   double pStrength;
   String pStrengthUnits;
-  double pUnitsPerDosage;
+  int pUnitsPerDosage;
 
   TextEditingController nameController = TextEditingController();
   TextEditingController strengthController = TextEditingController();
@@ -206,7 +206,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
                                   controller: unitsPerDosageController,
-                                  onSaved: (String value){pUnitsPerDosage=double.parse(value);},
+                                  onSaved: (String value){pUnitsPerDosage=int.parse(value);},
                                   focusNode: myFocusNode,
                                   decoration: InputDecoration(
                                     labelText: "Units per dosage",
@@ -436,7 +436,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       );
                       Navigator.pop(context);
 
-                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockReminders, stockNo);
+                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockReminders, currentStock);
                       createNotifications(dropDownValue, times, values, interval);
                     }
                   },
