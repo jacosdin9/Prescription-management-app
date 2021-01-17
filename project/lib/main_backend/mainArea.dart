@@ -238,8 +238,9 @@ class _MainAreaState extends State<MainArea> {
     var popUp;
     print("NOTIFICATION HAS BEEN SELECTED");
 
-    if(payload == ""){
-      popUp = PopupAlert("STOCK REMINDER", "This med has fallen below it's stock reminder. Remember to refill!");
+    if(payload[0] == '!'){
+      List split = (payload.substring(1)).split("**");
+      popUp = PopupAlert("STOCK REMINDER", split[1] + " has fallen below it's stock reminder. Remember to refill!\n Current stock: " + split[0]);
     }
 
     else if (payload != null) {

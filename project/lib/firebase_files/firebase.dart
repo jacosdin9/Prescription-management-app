@@ -242,7 +242,7 @@ class FirebasePage {
 
               for(int sr in doc["stockReminders"]){
                 if(newStock <= sr){
-                  _stockNotification(9999, "Stock reminder", "Stock of this med needs refilled!");
+                  _stockNotification(9999, "Stock reminder", "Stock of this med needs refilled!", "!" + newStock.toString() + "**" + prescriptionName);
                   break;
                 }
 
@@ -296,7 +296,7 @@ Future<int> getReminderIdNo() async {
 }
 
 //STOCK NOTIFICATION
-Future<void> _stockNotification(rId, name, description) async {
+Future<void> _stockNotification(rId, name, description, payload) async {
   var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
   var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
@@ -305,6 +305,6 @@ Future<void> _stockNotification(rId, name, description) async {
     name,
     description,
     generalNotificationDetails,
-    payload: "",
+    payload: payload,
   );
 }
