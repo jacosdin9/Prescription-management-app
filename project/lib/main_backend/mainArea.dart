@@ -235,8 +235,14 @@ class _MainAreaState extends State<MainArea> {
   }
 
   Future selectNotification(String payload) async {
+    var popUp;
     print("NOTIFICATION HAS BEEN SELECTED");
-    if (payload != null) {
+
+    if(payload == ""){
+      popUp = PopupAlert("STOCK REMINDER", "This med has fallen below it's stock reminder. Remember to refill!");
+    }
+
+    else if (payload != null) {
       debugPrint('notification payload: $payload');
 
       List split = payload.split("**");
@@ -247,22 +253,18 @@ class _MainAreaState extends State<MainArea> {
       if(split[0] == "devices"){
         cr = FirebaseFirestore.instance.collection("devices").doc(split[1]).collection("patients").doc(split[2]).collection("prescriptions");
         prescriptionName = split[3];
-        FirebasePage().findStockToReduce(cr, prescriptionName);
       }
       else{
         cr = FirebaseFirestore.instance.collection("controlledPatients").doc(split[1]).collection("prescriptions");
         prescriptionName = split[2];
-        FirebasePage().findStockToReduce(cr, prescriptionName);
       }
-      
+
+      FirebasePage().findStockToReduce(cr, prescriptionName);
+
+      popUp = PopupAlert("SUCCESS", "Notification has been pressed");
+
     }
 
-    // Navigator.push(
-    //   context,
-    //   MaterialPageRoute(builder: (context) => OnSelectPage()),
-    // );
-
-    var popUp = PopupAlert("SUCCESS", "Notification has been pressed");
     showDialog(
       context: context,
       barrierDismissible: true,

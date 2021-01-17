@@ -43,7 +43,6 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   //page 3 variables
   List stockReminders = [];
   int stockNo = 0;
-  TimeOfDay stockTime;
   int currentStock = 0;
 
   final _formKey1 = GlobalKey<FormState>();
@@ -326,57 +325,11 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                                   side: BorderSide(color: Colors.red),
                                 ),
                                 padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                                onPressed: () {
+                                onPressed: () async {
                                   _stockLimitNumberPicker();
                                 },
                                 child: Text(
-                                  "Select stock limit\n" + stockNo.toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-
-                              //select stock reminder time
-                              RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.red),
-                                ),
-                                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                                onPressed: () async {
-                                  Future<TimeOfDay> selectedTime = showTimePicker(
-                                    initialTime: TimeOfDay.now(),
-                                    context: context,
-                                  );
-                                  if(await selectedTime != null){
-                                      stockTime = (await selectedTime);
-                                      print(stockTime);
-                                      setState(() {});
-                                  }
-                                },
-                                child: Text(
-                                  "Select time for stock reminder\n" + stockTime.toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
-                              ),
-
-                              //add reminder to list
-                              RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.red),
-                                ),
-                                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                                onPressed: () {
-                                  setState(() {
-                                    stockReminders.add(stockNo.toString() + "***" + stockTime.toString());
-                                  });
-                                },
-                                child: Text(
-                                  "Add stock reminder",
+                                  "Select stock limit\n",
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
@@ -480,7 +433,8 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
         }
     ).then((value) => {
       if(value != null){
-        setState(() => stockNo = value),
+        stockReminders.add(value),
+        setState(() => stockNo = value, ),
       }
     });
   }

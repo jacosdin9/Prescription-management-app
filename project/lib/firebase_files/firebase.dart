@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/patient_files/addExistingPatient.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
@@ -237,6 +239,14 @@ class FirebasePage {
               newStock = doc["stockNo"] - doc["unitsPerDosage"];
               id = doc.id;
               reduceStock(cr.doc(id), newStock);
+
+              for(int sr in doc["stockReminders"]){
+                if(newStock <= sr){
+                  _stockNotification(9999, "Stock reminder", "Stock of this med needs refilled!");
+                  break;
+                }
+
+              }
             }
           }),
         });
@@ -283,4 +293,18 @@ Future<int> getReminderIdNo() async {
     }
   }
   return currentMax+1;
+}
+
+//STOCK NOTIFICATION
+Future<void> _stockNotification(rId, name, description) async {
+  var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
+  var generalNotificationDetails = NotificationDetails(android: androidDetails);
+
+  await flutterLocalNotificationsPlugin.show(
+    rId,
+    name,
+    description,
+    generalNotificationDetails,
+    payload: "",
+  );
 }
