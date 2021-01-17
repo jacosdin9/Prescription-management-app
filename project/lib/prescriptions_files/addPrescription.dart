@@ -664,7 +664,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
 
   //the payload will help create the CollectionPath by creating a string that can be split up with a delimiter
   String createPayload(){
-    String payload = "";
+    String payload = "?";
 
     //does prescription belong to controlledPatients or device patients
     deviceID != "" ? payload += "devices" : payload += "controlledPatients";

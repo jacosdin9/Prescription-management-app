@@ -240,13 +240,13 @@ class _MainAreaState extends State<MainArea> {
 
     if(payload[0] == '!'){
       List split = (payload.substring(1)).split("**");
-      popUp = PopupAlert("STOCK REMINDER", split[1] + " has fallen below it's stock reminder. Remember to refill!\n Current stock: " + split[0]);
+      popUp = PopupAlert("STOCK REMINDER", split[1] + " has fallen below it's stock reminder. Remember to refill!\n\n Current stock: " + split[0]);
     }
 
-    else if (payload != null) {
+    else if (payload[0] == '?') {
       debugPrint('notification payload: $payload');
 
-      List split = payload.split("**");
+      List split = (payload.substring(1)).split("**");
       CollectionReference cr;
       String prescriptionName;
       
@@ -262,7 +262,7 @@ class _MainAreaState extends State<MainArea> {
 
       FirebasePage().findStockToReduce(cr, prescriptionName);
 
-      popUp = PopupAlert("SUCCESS", "Notification has been pressed");
+      popUp = PopupAlert(prescriptionName + " reminder", "Reminder for " + prescriptionName + " has successfully been received.");
 
     }
 
