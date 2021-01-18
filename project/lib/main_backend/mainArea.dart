@@ -3,7 +3,6 @@ import 'package:device_info/device_info.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:project/authentication_files/logInPageRedirect.dart';
 import 'package:project/calendar_files/calendar.dart';
@@ -17,9 +16,6 @@ import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/qr_files/generateQrPage.dart';
 import 'package:provider/provider.dart';
-import 'package:timezone/data/latest.dart' as tz;
-import 'package:timezone/timezone.dart' as tz;
-
 import 'main.dart';
 
 User fbUser;
@@ -57,14 +53,10 @@ class _MainAreaState extends State<MainArea> {
       initialiseDeviceID();
     }
 
-    AndroidInitializationSettings androidInitialize = AndroidInitializationSettings('android_logo');
-    InitializationSettings initializationSettings = InitializationSettings(android: androidInitialize);
-
-    flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
     flutterLocalNotificationsPlugin.initialize(initializationSettings,
       onSelectNotification: selectNotification,
     );
+
   }
 
   @override

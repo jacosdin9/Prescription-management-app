@@ -237,6 +237,9 @@ class FirebasePage {
           querySnapshot.docs.forEach((doc) {
             if (doc["name"] == prescriptionName) {
               newStock = doc["stockNo"] - doc["unitsPerDosage"];
+              if(newStock<0){
+                newStock = 0;
+              }
               id = doc.id;
               reduceStock(cr.doc(id), newStock);
 

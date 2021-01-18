@@ -4,7 +4,9 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import 'mainArea.dart';
 
-FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
+FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+AndroidInitializationSettings androidInitialize = AndroidInitializationSettings('android_logo');
+InitializationSettings initializationSettings = InitializationSettings(android: androidInitialize);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
