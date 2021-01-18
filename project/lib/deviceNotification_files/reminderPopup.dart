@@ -73,6 +73,7 @@ class ReminderPopup extends StatelessWidget{
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text("Prescription: " + prescription),
                   Text("Reminder frequency: " + freq),
                   freq == "Specific Day" ? Text("Day: " + findDayStringFromDayValue(int.parse(day))) : Text("Day: Every day"),
                   Text("Time: " + time),
