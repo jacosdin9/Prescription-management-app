@@ -12,14 +12,14 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-  runApp(StartApp());
+  runApp(MainArea(recentIndex));
 }
 
-class StartApp extends StatelessWidget{
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: MainArea(recentIndex),
-    );
-  }
-}
+// class StartApp extends StatelessWidget{
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: MainArea(recentIndex),
+//     );
+//   }
+// }
