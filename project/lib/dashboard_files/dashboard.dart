@@ -16,28 +16,6 @@ class DashboardPage extends StatelessWidget {
           //show current patient id
           currentPatientID == "" ? Text("NO PATIENT SELECTED") : Text(currentPatientID),
 
-          currentPatientID == "" ?
-          RaisedButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(18.0),
-              side: BorderSide(color: Colors.red),
-            ),
-            padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => ChangeUserPage()),
-              );
-            },
-            child: Text(
-              "Select a patient",
-              style: TextStyle(
-                fontSize: 20,
-              ),
-            ),
-          ) :
-              SizedBox(height: 0),
-
           //LOCAL NOTIFICATIONS TESTING
           RaisedButton(
             shape: RoundedRectangleBorder(
