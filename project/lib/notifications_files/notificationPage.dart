@@ -13,6 +13,10 @@ class NotificationsPage extends StatelessWidget {
       FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('notifications') :
         FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('notifications');
 
+    popMethod(){
+      Navigator.pop(context);
+    }
+
     return MaterialApp(
       title: "Notifications page",
       home: Scaffold(
@@ -93,10 +97,7 @@ class NotificationsPage extends StatelessWidget {
                         ),
                         padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
-                          );
+                          popMethod();
                         },
                         child: Text(
                           "BACK",

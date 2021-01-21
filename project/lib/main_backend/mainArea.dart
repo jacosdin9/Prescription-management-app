@@ -23,6 +23,7 @@ String deviceID = "";
 String currentPatientID = "";
 int recentIndex = 1;
 String currentTimeZone;
+var pageView;
 
 class MainArea extends StatefulWidget {
 
@@ -38,6 +39,7 @@ class _MainAreaState extends State<MainArea> {
 
   int _currentIndex;
   _MainAreaState(this._currentIndex);
+  var page;
 
   final List<Widget> _children = [
     CalendarPage(),
@@ -57,6 +59,8 @@ class _MainAreaState extends State<MainArea> {
       onSelectNotification: selectNotification,
     );
 
+    _currentIndex = 1;
+    page = _children[_currentIndex];
   }
 
   @override
@@ -94,49 +98,46 @@ class _MainAreaState extends State<MainArea> {
               ListTile(
                 leading: Icon(Icons.notifications),
                 title: Text('Notifications'),
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => NotificationsPage()),
                   );
+
+                  setState(() {
+                    page = viewPage(_currentIndex);
+                  });
                 },
               ) :
               SizedBox()) :
               ListTile(
                 leading: Icon(Icons.notifications),
                 title: Text('Notifications'),
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => NotificationsPage()),
                   );
+
+                  setState(() {
+                    page = viewPage(_currentIndex);
+                  });
                 },
               ),
-
-              // //if patient has been selected, show notifications tab
-              // currentPatientID != "" ?
-              // ListTile(
-              //   leading: Icon(Icons.notifications),
-              //   title: Text('Notifications'),
-              //   onTap: () {
-              //     Navigator.push(
-              //       context,
-              //       MaterialPageRoute(builder: (context) => NotificationsPage()),
-              //     );
-              //   },
-              // ) :
-              //     SizedBox(),
 
               //if patient has been selected, show my details tab
               currentPatientID != "" ?
               ListTile(
                 leading: Icon(Icons.person),
                 title: Text('My details'),
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => GenerateQrPage()),
                   );
+                  setState(() {
+                    page = viewPage(_currentIndex);
+                  });
                 }
               ) :
                   SizedBox(),
@@ -146,11 +147,15 @@ class _MainAreaState extends State<MainArea> {
               ListTile(
                   leading: Icon(Icons.alarm_add),
                   title: Text('Reminders'),
-                  onTap: () {
-                    Navigator.push(
+                  onTap: () async {
+                    await Navigator.push(
                       context,
                       MaterialPageRoute(builder: (context) => DevNotificationPage()),
                     );
+
+                    setState(() {
+                      page = viewPage(_currentIndex);
+                    });
                   }
               ) :
               SizedBox(),
@@ -158,23 +163,31 @@ class _MainAreaState extends State<MainArea> {
               //if not signed in, show sign in button and if signed in, show sign out button.
               fbUser == null ?
               ListTile(
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => LogInPageRedirect()),
                   );
+
+                  setState(() {
+                    page = viewPage(_currentIndex);
+                  });
                 },
                 leading: Icon(Icons.login),
                 title: Text('Log in as carer'),
               ) :
               ListTile(
-                onTap: () {
+                onTap: () async {
                   context.read<AuthenticationService>().signOut();
                   currentPatientID = "";
-                  Navigator.push(
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => LogInPageRedirect()),
                   );
+
+                  setState(() {
+                    page = viewPage(_currentIndex);
+                  });
                 },
                 leading: Icon(Icons.logout),
                 title: Text('Log out'),
@@ -182,11 +195,16 @@ class _MainAreaState extends State<MainArea> {
 
               //Choose a patient
               ListTile(
-                onTap: () {
-                  Navigator.push(
+                onTap: () async {
+                  await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => ChangeUserPage()),
                   );
+
+                  setState(() {
+                    page = viewPage(_currentIndex);
+                  });
+
                 },
                 leading: Icon(Icons.swap_horiz),
                 title: Text('Select a patient'),
@@ -196,7 +214,7 @@ class _MainAreaState extends State<MainArea> {
         ),
 
         //WHAT IS CURRENTLY BEING DISPLAYED
-        body: _children[_currentIndex],
+        body: page,
 
         //TAB SWITCHER
         bottomNavigationBar: BottomNavigationBar(
@@ -223,6 +241,7 @@ class _MainAreaState extends State<MainArea> {
   void onTabTapped(int index) {
     setState(() {
       _currentIndex = index;
+      page = _children[index];
     });
   }
 
@@ -268,6 +287,7 @@ class _MainAreaState extends State<MainArea> {
 
     return;
   }
+
 }
 
 Future<void> initialiseDeviceID() async {
@@ -277,4 +297,21 @@ Future<void> initialiseDeviceID() async {
 
   FirebasePage().createDevice(androidDeviceInfo.androidId);
   deviceID = androidDeviceInfo.androidId;
+}
+
+viewPage (int i){
+  switch(i){
+    case 0:{
+      return CalendarPage();
+    }
+    case 1:{
+      return DashboardPage();
+    }
+    case 2:{
+      return PrescriptionPage();
+    }
+    default:{
+      return DashboardPage();
+    }
+  }
 }

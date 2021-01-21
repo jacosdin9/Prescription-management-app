@@ -30,10 +30,7 @@ class GenerateQrPage extends StatelessWidget {
                 ),
                 padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
-                  );
+                  Navigator.pop(context);
                 },
                 child: Text(
                   "BACK",
