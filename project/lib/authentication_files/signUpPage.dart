@@ -108,10 +108,7 @@ class SignUpPage extends StatelessWidget {
                 backgroundColor: Colors.red,
                 child: Icon(Icons.cancel),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
-                  );
+                  Navigator.pop(context);
                 },
               ),
             ),
@@ -120,5 +117,4 @@ class SignUpPage extends StatelessWidget {
       ),
     );
   }
-
 }

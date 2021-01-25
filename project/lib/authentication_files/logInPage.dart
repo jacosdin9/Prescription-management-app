@@ -129,10 +129,11 @@ class LogInPage extends StatelessWidget {
                   child: Icon(Icons.cancel),
                   onPressed: () {
                     fbUser = FirebaseAuth.instance.currentUser;
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
-                    );
+                    // int count = 0;
+                    // Navigator.popUntil(context, (route) {
+                    //   return count++ == 2;
+                    // });
+                    Navigator.pop(context);
                   },
                 ),
               ),
