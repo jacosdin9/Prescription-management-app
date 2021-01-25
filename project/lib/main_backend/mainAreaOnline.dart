@@ -17,28 +17,22 @@ import 'package:project/authentication_files/authentication.dart';
 import 'package:project/qr_files/generateQrPage.dart';
 import 'package:provider/provider.dart';
 import 'main.dart';
+import 'mainArea.dart';
 
-User fbUser;
-String deviceID = "";
-String currentPatientID = "";
-int recentIndex = 1;
-String currentTimeZone;
-var pageView;
-
-class MainArea extends StatefulWidget {
+class MainAreaOnline extends StatefulWidget {
 
   int currentIndex;
 
-  MainArea(this.currentIndex);
+  MainAreaOnline(this.currentIndex);
 
   @override
-  _MainAreaState createState() => _MainAreaState(currentIndex);
+  _MainAreaOnlineState createState() => _MainAreaOnlineState(currentIndex);
 }
 
-class _MainAreaState extends State<MainArea> {
+class _MainAreaOnlineState extends State<MainAreaOnline> {
 
   int _currentIndex;
-  _MainAreaState(this._currentIndex);
+  _MainAreaOnlineState(this._currentIndex);
   var page;
 
   final List<Widget> _children = [
@@ -54,10 +48,6 @@ class _MainAreaState extends State<MainArea> {
     if(fbUser==null){
       initialiseDeviceID();
     }
-
-    flutterLocalNotificationsPlugin.initialize(initializationSettings,
-      onSelectNotification: selectNotification,
-    );
 
     _currentIndex = 1;
     page = _children[_currentIndex];
@@ -128,19 +118,19 @@ class _MainAreaState extends State<MainArea> {
               //if patient has been selected, show my details tab
               currentPatientID != "" ?
               ListTile(
-                leading: Icon(Icons.person),
-                title: Text('My details'),
-                onTap: () async {
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => GenerateQrPage()),
-                  );
-                  setState(() {
-                    page = viewPage(_currentIndex);
-                  });
-                }
+                  leading: Icon(Icons.person),
+                  title: Text('My details'),
+                  onTap: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => GenerateQrPage()),
+                    );
+                    setState(() {
+                      page = viewPage(_currentIndex);
+                    });
+                  }
               ) :
-                  SizedBox(),
+              SizedBox(),
 
               //if patient has been selected, show reminders tab
               currentPatientID != "" ?
@@ -180,14 +170,16 @@ class _MainAreaState extends State<MainArea> {
                 onTap: () async {
                   context.read<AuthenticationService>().signOut();
                   currentPatientID = "";
+                  var deviceInfo = DeviceInfoPlugin();
+                  var androidDeviceInfo = await deviceInfo.androidInfo;
+                  currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
+                  deviceID = androidDeviceInfo.androidId;
+
+                  Navigator.pop(context);
                   await Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => LogInPageRedirect()),
                   );
-
-                  setState(() {
-                    page = viewPage(_currentIndex);
-                  });
                 },
                 leading: Icon(Icons.logout),
                 title: Text('Log out'),
@@ -245,59 +237,6 @@ class _MainAreaState extends State<MainArea> {
     });
   }
 
-  Future selectNotification(String payload) async {
-    var popUp;
-    print("NOTIFICATION HAS BEEN SELECTED");
-
-    if(payload[0] == '!'){
-      List split = (payload.substring(1)).split("**");
-      popUp = PopupAlert("STOCK REMINDER", split[1] + " has fallen below it's stock reminder. Remember to refill!\n\n Current stock: " + split[0]);
-    }
-
-    else if (payload[0] == '?') {
-      debugPrint('notification payload: $payload');
-
-      List split = (payload.substring(1)).split("**");
-      CollectionReference cr;
-      String prescriptionName;
-
-      //if reminder is for a local device
-      if(split[0] == "devices"){
-        cr = FirebaseFirestore.instance.collection("devices").doc(split[1]).collection("patients").doc(split[2]).collection("prescriptions");
-        prescriptionName = split[3];
-      }
-      else{
-        cr = FirebaseFirestore.instance.collection("controlledPatients").doc(split[1]).collection("prescriptions");
-        prescriptionName = split[2];
-      }
-
-      FirebasePage().findStockToReduce(cr, prescriptionName);
-
-      print("show this?");
-      debugPrint("hellpo");
-
-      popUp = PopupAlert(prescriptionName + " reminder", "Reminder for " + prescriptionName + " has successfully been received.");
-
-    }
-
-    showDialog(
-      context: context,
-      barrierDismissible: true,
-      builder: (BuildContext context){
-        return popUp;
-      },
-    );
-  }
-
-}
-
-Future<void> initialiseDeviceID() async {
-  var deviceInfo = DeviceInfoPlugin();
-  var androidDeviceInfo = await deviceInfo.androidInfo;
-  currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
-
-  FirebasePage().createDevice(androidDeviceInfo.androidId);
-  deviceID = androidDeviceInfo.androidId;
 }
 
 viewPage (int i){

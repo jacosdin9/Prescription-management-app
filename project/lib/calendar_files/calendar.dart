@@ -21,6 +21,10 @@ class _CalendarPageState extends State<CalendarPage>{
   List _selectedEvents;
   List remindersList;
 
+  void setStateIfMounted() {
+    if (mounted) setState(() {});
+  }
+
   @override
   void initState() {
     super.initState();
@@ -31,7 +35,7 @@ class _CalendarPageState extends State<CalendarPage>{
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       remindersList = await downloadRemindersList();
       _events = createCalendar(remindersList);
-      setState(() {});
+      setStateIfMounted();
     });
 
 

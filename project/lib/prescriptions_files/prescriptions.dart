@@ -97,25 +97,6 @@ class PrescriptionPage extends StatelessWidget {
           children: <Widget>[
             //show current patient id
             Text("SELECT A PATIENT TO SEE THEIR PRESCRIPTIONS HERE"),
-            RaisedButton(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(18.0),
-                side: BorderSide(color: Colors.red),
-              ),
-              padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ChangeUserPage()),
-                );
-              },
-              child: Text(
-                "Select a patient",
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-            )
           ],
         ),
       );

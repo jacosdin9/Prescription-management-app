@@ -15,6 +15,11 @@ class ChangeUserPage extends StatelessWidget{
         :
     FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients')
     ;
+
+    popMethod(){
+      Navigator.pop(context);
+    }
+
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
@@ -22,7 +27,7 @@ class ChangeUserPage extends StatelessWidget{
         ),
         body: StreamBuilder<QuerySnapshot>(
           stream: patientsIdList.snapshots(),
-          builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
 
             //IF THERE'S AN ERROR:
             if (snapshot.hasError) {
@@ -61,10 +66,7 @@ class ChangeUserPage extends StatelessWidget{
                                         if(fbUser!=null){
                                           deviceID = results[index].get('deviceId');
                                         }
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
-                                        );
+                                        popMethod();
                                       },
                                       child: Container(
                                         height: 30,
@@ -134,10 +136,7 @@ class ChangeUserPage extends StatelessWidget{
                     ),
                     padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
-                      );
+                      popMethod();
                     },
                     child: Text(
                       "BACK",

@@ -16,6 +16,9 @@ class DevNotificationPage extends StatelessWidget{
     FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders')
     ;
 
+    popMethod(){
+      Navigator.pop(context);
+    }
 
     return MaterialApp(
       home: Scaffold(
@@ -92,10 +95,7 @@ class DevNotificationPage extends StatelessWidget{
                           ),
                           padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
-                            );
+                            popMethod();
                           },
                           child: Text(
                             "BACK",

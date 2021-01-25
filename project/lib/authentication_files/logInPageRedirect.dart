@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/authentication_files/logInPage.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/main_backend/mainAreaOnline.dart';
 import 'package:provider/provider.dart';
 
 class LogInPageRedirect extends StatelessWidget{
@@ -19,13 +20,17 @@ class LogInPageRedirect extends StatelessWidget{
         )
       ],
 
-      child: MaterialApp(
-        title: "Log-in redirect",
-        theme: ThemeData(
-          primarySwatch: Colors.red,
-        ),
-        home: AuthenticationWrapper(),
-      ),
+      // child: MaterialApp(
+      //   title: "Log-in redirect",
+      //   theme: ThemeData(
+      //     primarySwatch: Colors.red,
+      //   ),
+      //   home: AuthenticationWrapper(),
+      // ),
+
+      child: Scaffold(
+        body: AuthenticationWrapper(),
+      )
     );
   }
 }
@@ -45,12 +50,14 @@ class AuthenticationWrapper extends StatelessWidget{
     if(firebaseUser != null){
       currentPatientID = "";
       deviceID = "";
-      return MainArea(1);
+      print("main area online");
+      return MainAreaOnline(1);
     }
 
     //if user is not logged in
     else{
       fbUser = null;
+      print("log in page");
       return LogInPage();
     }
   }
