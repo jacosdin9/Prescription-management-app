@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/firebase_files/firebase.dart';
 import 'package:project/prescriptions_files/prescriptionClass.dart';
 
 
@@ -16,8 +17,15 @@ class EditPrescription extends StatefulWidget {
 class _EditPrescriptionState extends State<EditPrescription> {
 
   PrescriptionClass data;
+  String originalPrescriptionName;
 
   _EditPrescriptionState(this.data);
+
+  @override
+  void initState() {
+    super.initState();
+    originalPrescriptionName = data.name;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +52,8 @@ class _EditPrescriptionState extends State<EditPrescription> {
                             //NAME
                             GestureDetector(
                               onTap: () {
-
+                                data.name = "remEditTest";
+                                setState(() {});
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -229,6 +238,51 @@ class _EditPrescriptionState extends State<EditPrescription> {
                   ],
                 ),
               ),
+            ),
+
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                //BACK BUTTON
+                RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.red),
+                  ),
+                  padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "BACK",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+
+                SizedBox(width: 50),
+
+                //DONE BUTTON
+                RaisedButton(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(18.0),
+                    side: BorderSide(color: Colors.green),
+                  ),
+                  padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                  onPressed: () async {
+                    FirebasePage().editPrescription(originalPrescriptionName, data);
+                    Navigator.pop(context);
+                  },
+                  child: Text(
+                    "DONE",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),

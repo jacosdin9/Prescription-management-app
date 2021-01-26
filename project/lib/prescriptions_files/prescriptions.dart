@@ -105,9 +105,9 @@ class PrescriptionPage extends StatelessWidget {
 
 CollectionReference findPrescriptionsRef(String deviceID, patientID){
   if(deviceID == ""){
-    return FirebaseFirestore.instance.collection('controlledPatients').doc(currentPatientID).collection('prescriptions');
+    return FirebaseFirestore.instance.collection('controlledPatients').doc(patientID).collection('prescriptions');
   }
   else{
-    return FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('prescriptions');
+    return FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(patientID).collection('prescriptions');
   }
 }

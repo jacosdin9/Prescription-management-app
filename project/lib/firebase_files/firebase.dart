@@ -3,6 +3,8 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/patient_files/addExistingPatient.dart';
+import 'package:project/prescriptions_files/addPrescription.dart';
+import 'package:project/prescriptions_files/prescriptionClass.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
 
 class FirebasePage {
@@ -248,7 +250,6 @@ class FirebasePage {
                   _stockNotification(9999, "Stock reminder", "Stock of this med needs refilled!", "!" + newStock.toString() + "**" + prescriptionName);
                   break;
                 }
-
               }
             }
           }),
@@ -260,6 +261,49 @@ class FirebasePage {
       .update({'stockNo': newStock})
       .then((value) => print("REMAINING STOCK UPDATED"))
       .catchError((error) => print("FAILED TO UPDATE STOCK: $error"));
+  }
+
+  Future<void> editPrescription(String originalPrescriptionName, PrescriptionClass data) async {
+
+    DocumentReference prescriptionRef= findPrescriptionsRef(deviceID, currentPatientID).doc(data.id);
+
+    CollectionReference remindersCol =
+    fbUser == null ? FirebaseFirestore.instance.collection("devices").doc(deviceID).collection('reminders') :
+        FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection('reminders');
+
+    bool hasRemindersChanged = false;
+
+    //if reminders collection exists, iterate through. If doc has same name as original prescription name, delete reminder and create new updated one.
+    final snapshot = await remindersCol.get();
+    if (snapshot.docs.length != 0) {
+      for(QueryDocumentSnapshot rem in snapshot.docs){
+        if(rem.get('prescription') == originalPrescriptionName && rem.get('patientId') == currentPatientID){
+          flutterLocalNotificationsPlugin.cancel(rem.get('id'));
+          deleteReminder(remindersCol, rem.id);
+          hasRemindersChanged = true;
+        }
+      }
+
+      //if reminders previously existed for this prescription, they will have been deleted, so this creates the new updated ones.
+      if(hasRemindersChanged == true){
+        createNotifications(data.name, data.reminderFreq, data.reminderTimes, data.specificDays, data.daysInterval);
+      }
+    }
+
+    //update prescription with new values
+    return prescriptionRef.update({
+      'daysInterval' : data.daysInterval,
+      'name' : data.name,
+      'reminderFreq' : data.reminderFreq,
+      'reminderTimes' : data.reminderTimes,
+      'specificDays' : data.specificDays,
+      'stockNo' : data.stockNo,
+      'stockReminders' : data.stockReminders,
+      'strength' : data.strength,
+      'strengthUnits' : data.strengthUnits,
+      'unitsPerDosage' : data.unitsPerDosage,
+    }).then((value) => print("Prescription Updated"))
+        .catchError((error) => print("Failed to update prescription: $error"));
   }
 }
 

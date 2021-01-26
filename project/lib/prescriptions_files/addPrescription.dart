@@ -390,7 +390,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       Navigator.pop(context);
 
                       FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockReminders, currentStock);
-                      createNotifications(dropDownValue, times, values, interval);
+                      createNotifications(pName, dropDownValue, times, values, interval);
                     }
                   },
                 ),
@@ -552,143 +552,143 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
       return SizedBox();
     }
   }
+}
 
-  createNotifications(String freq, List times, List dayValues, int interval) async {
-    if(freq == "None"){
-      print("No notifications needed");
+createNotifications(String pName, String freq, List times, List dayValues, int interval) async {
+  if(freq == "None"){
+    print("No notifications needed");
+  }
+
+  else if(freq == "Daily"){
+    int rId = await getReminderIdNo();
+    for(String time  in times){
+      Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
+
+      //This will create a reminder for the local device. Need to find a good way to link online-
+      //carer to local notifications now as we don't really want it being added straight to local device
+      _scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
+
+      //add reminder to database. Works for both local and carer so this part is okay
+      await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
+      rId += 1;
     }
+  }
 
-    else if(freq == "Daily"){
-      int rId = await getReminderIdNo();
-      for(String time  in times){
-        Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
+  else if(freq == "Specific days"){
+    int rId = await getReminderIdNo();
 
-        //This will create a reminder for the local device. Need to find a good way to link online-
-        //carer to local notifications now as we don't really want it being added straight to local device
-        _scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
+    //for dayV in day values
+    for(int day = 0; day<dayValues.length; day++){
+      if(dayValues[day] == true){
+        for(String time  in times){
+          Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
 
-        //add reminder to database. Works for both local and carer so this part is okay
-        await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
-        rId += 1;
-      }
-    }
+          //This will create a reminder for the local device. Need to find a good way to link online-
+          //carer to local notifications now as we don't really want it being added straight to local device
+          _scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day);
 
-    else if(freq == "Specific days"){
-      int rId = await getReminderIdNo();
-
-      //for dayV in day values
-      for(int day = 0; day<dayValues.length; day++){
-        if(dayValues[day] == true){
-          for(String time  in times){
-            Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
-
-            //This will create a reminder for the local device. Need to find a good way to link online-
-            //carer to local notifications now as we don't really want it being added straight to local device
-            _scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day);
-
-            //add reminder to database. Works for both local and carer so this part is okay
-            await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);
-            rId += 1;
-          }
+          //add reminder to database. Works for both local and carer so this part is okay
+          await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);
+          rId += 1;
         }
       }
     }
   }
+}
 
-  //DAILY
-  Future<void> _scheduleDailyNotification(rId, name, description, time) async {
-    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
-    var generalNotificationDetails = NotificationDetails(android: androidDetails);
+//DAILY
+Future<void> _scheduleDailyNotification(rId, name, description, time) async {
+  var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
+  var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
-    tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation(currentTimeZone));
 
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-        rId,
-        name,
-        description,
-        _nextInstanceOfTime(time),
-        generalNotificationDetails,
-        androidAllowWhileIdle: true,
-        uiLocalNotificationDateInterpretation:
-        UILocalNotificationDateInterpretation.absoluteTime,
-        matchDateTimeComponents: DateTimeComponents.time,
-        payload: createPayload(),
-    );
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    rId,
+    name,
+    description,
+    _nextInstanceOfTime(time),
+    generalNotificationDetails,
+    androidAllowWhileIdle: true,
+    uiLocalNotificationDateInterpretation:
+    UILocalNotificationDateInterpretation.absoluteTime,
+    matchDateTimeComponents: DateTimeComponents.time,
+    payload: createPayload(name),
+  );
+}
+
+tz.TZDateTime _nextInstanceOfTime(Time t) {
+  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+  tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, t.hour, t.minute, t.second);
+  if (scheduledDate.isBefore(now)) {
+    scheduledDate = scheduledDate.add(const Duration(days: 1));
+  }
+  return scheduledDate;
+}
+
+//WEEKLY
+Future<void> _scheduleWeeklyNotification(rId, name, description, time, dayV) async {
+  var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
+  var generalNotificationDetails = NotificationDetails(android: androidDetails);
+
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+  if(dayV == 0){
+    dayV = 7;
   }
 
-  tz.TZDateTime _nextInstanceOfTime(Time t) {
-    final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, t.hour, t.minute, t.second);
-    if (scheduledDate.isBefore(now)) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-    return scheduledDate;
+  print(_nextInstanceOfWeekly(time, dayV));
+
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    rId,
+    name,
+    description,
+    _nextInstanceOfWeekly(time, dayV),
+    generalNotificationDetails,
+    androidAllowWhileIdle: true,
+    uiLocalNotificationDateInterpretation:
+    UILocalNotificationDateInterpretation.absoluteTime,
+    matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+    payload: createPayload(name),
+  );
+}
+
+tz.TZDateTime _nextInstanceOfWeekly(Time t, int d) {
+  tz.TZDateTime scheduledDate = _nextInstanceOfTime(t);
+  while (scheduledDate.weekday != d) {
+    scheduledDate = scheduledDate.add(const Duration(days: 1));
   }
+  return scheduledDate;
+}
 
-  //WEEKLY
-  Future<void> _scheduleWeeklyNotification(rId, name, description, time, dayV) async {
-    var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
-    var generalNotificationDetails = NotificationDetails(android: androidDetails);
+//the payload will help create the CollectionPath by creating a string that can be split up with a delimiter
+String createPayload(String pName){
+  String payload = "?";
 
-    tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+  //does prescription belong to controlledPatients or device patients
+  deviceID != "" ? payload += "devices" : payload += "controlledPatients";
 
-    if(dayV == 0){
-      dayV = 7;
-    }
+  //add delimiter
+  payload += "**";
 
-    print(_nextInstanceOfWeekly(time, dayV));
-    
-    await flutterLocalNotificationsPlugin.zonedSchedule(
-      rId,
-      name,
-      description,
-      _nextInstanceOfWeekly(time, dayV),
-      generalNotificationDetails,
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
-      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-      payload: createPayload(),
-    );
-  }
-
-  tz.TZDateTime _nextInstanceOfWeekly(Time t, int d) {
-    tz.TZDateTime scheduledDate = _nextInstanceOfTime(t);
-    while (scheduledDate.weekday != d) {
-      scheduledDate = scheduledDate.add(const Duration(days: 1));
-    }
-    return scheduledDate;
-  }
-
-  //the payload will help create the CollectionPath by creating a string that can be split up with a delimiter
-  String createPayload(){
-    String payload = "?";
-
-    //does prescription belong to controlledPatients or device patients
-    deviceID != "" ? payload += "devices" : payload += "controlledPatients";
-
-    //add delimiter
+  if(deviceID != ""){
+    payload += deviceID;
     payload += "**";
-
-    if(deviceID != ""){
-      payload += deviceID;
-      payload += "**";
-    }
-
-    //add patientID
-    payload += currentPatientID;
-
-    //add delimiter
-    payload += "**";
-
-    //add name of prescription. We can use this to query for prescriptionID later
-    payload += pName;
-
-    return payload;
-
   }
+
+  //add patientID
+  payload += currentPatientID;
+
+  //add delimiter
+  payload += "**";
+
+  //add name of prescription. We can use this to query for prescriptionID later
+  payload += pName;
+
+  return payload;
+
 }
 
 Day findDayFromDayValue(int dayV){
