@@ -6,6 +6,8 @@ import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/popupAlert.dart';
+import 'package:project/prescriptions_files/editPrescription.dart';
+import 'package:project/prescriptions_files/prescriptionClass.dart';
 
 class PrescriptionPopup extends StatelessWidget{
 
@@ -85,32 +87,58 @@ class PrescriptionPopup extends StatelessWidget{
 
             // dialog bottom
             Expanded(
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                  side: BorderSide(color: Colors.red),
-                ),
-                onPressed: () {
-                  deleteCorrespondingReminders();
-                  FirebasePage().deletePrescription(id);
-                  Navigator.pop(context);
-                  var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");
-                  showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context){
-                      return popUp;
+              child: Row(
+                children: [
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.orange),
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => EditPrescription(PrescriptionClass(id: id, name: name, strength: strength, strengthUnits: strengthUnits, unitsPerDosage: unitsPerDosage, reminderFreq: reminderFreq, daysInterval: daysInterval, reminderTimes: reminderTimes, specificDays: specificDays, stockReminders: stockReminders, stockNo: stockNo))),
+                      );
                     },
-                  );
-                },
-                child: Text(
-                  "Delete prescription",
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 20,
+                    child: Text(
+                      "Edit",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 20,
+                      ),
+                    ),
                   ),
-                ),
-              ),
+
+                  RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.red),
+                    ),
+                    onPressed: () {
+                      deleteCorrespondingReminders();
+                      FirebasePage().deletePrescription(id);
+                      Navigator.pop(context);
+                      var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context){
+                          return popUp;
+                        },
+                      );
+                    },
+                    child: Text(
+                      "Delete",
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 20,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+
             ),
           ],
         ),
