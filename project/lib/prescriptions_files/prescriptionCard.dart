@@ -12,10 +12,10 @@ class PrescriptionCard extends StatelessWidget {
   int daysInterval;
   List reminderTimes;
   List specificDays;
-  List stockReminders;
+  int stockReminder;
   int stockNo;
 
-  PrescriptionCard(this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminders, this.stockNo);
+  PrescriptionCard(this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo);
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +63,7 @@ class PrescriptionCard extends StatelessWidget {
 
     final prescriptionCard = new GestureDetector(
         onTap: () {
-          var popUp = PrescriptionPopup(id, name, strength, strengthUnits, unitsPerDosage, reminderFreq, daysInterval, reminderTimes, specificDays, stockReminders, stockNo);
+          var popUp = PrescriptionPopup(id, name, strength, strengthUnits, unitsPerDosage, reminderFreq, daysInterval, reminderTimes, specificDays, stockReminder, stockNo);
 
           showDialog(
             context: context,

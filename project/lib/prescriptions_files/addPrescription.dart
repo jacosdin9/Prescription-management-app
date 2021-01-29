@@ -41,7 +41,6 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   int interval = 1;
 
   //page 3 variables
-  List stockReminders = [];
   int stockNo = 0;
   int currentStock = 0;
 
@@ -274,31 +273,9 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                         Center(
                           child: Column(
                             children: [
-                              Text("Would you like to set up a reminder for when stock falls below a certain level?"),
-                              Container(
-                                height: 200,
-                                margin: const EdgeInsets.all(50.0),
-                                padding: const EdgeInsets.all(3.0),
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
-                                ),
-                                child: CustomScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  shrinkWrap: false,
-                                  slivers: <Widget>[
-                                    SliverPadding(
-                                      padding: const EdgeInsets.symmetric(vertical: 24.0),
-                                      sliver: SliverList(
-                                        delegate: SliverChildBuilderDelegate(
-                                              (context, index) =>
-                                              Text(stockReminders[index].toString()),
-                                          childCount: stockReminders.length,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              Text("\nWould you like to set up a reminder for when stock falls below a certain level?"),
+
+                              SizedBox(height: 200,),
 
                               //Select current stock number
                               RaisedButton(
@@ -329,7 +306,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                                   _stockLimitNumberPicker();
                                 },
                                 child: Text(
-                                  "Select stock limit\n",
+                                  "Select stock limit\n" + stockNo.toString(),
                                   style: TextStyle(
                                     fontSize: 20,
                                   ),
@@ -377,7 +354,6 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       print(times);
                       print(values);
                       print(interval);
-                      print(stockReminders);
                       print(stockNo);
                       var popUp = PopupAlert("SUCCESS", "Prescription has successfully been added");
                       showDialog(
@@ -389,7 +365,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       );
                       Navigator.pop(context);
 
-                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockReminders, currentStock);
+                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock);
                       createNotifications(pName, dropDownValue, times, values, interval);
                     }
                   },
@@ -433,7 +409,6 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
         }
     ).then((value) => {
       if(value != null){
-        stockReminders.add(value),
         setState(() => stockNo = value, ),
       }
     });
@@ -464,7 +439,18 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                   sliver: SliverList(
                     delegate: SliverChildBuilderDelegate(
                           (context, index) =>
-                          Text(times[index].toString()),
+                              Row(
+                                children: [
+                                  Text(times[index].toString()),
+                                  IconButton(
+                                    icon: Icon(Icons.delete_forever),
+                                    onPressed: () {
+                                      times.removeAt(index);
+                                      setState(() {});
+                                    },
+                                  )
+                                ],
+                              ),
                       childCount: times.length,
                     ),
                   ),

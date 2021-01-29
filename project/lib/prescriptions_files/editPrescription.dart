@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/prescriptions_files/editPrescriptionInputPopups.dart';
 import 'package:project/prescriptions_files/prescriptionClass.dart';
 
+String tempString;
+List tempList;
 
 class EditPrescription extends StatefulWidget {
 
@@ -18,6 +21,7 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
   PrescriptionClass data;
   String originalPrescriptionName;
+  var locale;
 
   _EditPrescriptionState(this.data);
 
@@ -51,8 +55,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
                           [
                             //NAME
                             GestureDetector(
-                              onTap: () {
-                                data.name = "remEditTest";
+                              onTap: () async {
+                                tempString = data.name;
+
+                                var popUp = NameInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.name = tempString;
                                 setState(() {});
                               },
                               child: Container(
@@ -70,8 +85,20 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                             //STRENGTH
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                tempString = data.strength.toString();
 
+                                var popUp = StrengthInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.strength = double.parse(tempString);
+                                setState(() {});
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -88,8 +115,20 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                             //STRENGTH UNITS
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                tempString = data.strengthUnits;
 
+                                var popUp = StrengthUnitsInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.strengthUnits = tempString;
+                                setState(() {});
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -106,7 +145,20 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                             //UNITS PER DOSAGE
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                tempString = data.unitsPerDosage.toString();
+
+                                var popUp = UnitsPerDosageInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.unitsPerDosage = int.parse(tempString);
+                                setState(() {});
 
                               },
                               child: Container(
@@ -122,27 +174,22 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                             SizedBox(height: 5),
 
-                            //STOCK REMINDERS
-                            GestureDetector(
-                              onTap: () {
-
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
-                                ),
-                                child: Text("Stock Reminders: "),
-                              ),
-                            ),
-
-                            SizedBox(height: 5),
-
                             //REMAINING STOCK
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                tempString = data.stockNo.toString();
+
+                                var popUp = RemainingStockInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.stockNo = int.parse(tempString);
+                                setState(() {});
 
                               },
                               child: Container(
@@ -158,9 +205,53 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                             SizedBox(height: 5),
 
+                            //STOCK REMINDER
+                            GestureDetector(
+                              onTap: () async {
+                                tempString = data.stockReminder.toString();
+
+                                var popUp = StockReminderInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.stockReminder = int.parse(tempString);
+                                setState(() {});
+
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 25.0),
+                                height: 70,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.blueAccent)
+                                ),
+                                child: Text("Stock Reminder: " + data.stockReminder.toString()),
+                              ),
+                            ),
+
+                            SizedBox(height: 5),
+
                             //REMINDER FREQUENCY
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                tempString = data.reminderFreq;
+
+                                var popUp = ReminderFrequencyInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.reminderFreq = tempString;
+                                setState(() {});
 
                               },
                               child: Container(
@@ -176,12 +267,60 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                             SizedBox(height: 5),
 
-                            //REMINDER DAYS
+                            //REMINDER TIMES
+                            data.reminderFreq != "None" ?
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
+                                tempList = data.reminderTimes;
+
+                                var popUp = ReminderTimesInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.reminderTimes = tempList;
+                                setState(() {});
 
                               },
-                              child: data.reminderFreq == "Specific days" ?
+                              child:
+                                Container(
+                                  padding: const EdgeInsets.symmetric(vertical: 25.0),
+                                  height: 70,
+                                  decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.blueAccent)
+                                  ),
+                                  child: Text("Reminder Times: " + data.reminderTimes.toString()),
+                                )
+                              ):SizedBox(height: 0),
+
+                            SizedBox(height: 5),
+
+                            //REMINDER DAYS
+                            data.reminderFreq == "Specific days" ?
+                            GestureDetector(
+                                onTap: () async {
+                                  tempList = data.specificDays;
+                                  locale = await Localizations.localeOf(context);
+
+                                  var popUp = ReminderDaysInput(locale);
+                                  await showDialog(
+                                    context: context,
+                                    barrierDismissible: true,
+                                    builder: (BuildContext context){
+                                      return popUp;
+                                    },
+                                  );
+
+                                  data.specificDays = tempList;
+                                  setState(() {});
+
+                                },
+
+                              child:
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     vertical: 25.0),
@@ -190,47 +329,41 @@ class _EditPrescriptionState extends State<EditPrescription> {
                                     border: Border.all(color: Colors.blueAccent)
                                 ),
                                 child: Text("Reminder Days"),
-                              ) : SizedBox(),
-                            ),
+                              )
+                            ): SizedBox(height: 0,),
 
-                            SizedBox(height: 5),
-
-                            //DAYS INTERVAL
-                            GestureDetector(
-                              onTap: () {
-
-                              },
-                              child: data.reminderFreq == "Days Interval" ?
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
-                                ),
-                                child: Text("Name: " + data.daysInterval.toString()),
-                              ) : SizedBox(height: 0),
-                            ),
-
-                            SizedBox(height: 5),
-
-                            //REMINDER TIMES
-                            GestureDetector(
-                              onTap: () {
-
-                              },
-                              child: data.reminderFreq != "None" ?
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
-                                decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
-                                ),
-                                child: Text("Reminder Times"),
-                              ) :SizedBox(height: 0),
-                            ),
-
+                            //SizedBox(height: 5),
+                            //
+                            // //DAYS INTERVAL
+                            // data.reminderFreq == "Days Interval" ?
+                            // GestureDetector(
+                            //     onTap: () async {
+                            //       tempList = data.reminderTimes;
+                            //
+                            //       var popUp = ReminderTimesInput();
+                            //       await showDialog(
+                            //         context: context,
+                            //         barrierDismissible: true,
+                            //         builder: (BuildContext context){
+                            //           return popUp;
+                            //         },
+                            //       );
+                            //
+                            //       data.reminderTimes = tempList;
+                            //       setState(() {});
+                            //
+                            //     },
+                            //   child:
+                            //   Container(
+                            //     padding: const EdgeInsets.symmetric(
+                            //         vertical: 25.0),
+                            //     height: 70,
+                            //     decoration: BoxDecoration(
+                            //         border: Border.all(color: Colors.blueAccent)
+                            //     ),
+                            //     child: Text("Name: " + data.daysInterval.toString()),
+                            //   )
+                            // ): SizedBox(height: 0),
                           ],
                         ),
                       ),

@@ -15,7 +15,7 @@ class FirebasePage {
   //ADD PRESCRIPTION
   Future<void> addPrescription(String name, double strength, String strengthUnits,
       int unitsPerDosage, String reminderFreq, List reminderTimes, List specificDays,
-      int daysInterval, List stockReminders, int stockNo) {
+      int daysInterval, int stockReminder, int stockNo) {
     CollectionReference prescriptionsTable = findPrescriptionsRef(
         deviceID, currentPatientID);
     return prescriptionsTable.
@@ -28,7 +28,7 @@ class FirebasePage {
       'reminderTimes': reminderTimes,
       'specificDays': specificDays,
       'daysInterval': daysInterval,
-      'stockReminders': stockReminders,
+      'stockReminder': stockReminder,
       'stockNo': stockNo,
     }).
     then((value) => print("PRESCRIPTION ADDED")).
@@ -245,11 +245,8 @@ class FirebasePage {
               id = doc.id;
               reduceStock(cr.doc(id), newStock);
 
-              for(int sr in doc["stockReminders"]){
-                if(newStock <= sr){
-                  _stockNotification(9999, "Stock reminder", "Stock of this med needs refilled!", "!" + newStock.toString() + "**" + prescriptionName);
-                  break;
-                }
+              if(newStock <= doc["stockReminder"]){
+                _stockNotification(9999, "Stock reminder", "Stock of this med needs refilled!", "!" + newStock.toString() + "**" + prescriptionName);
               }
             }
           }),
@@ -298,7 +295,7 @@ class FirebasePage {
       'reminderTimes' : data.reminderTimes,
       'specificDays' : data.specificDays,
       'stockNo' : data.stockNo,
-      'stockReminders' : data.stockReminders,
+      'stockReminder' : data.stockReminder,
       'strength' : data.strength,
       'strengthUnits' : data.strengthUnits,
       'unitsPerDosage' : data.unitsPerDosage,

@@ -359,6 +359,13 @@
             </list>
           </value>
         </entry>
+        <entry key="string_validator">
+          <value>
+            <list>
+              <option value="$USER_HOME$/flutter_windows_1.17.5-stable/flutter/.pub-cache/hosted/pub.dartlang.org/string_validator-0.1.4/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="table_calendar">
           <value>
             <list>
@@ -458,6 +465,7 @@
       <root url="file://$USER_HOME$/flutter_windows_1.17.5-stable/flutter/.pub-cache/hosted/pub.dartlang.org/stack_trace-1.10.0-nullsafety.1/lib" />
       <root url="file://$USER_HOME$/flutter_windows_1.17.5-stable/flutter/.pub-cache/hosted/pub.dartlang.org/stream_channel-2.1.0-nullsafety.1/lib" />
       <root url="file://$USER_HOME$/flutter_windows_1.17.5-stable/flutter/.pub-cache/hosted/pub.dartlang.org/string_scanner-1.1.0-nullsafety.1/lib" />
+      <root url="file://$USER_HOME$/flutter_windows_1.17.5-stable/flutter/.pub-cache/hosted/pub.dartlang.org/string_validator-0.1.4/lib" />
       <root url="file://$USER_HOME$/flutter_windows_1.17.5-stable/flutter/.pub-cache/hosted/pub.dartlang.org/table_calendar-2.3.1/lib" />
       <root url="file://$USER_HOME$/flutter_windows_1.17.5-stable/flutter/.pub-cache/hosted/pub.dartlang.org/term_glyph-1.2.0-nullsafety.1/lib" />
       <root url="file://$USER_HOME$/flutter_windows_1.17.5-stable/flutter/.pub-cache/hosted/pub.dartlang.org/test_api-0.2.19-nullsafety.2/lib" />

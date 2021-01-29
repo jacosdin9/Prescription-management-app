@@ -20,10 +20,10 @@ class PrescriptionPopup extends StatelessWidget{
   int daysInterval;
   List reminderTimes;
   List specificDays;
-  List stockReminders;
+  int stockReminder;
   int stockNo;
 
-  PrescriptionPopup(this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminders, this.stockNo);
+  PrescriptionPopup(this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo);
 
   @override
   Widget build(BuildContext context) {
@@ -89,50 +89,54 @@ class PrescriptionPopup extends StatelessWidget{
             Expanded(
               child: Row(
                 children: [
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.orange),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => EditPrescription(PrescriptionClass(id: id, name: name, strength: strength, strengthUnits: strengthUnits, unitsPerDosage: unitsPerDosage, reminderFreq: reminderFreq, daysInterval: daysInterval, reminderTimes: reminderTimes, specificDays: specificDays, stockReminders: stockReminders, stockNo: stockNo))),
-                      );
-                    },
-                    child: Text(
-                      "Edit",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20,
+                  Expanded(
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.orange),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => EditPrescription(PrescriptionClass(id: id, name: name, strength: strength, strengthUnits: strengthUnits, unitsPerDosage: unitsPerDosage, reminderFreq: reminderFreq, daysInterval: daysInterval, reminderTimes: reminderTimes, specificDays: specificDays, stockReminder: stockReminder, stockNo: stockNo))),
+                        );
+                      },
+                      child: Text(
+                        "Edit",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
 
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.red),
-                    ),
-                    onPressed: () {
-                      deleteCorrespondingReminders();
-                      FirebasePage().deletePrescription(id);
-                      Navigator.pop(context);
-                      var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");
-                      showDialog(
-                        context: context,
-                        barrierDismissible: true,
-                        builder: (BuildContext context){
-                          return popUp;
-                        },
-                      );
-                    },
-                    child: Text(
-                      "Delete",
-                      style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20,
+                  Expanded(
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18.0),
+                        side: BorderSide(color: Colors.red),
+                      ),
+                      onPressed: () {
+                        deleteCorrespondingReminders();
+                        FirebasePage().deletePrescription(id);
+                        Navigator.pop(context);
+                        var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");
+                        showDialog(
+                          context: context,
+                          barrierDismissible: true,
+                          builder: (BuildContext context){
+                            return popUp;
+                          },
+                        );
+                      },
+                      child: Text(
+                        "Delete",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 20,
+                        ),
                       ),
                     ),
                   ),
