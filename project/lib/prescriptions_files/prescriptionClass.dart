@@ -10,6 +10,7 @@ class PrescriptionClass{
   List specificDays;
   int stockReminder;
   int stockNo;
+  bool silentReminders;
 
-  PrescriptionClass({this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo});
+  PrescriptionClass({this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo, this.silentReminders});
 }

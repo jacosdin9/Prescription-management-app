@@ -39,6 +39,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   List times = [];
   var values = List.filled(7, true);
   int interval = 1;
+  bool silentReminders = false;
 
   //page 3 variables
   int stockNo = 0;
@@ -235,13 +236,18 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                             "How frequently would you like to receive reminders?",
                           ),
                         ),
+                        SizedBox(height: 10),
+
                         Container(
                           child: DropdownButton<String>(
                             value: dropDownValue,
                             icon: Icon(Icons.arrow_downward),
                             iconSize: 24,
                             elevation: 16,
-                            style: TextStyle(color: Colors.deepPurple),
+                            style: TextStyle(
+                              color: Colors.deepPurple,
+                              fontSize: 30,
+                            ),
                             underline: Container(
                               height: 3,
                               color: Colors.deepPurpleAccent,
@@ -251,15 +257,33 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                                 dropDownValue = newValue;
                               });
                             },
-                            items: <String>["None", "Daily", "Specific days", "Days interval"]
-                                .map<DropdownMenuItem<String>>((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value),
-                              );
-                            }).toList(),
+                            items: ["None", "Daily", "Specific days", "Days interval"]
+                                .map((value) => DropdownMenuItem(
+                              child: SizedBox(
+                                width: 240.0, // for example
+                                child: Text(value, textAlign: TextAlign.center),
+                              ),
+                              value: value,
+                            )).toList(),
                           ),
                         ),
+
+                        dropDownValue != "None" ?
+                            Column(
+                              children: [
+                                Text("Tick this box if you don't want to receive reminders for each dose, but you would like to receive stock reminders."),
+                                Checkbox(
+                                  value: silentReminders,
+                                  onChanged: (bool newValue) {
+                                    setState(() {
+                                      silentReminders = newValue;
+                                    });
+                                  }
+                                ),
+                              ],
+                            ) : SizedBox(),
+
+                        SizedBox(height: 10),
 
                         renderFreqWidget(dropDownValue),
                       ],
@@ -365,8 +389,8 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                       );
                       Navigator.pop(context);
 
-                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock);
-                      createNotifications(pName, dropDownValue, times, values, interval);
+                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock, silentReminders);
+                      createNotifications(pName, dropDownValue, times, values, interval, silentReminders, pUnitsPerDosage, currentStock, stockNo);
                     }
                   },
                 ),
@@ -540,49 +564,119 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   }
 }
 
-createNotifications(String pName, String freq, List times, List dayValues, int interval) async {
-  if(freq == "None"){
-    print("No notifications needed");
-  }
+createNotifications(String pName, String freq, List times, List dayValues, int interval, bool silentReminders, int unitsPerDosage, int currentStock, int stockLimit) async {
 
-  else if(freq == "Daily"){
-    int rId = await getReminderIdNo();
-    for(String time  in times){
-      Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
-
-      //This will create a reminder for the local device. Need to find a good way to link online-
-      //carer to local notifications now as we don't really want it being added straight to local device
-      _scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
-
-      //add reminder to database. Works for both local and carer so this part is okay
-      await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
-      rId += 1;
+  if(silentReminders == false){
+    if(freq == "None"){
+      print("No notifications needed");
     }
-  }
 
-  else if(freq == "Specific days"){
-    int rId = await getReminderIdNo();
+    else if(freq == "Daily"){
+      int rId = await getReminderIdNo();
+      for(String time  in times){
+        Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
 
-    //for dayV in day values
-    for(int day = 0; day<dayValues.length; day++){
-      if(dayValues[day] == true){
-        for(String time  in times){
-          Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
+        //This will create a reminder for the local device. Need to find a good way to link online-
+        //carer to local notifications now as we don't really want it being added straight to local device
+        _scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
 
-          //This will create a reminder for the local device. Need to find a good way to link online-
-          //carer to local notifications now as we don't really want it being added straight to local device
-          _scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day);
+        //add reminder to database. Works for both local and carer so this part is okay
+        await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
+        rId += 1;
+      }
+    }
 
-          //add reminder to database. Works for both local and carer so this part is okay
-          await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);
-          rId += 1;
+    else if(freq == "Specific days"){
+      int rId = await getReminderIdNo();
+
+      //for dayV in day values
+      for(int day = 0; day<dayValues.length; day++){
+        if(dayValues[day] == true){
+          for(String time  in times){
+            Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
+
+            //This will create a reminder for the local device. Need to find a good way to link online-
+            //carer to local notifications now as we don't really want it being added straight to local device
+            _scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day);
+
+            //add reminder to database. Works for both local and carer so this part is okay
+            await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);
+            rId += 1;
+          }
         }
       }
     }
   }
+
+  //schedule reminders for stock refills only
+  else if(silentReminders == true && freq != "None" && currentStock != 0){
+    int stockPerDay = times.length * unitsPerDosage;
+    int daysTilLimit = 0;
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation(currentTimeZone));
+    tz.TZDateTime today = tz.TZDateTime.now(tz.local);
+    tz.TZDateTime stockRefillDay = tz.TZDateTime(tz.local, today.year, today.month, today.day, 18, 0, 0);
+    int rId = await getReminderIdNo();
+
+    //find how many days it will take for currentStock to go below stockLimit
+
+    //if daily
+    if(freq == "Daily"){
+      while(currentStock > stockLimit){
+        daysTilLimit += 1;
+        currentStock -= stockPerDay;
+      }
+
+      stockRefillDay = stockRefillDay.add(Duration(days: daysTilLimit));
+    }
+
+    //if specific days
+    else{
+      List selectedDays = [];
+
+      //get day integers from selected days
+      for(int i = 0; i<dayValues.length; i++){
+        if(dayValues[i] == true){
+
+          //if Sunday, change to 7 for consistency
+          if(i==0){
+            selectedDays.add(7);
+            continue;
+          }
+
+          selectedDays.add(i);
+        }
+      }
+
+      //if user chooses Specific days but selects no days, this if statement will avoid a crash
+      if(selectedDays.length != 0){
+
+        //iterate through days until current stock falls below limit. Only consider days from dayValues.
+        while (currentStock>stockLimit) {
+          stockRefillDay = stockRefillDay.add(const Duration(days: 1));
+
+          print(stockRefillDay.weekday);
+          if(selectedDays.contains(stockRefillDay.weekday)){
+            currentStock -= stockPerDay;
+          }
+        }
+      }
+    }
+
+    //ensure currentStock doesn't drop below 0
+    if(currentStock < 0){
+      currentStock = 0;
+    }
+
+    print(stockRefillDay);
+    _scheduleDateTimeNotification(rId, "Stock reminder", "Stock of this med needs refilled!", stockRefillDay, "!" + currentStock.toString() + "**" + pName);
+
+    //add reminder to database. Works for both local and carer so this part is okay
+    await FirebasePage().addReminder(currentPatientID, pName, rId, "Single", "18:00", stockRefillDay.day.toString() + '/' + stockRefillDay.month.toString() + '/' + stockRefillDay.year.toString(), interval);
+  }
 }
 
-//DAILY
+//DAILY NOTIFICATION
 Future<void> _scheduleDailyNotification(rId, name, description, time) async {
   var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
   var generalNotificationDetails = NotificationDetails(android: androidDetails);
@@ -604,16 +698,7 @@ Future<void> _scheduleDailyNotification(rId, name, description, time) async {
   );
 }
 
-tz.TZDateTime _nextInstanceOfTime(Time t) {
-  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
-  tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, t.hour, t.minute, t.second);
-  if (scheduledDate.isBefore(now)) {
-    scheduledDate = scheduledDate.add(const Duration(days: 1));
-  }
-  return scheduledDate;
-}
-
-//WEEKLY
+//WEEKLY NOTIFICATION
 Future<void> _scheduleWeeklyNotification(rId, name, description, time, dayV) async {
   var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
   var generalNotificationDetails = NotificationDetails(android: androidDetails);
@@ -641,12 +726,42 @@ Future<void> _scheduleWeeklyNotification(rId, name, description, time, dayV) asy
   );
 }
 
+tz.TZDateTime _nextInstanceOfTime(Time t) {
+  final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
+  tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, t.hour, t.minute, t.second);
+  if (scheduledDate.isBefore(now)) {
+    scheduledDate = scheduledDate.add(const Duration(days: 1));
+  }
+  return scheduledDate;
+}
+
 tz.TZDateTime _nextInstanceOfWeekly(Time t, int d) {
   tz.TZDateTime scheduledDate = _nextInstanceOfTime(t);
   while (scheduledDate.weekday != d) {
     scheduledDate = scheduledDate.add(const Duration(days: 1));
   }
   return scheduledDate;
+}
+
+//SCHEDULE STOCK NOTIFICATION FOR SPECIFIC DATE AND TIME
+Future<void> _scheduleDateTimeNotification(rId, name, description, date, payload) async {
+  var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
+  var generalNotificationDetails = NotificationDetails(android: androidDetails);
+
+  tz.initializeTimeZones();
+  tz.setLocalLocation(tz.getLocation(currentTimeZone));
+
+  await flutterLocalNotificationsPlugin.zonedSchedule(
+    rId,
+    name,
+    description,
+    date,
+    generalNotificationDetails,
+    androidAllowWhileIdle: true,
+    uiLocalNotificationDateInterpretation:
+    UILocalNotificationDateInterpretation.absoluteTime,
+    payload: payload,
+  );
 }
 
 //the payload will help create the CollectionPath by creating a string that can be split up with a delimiter

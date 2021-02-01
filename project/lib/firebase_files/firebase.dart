@@ -15,7 +15,7 @@ class FirebasePage {
   //ADD PRESCRIPTION
   Future<void> addPrescription(String name, double strength, String strengthUnits,
       int unitsPerDosage, String reminderFreq, List reminderTimes, List specificDays,
-      int daysInterval, int stockReminder, int stockNo) {
+      int daysInterval, int stockReminder, int stockNo, bool silentReminders) {
     CollectionReference prescriptionsTable = findPrescriptionsRef(
         deviceID, currentPatientID);
     return prescriptionsTable.
@@ -30,6 +30,7 @@ class FirebasePage {
       'daysInterval': daysInterval,
       'stockReminder': stockReminder,
       'stockNo': stockNo,
+      'silentReminders' : silentReminders,
     }).
     then((value) => print("PRESCRIPTION ADDED")).
     catchError((error) => print("FAILED TO ADD PRESCRIPTION: $error"));
@@ -283,7 +284,7 @@ class FirebasePage {
 
       //if reminders previously existed for this prescription, they will have been deleted, so this creates the new updated ones.
       if(hasRemindersChanged == true){
-        createNotifications(data.name, data.reminderFreq, data.reminderTimes, data.specificDays, data.daysInterval);
+        createNotifications(data.name, data.reminderFreq, data.reminderTimes, data.specificDays, data.daysInterval, data.silentReminders, data.unitsPerDosage,  data.stockNo, data.stockReminder);
       }
     }
 

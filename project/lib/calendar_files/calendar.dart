@@ -189,6 +189,16 @@ createCalendar(List reminders){
       }
     }
 
+    //if reminder is a one off
+    else if(rem.get("frequency") == "Single"){
+      String day = rem.get("day");
+      List daySplit = day.split('/');
+      dateToAdd = DateTime(int.parse(daySplit[2]), int.parse(daySplit[1]), int.parse(daySplit[0]));
+
+      events.putIfAbsent(dateToAdd, () => List());
+      events[dateToAdd].add(rem);
+    }
+
     //if reminder is every *interval* days
     else if(rem.get("frequency") == "Days interval"){
       var nowFull = DateTime.now();
