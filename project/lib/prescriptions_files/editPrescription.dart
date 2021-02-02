@@ -6,6 +6,7 @@ import 'package:project/prescriptions_files/prescriptionClass.dart';
 
 String tempString;
 List tempList;
+bool tempBool;
 
 class EditPrescription extends StatefulWidget {
 
@@ -262,6 +263,37 @@ class _EditPrescriptionState extends State<EditPrescription> {
                                     border: Border.all(color: Colors.blueAccent)
                                 ),
                                 child: Text("Reminder Frequency: " + data.reminderFreq),
+                              ),
+                            ),
+
+                            SizedBox(height: 5),
+
+                            //SILENT REMINDER
+                            GestureDetector(
+                              onTap: () async {
+                                tempBool = data.silentReminders;
+
+                                var popUp = SilentRemindersInput();
+                                await showDialog(
+                                  context: context,
+                                  barrierDismissible: true,
+                                  builder: (BuildContext context){
+                                    return popUp;
+                                  },
+                                );
+
+                                data.silentReminders = tempBool;
+                                setState(() {});
+
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 25.0),
+                                height: 70,
+                                decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.blueAccent)
+                                ),
+                                child: Text("Silent Reminders: " + data.silentReminders.toString()),
                               ),
                             ),
 

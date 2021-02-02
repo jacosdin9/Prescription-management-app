@@ -22,8 +22,9 @@ class PrescriptionPopup extends StatelessWidget{
   List specificDays;
   int stockReminder;
   int stockNo;
+  bool silentReminders;
 
-  PrescriptionPopup(this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo);
+  PrescriptionPopup(this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo, this.silentReminders);
 
   @override
   Widget build(BuildContext context) {
@@ -99,7 +100,7 @@ class PrescriptionPopup extends StatelessWidget{
                         Navigator.pop(context);
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => EditPrescription(PrescriptionClass(id: id, name: name, strength: strength, strengthUnits: strengthUnits, unitsPerDosage: unitsPerDosage, reminderFreq: reminderFreq, daysInterval: daysInterval, reminderTimes: reminderTimes, specificDays: specificDays, stockReminder: stockReminder, stockNo: stockNo))),
+                          MaterialPageRoute(builder: (context) => EditPrescription(PrescriptionClass(id: id, name: name, strength: strength, strengthUnits: strengthUnits, unitsPerDosage: unitsPerDosage, reminderFreq: reminderFreq, daysInterval: daysInterval, reminderTimes: reminderTimes, specificDays: specificDays, stockReminder: stockReminder, stockNo: stockNo, silentReminders: silentReminders))),
                         );
                       },
                       child: Text(

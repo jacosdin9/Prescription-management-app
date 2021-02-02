@@ -300,6 +300,7 @@ class FirebasePage {
       'strength' : data.strength,
       'strengthUnits' : data.strengthUnits,
       'unitsPerDosage' : data.unitsPerDosage,
+      'silentReminders' : data.silentReminders,
     }).then((value) => print("Prescription Updated"))
         .catchError((error) => print("Failed to update prescription: $error"));
   }
