@@ -12,16 +12,12 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:intl/date_symbols.dart';
 import 'package:intl/date_symbol_data_local.dart';
 
-
 class AddPrescription extends StatefulWidget{
   @override
   _AddPrescriptionState createState() => _AddPrescriptionState();
 }
 
-class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAliveClientMixin<AddPrescription>{
-
-  @override
-  bool get wantKeepAlive => true;
+class _AddPrescriptionState extends State<AddPrescription>{
 
   //page 1 variables
   String pName;
@@ -41,6 +37,9 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   int interval = 1;
   bool silentReminders = false;
 
+  double boxHeight;
+  double boxWidth;
+
   //page 3 variables
   int stockNo = 0;
   int currentStock = 0;
@@ -48,22 +47,20 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
   final _formKey1 = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+
+    boxHeight = 200;
+    boxWidth = 400;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    super.build(context);
-    FocusNode myFocusNode;
-
-    @override
-    void initState() {
-      super.initState();
-      myFocusNode = FocusNode();
-    }
-
-    @override
-    void dispose() {
-      myFocusNode.dispose();
-      super.dispose();
-    }
-
     return MaterialApp(
       title: "Add Prescription",
       home: DefaultTabController(
@@ -74,15 +71,15 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
               tabs: [
                 Tab(
                   icon: Icon(Icons.assignment_turned_in),
-                  child: Text("Required"),
+                  child: Text("     Info\n(required)"),
                 ),
                 Tab(
                   icon: Icon(Icons.access_alarms),
-                  child: Text("Optional"),
+                  child: Text("Reminders\n (optional)"),
                 ),
                 Tab(
-                  icon: Icon(Icons.directions_bike),
-                  child: Text("Optional"),
+                  icon: Icon(Icons.poll),
+                  child: Text("   Stock\n(optional)"),
                 ),
               ],
             ),
@@ -113,9 +110,11 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
                                   controller: nameController,
                                   onSaved: (String value){pName=value;},
-                                  focusNode: myFocusNode,
                                   decoration: InputDecoration(
                                     labelText: "Prescription name",
                                     hintText: "Enter prescription name",
@@ -143,9 +142,11 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
                                   controller: strengthController,
                                   onSaved: (String value){pStrength=double.parse(value);},
-                                  focusNode: myFocusNode,
                                   keyboardType: TextInputType.number,
                                   decoration: InputDecoration(
                                     labelText: "Strength",
@@ -174,9 +175,11 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
                                   controller: strengthUnitsController,
                                   onSaved: (String value){pStrengthUnits=value;},
-                                  focusNode: myFocusNode,
                                   decoration: InputDecoration(
                                     labelText: "Strength units",
                                     hintText: "Enter strength units",
@@ -204,9 +207,11 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                               child: Padding(
                                 padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                                 child: TextFormField(
+                                  style: TextStyle(
+                                    fontSize: 20,
+                                  ),
                                   controller: unitsPerDosageController,
                                   onSaved: (String value){pUnitsPerDosage=int.parse(value);},
-                                  focusNode: myFocusNode,
                                   decoration: InputDecoration(
                                     labelText: "Units per dosage",
                                     hintText: "Enter how many units are taken per dosage.",
@@ -229,65 +234,139 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
 
                   //PAGE2------------------------------------------------------------------------------------------------------------------
                   Scaffold(
-                    body: Column(
-                      children: [
+                    body:
                         Center(
-                          child: Text(
-                            "How frequently would you like to receive reminders?",
-                          ),
-                        ),
-                        SizedBox(height: 10),
-
-                        Container(
-                          child: DropdownButton<String>(
-                            value: dropDownValue,
-                            icon: Icon(Icons.arrow_downward),
-                            iconSize: 24,
-                            elevation: 16,
-                            style: TextStyle(
-                              color: Colors.deepPurple,
-                              fontSize: 30,
-                            ),
-                            underline: Container(
-                              height: 3,
-                              color: Colors.deepPurpleAccent,
-                            ),
-                            onChanged: (String newValue) {
-                              setState(() {
-                                dropDownValue = newValue;
-                              });
-                            },
-                            items: ["None", "Daily", "Specific days", "Days interval"]
-                                .map((value) => DropdownMenuItem(
-                              child: SizedBox(
-                                width: 240.0, // for example
-                                child: Text(value, textAlign: TextAlign.center),
-                              ),
-                              value: value,
-                            )).toList(),
-                          ),
-                        ),
-
-                        dropDownValue != "None" ?
-                            Column(
-                              children: [
-                                Text("Tick this box if you don't want to receive reminders for each dose, but you would like to receive stock reminders."),
-                                Checkbox(
-                                  value: silentReminders,
-                                  onChanged: (bool newValue) {
-                                    setState(() {
-                                      silentReminders = newValue;
-                                    });
-                                  }
+                          child: Column(
+                            children: [
+                              AnimatedContainer(
+                                margin: const EdgeInsets.all(20.0),
+                                alignment: Alignment.center,
+                                padding: const EdgeInsets.all(3.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.grey,
+                                  border: Border.all(color: Colors.blueAccent),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
                                 ),
-                              ],
-                            ) : SizedBox(),
+                                duration: Duration(seconds: 1),
+                                curve: Curves.fastOutSlowIn,
+                                height: boxHeight,
+                                width: boxWidth,
+                                child: Column(
+                                  children: [
+                                    Text(
+                                      "\nHow frequently would you like to receive reminders?",
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        fontSize: 30,
+                                      ),
+                                    ),
 
-                        SizedBox(height: 10),
+                                    SizedBox(height: 10),
 
-                        renderFreqWidget(dropDownValue),
-                      ],
-                    ),
+                                    Container(
+                                      child: DropdownButton<String>(
+                                        value: dropDownValue,
+                                        icon: Icon(Icons.arrow_downward),
+                                        iconSize: 24,
+                                        elevation: 16,
+                                        style: TextStyle(
+                                          color: Colors.deepPurple,
+                                          fontSize: 30,
+                                        ),
+                                        underline: Container(
+                                          height: 3,
+                                          color: Colors.deepPurpleAccent,
+                                        ),
+                                        onChanged: (String newValue) {
+                                          setState(() {
+                                            dropDownValue = newValue;
+
+                                            if(newValue == 'None'){
+                                              boxHeight = 200;
+                                              boxWidth = 400;
+                                            }
+
+                                            else if(newValue == 'Daily'){
+                                              boxHeight = 600;
+                                              boxWidth = 500;
+                                            }
+
+                                            else if(newValue == 'Specific days'){
+                                              boxHeight = 650;
+                                              boxWidth = 500;
+                                            }
+
+                                          });
+                                        },
+                                        items: ["None", "Daily", "Specific days"]
+                                            .map((value) => DropdownMenuItem(
+                                          child: SizedBox(
+                                            width: 240.0, // for example
+                                            child: Text(value + '\n', textAlign: TextAlign.center),
+                                          ),
+                                          value: value,
+                                        )).toList(),
+                                      ),
+                                    ),
+
+                                    renderFreqWidget(dropDownValue),
+
+                                    dropDownValue != "None" ?
+                                        Container(
+                                          margin: const EdgeInsets.all(20.0),
+                                          alignment: Alignment.center,
+                                          padding: const EdgeInsets.all(3.0),
+                                          decoration: BoxDecoration(
+                                            color: Colors.red,
+                                            border: Border.all(color: Colors.blueAccent),
+                                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                                          ),
+                                          height: 50,
+                                          width: 400,
+
+                                          child: Row(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            children: [
+                                              IconButton(
+                                                icon: Icon(Icons.info),
+                                                onPressed: () {
+                                                  var popUp = PopupAlert("Silent reminders", "- You won't receive a reminder for each and every dose\n- Dose times will still be recorded to assist stock refill reminders.");
+
+                                                  showDialog(
+                                                    context: context,
+                                                    barrierDismissible: true,
+                                                    builder: (BuildContext context){
+                                                      return popUp;
+                                                    },
+                                                  );
+                                                },
+                                              ),
+                                              Text(
+                                                "Silent reminders ",
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  fontSize: 30,
+                                                ),
+                                              ),
+                                              Checkbox(
+                                                  value: silentReminders,
+                                                  onChanged: (bool newValue) {
+                                                    setState(() {
+                                                      silentReminders = newValue;
+                                                    });
+                                                  }
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                     : SizedBox(),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+
                   ),
 
                   //PAGE 3 ----------------------------------------------------------------------------------------------------------------------
@@ -440,7 +519,7 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
 
   renderFreqWidget(String freq) {
     if(freq == "None"){
-      return Text("NONE SELECTED");
+      return SizedBox();
     }
 
     else{
@@ -449,10 +528,13 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
           renderFreqExtra(freq),
           Container(
             height: 200,
-            margin: const EdgeInsets.all(50.0),
+            margin: const EdgeInsets.all(20.0),
             padding: const EdgeInsets.all(3.0),
             decoration: BoxDecoration(
-                border: Border.all(color: Colors.blueAccent)
+              border: Border.all(color: Colors.blueAccent),
+              borderRadius: BorderRadius.all(Radius.circular(20)),
+              color: Colors.white,
+
             ),
             child: CustomScrollView(
               scrollDirection: Axis.vertical,
@@ -465,7 +547,12 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
                           (context, index) =>
                               Row(
                                 children: [
-                                  Text(times[index].toString()),
+                                  Text(
+                                    times[index].toString(),
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                    ),
+                                  ),
                                   IconButton(
                                     icon: Icon(Icons.delete_forever),
                                     onPressed: () {
@@ -525,15 +612,13 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
     if(freq == "Specific days"){
       return Column(
         children: [
+          SizedBox(height: 10,),
           WeekdaySelector(
             onChanged: (int day) {
               print((dateSymbols.FIRSTDAYOFWEEK).toString());
               setState(() {
-                print(day);
                 final index = (day % 7);
                 values[index] = !values[index];
-                //print(index);
-                print(values);
               });
             },
             values: values,
@@ -544,20 +629,20 @@ class _AddPrescriptionState extends State<AddPrescription> with AutomaticKeepAli
         ],
       );
     }
-    else if(freq == "Days interval"){
-      return Column(
-        children: [
-          Text("Select an interval of days"),
-          NumberPicker.integer(
-            initialValue: interval,
-            minValue: 0,
-            maxValue: 6,
-            onChanged: (newValue) =>
-                setState(() => interval = newValue)
-          )
-        ],
-      );
-    }
+    // else if(freq == "Days interval"){
+    //   return Column(
+    //     children: [
+    //       Text("Select an interval of days"),
+    //       NumberPicker.integer(
+    //         initialValue: interval,
+    //         minValue: 0,
+    //         maxValue: 6,
+    //         onChanged: (newValue) =>
+    //             setState(() => interval = newValue)
+    //       )
+    //     ],
+    //   );
+    // }
     else{
       return SizedBox();
     }
@@ -615,7 +700,7 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
     tz.initializeTimeZones();
     tz.setLocalLocation(tz.getLocation(currentTimeZone));
     tz.TZDateTime today = tz.TZDateTime.now(tz.local);
-    tz.TZDateTime stockRefillDay = tz.TZDateTime(tz.local, today.year, today.month, today.day, 18, 0, 0);
+    tz.TZDateTime stockRefillDay = tz.TZDateTime(tz.local, today.year, today.month, today.day, 13, 0, 0);
     int rId = await getReminderIdNo();
 
     //find how many days it will take for currentStock to go below stockLimit
@@ -672,7 +757,7 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
     _scheduleDateTimeNotification(rId, "Stock reminder", "Stock of this med needs refilled!", stockRefillDay, "!" + currentStock.toString() + "**" + pName);
 
     //add reminder to database. Works for both local and carer so this part is okay
-    await FirebasePage().addReminder(currentPatientID, pName, rId, "Single", "18:00", stockRefillDay.day.toString() + '/' + stockRefillDay.month.toString() + '/' + stockRefillDay.year.toString(), interval);
+    await FirebasePage().addReminder(currentPatientID, pName, rId, "Single", "13:00", stockRefillDay.day.toString() + '/' + stockRefillDay.month.toString() + '/' + stockRefillDay.year.toString(), interval);
   }
 }
 

@@ -75,7 +75,7 @@ class ReminderPopup extends StatelessWidget{
                 children: [
                   Text("Prescription: " + prescription),
                   Text("Reminder frequency: " + freq),
-                  freq == "Specific Day" ? Text("Day: " + findDayStringFromDayValue(int.parse(day))) : Text("Day: Every day"),
+                  freq == 'Single' ? Text("Type: Stock reminder") : Text("Type: Dosage reminder"),
                   Text("Time: " + time),
                 ],
               ),
