@@ -354,3 +354,19 @@ Future<void> _stockNotification(rId, name, description, payload) async {
     payload: payload,
   );
 }
+
+//CHECK IF PATIENT ALREADY HAS PRESCRIPTION WITH THIS NAME
+Future<bool> checkIfNameExists(String nameToCheck) async {
+  CollectionReference cr = findPrescriptionsRef(deviceID, currentPatientID);
+  bool isFound = false;
+
+  await cr.get().then((QuerySnapshot querySnapshot) => {
+    querySnapshot.docs.forEach((doc) {
+      print(doc["name"]);
+      if(doc["name"] == nameToCheck){
+        isFound = true;
+      }
+    }),
+  });
+  return isFound;
+}

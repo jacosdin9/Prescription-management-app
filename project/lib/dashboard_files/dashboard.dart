@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/patient_files/changeUser.dart';
@@ -24,6 +25,7 @@ class DashboardPage extends StatelessWidget {
             ),
             padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
             onPressed: () async {
+              print(await checkIfNameExists("hi"));
               final List<PendingNotificationRequest> pendingNotificationRequests = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
               for(var p in pendingNotificationRequests){
                 print(p.id);

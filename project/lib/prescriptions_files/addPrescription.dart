@@ -447,8 +447,9 @@ class _AddPrescriptionState extends State<AddPrescription>{
                   backgroundColor: Colors.green,
                   child: Icon(Icons.done),
                   onPressed: () async {
+                    bool nameExists = await checkIfNameExists(nameController.text);
                     // Validate returns true if the form is valid, otherwise false.
-                    if (_formKey1.currentState.validate()) {
+                    if (_formKey1.currentState.validate() && nameExists == false) {
                       _formKey1.currentState.save();
                       print(pName);
                       print(pStrength);
@@ -517,6 +518,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
     });
   }
 
+  //Render widgets depending on freq variable
   renderFreqWidget(String freq) {
     if(freq == "None"){
       return SizedBox();
@@ -604,6 +606,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
     }
   }
 
+  //renders extra widget depending on freq variable
   renderFreqExtra(freq){
 
     final locale = Localizations.localeOf(context);
