@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:project/prescriptions_files/editPrescription.dart';
 import 'package:string_validator/string_validator.dart';
@@ -77,15 +78,16 @@ class NameInput extends StatelessWidget {
                             borderRadius: BorderRadius.circular(18.0),
                             side: BorderSide(color: Colors.orange),
                           ),
-                          onPressed: () {
-                            tempString = _textEditingController.text;
-                            var isValid = isAlpha(tempString);
+                          onPressed: () async {
+                            var isValid = isAlpha(_textEditingController.text);
+                            bool nameExists = await checkIfNameExists(_textEditingController.text);
 
-                            if(isValid){
+                            if(isValid && nameExists == false){
+                              tempString = _textEditingController.text;
                               Navigator.pop(context);
                             }
                             else{
-                              var popUp = PopupAlert("INCORRECT INPUT", "This field must be made up of characters A-Z.\n\nPlease try again.");
+                              var popUp = PopupAlert("INCORRECT INPUT", "This field must be made up of characters A-Z. Also ensure this name isn't already used too.\n\nPlease try again.");
                               showDialog(
                                 context: context,
                                 barrierDismissible: true,

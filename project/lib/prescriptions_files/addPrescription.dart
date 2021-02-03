@@ -211,6 +211,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                                     fontSize: 20,
                                   ),
                                   controller: unitsPerDosageController,
+                                  keyboardType: TextInputType.number,
                                   onSaved: (String value){pUnitsPerDosage=int.parse(value);},
                                   decoration: InputDecoration(
                                     labelText: "Units per dosage",
@@ -471,6 +472,17 @@ class _AddPrescriptionState extends State<AddPrescription>{
 
                       FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock, silentReminders);
                       createNotifications(pName, dropDownValue, times, values, interval, silentReminders, pUnitsPerDosage, currentStock, stockNo);
+                    }
+
+                    else if(nameExists == true){
+                      var popUp = PopupAlert("NAME ALREADY EXISTS", "Prescription name already exists for this patient.\n\nPlease try again.");
+                      showDialog(
+                        context: context,
+                        barrierDismissible: true,
+                        builder: (BuildContext context){
+                          return popUp;
+                        },
+                      );
                     }
                   },
                 ),
