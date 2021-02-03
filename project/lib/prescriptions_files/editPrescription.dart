@@ -437,8 +437,10 @@ class _EditPrescriptionState extends State<EditPrescription> {
                   ),
                   padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
                   onPressed: () async {
-                    FirebasePage().editPrescription(originalPrescriptionName, data);
-                    Navigator.pop(context);
+                    if(await checkIfNameExists(data.name) == false){
+                      FirebasePage().editPrescription(originalPrescriptionName, data);
+                      Navigator.pop(context);
+                    }
                   },
                   child: Text(
                     "DONE",
