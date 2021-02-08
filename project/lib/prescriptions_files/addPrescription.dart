@@ -255,7 +255,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                                 child: Column(
                                   children: [
                                     Text(
-                                      "\nHow frequently would you like to receive reminders?",
+                                      "\nWhen should the medication be taken?",
                                       textAlign: TextAlign.center,
                                       style: TextStyle(
                                         fontSize: 30,
@@ -343,7 +343,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                                                 },
                                               ),
                                               Text(
-                                                "Silent reminders ",
+                                                "Automatically take ",
                                                 textAlign: TextAlign.center,
                                                 style: TextStyle(
                                                   fontSize: 30,
