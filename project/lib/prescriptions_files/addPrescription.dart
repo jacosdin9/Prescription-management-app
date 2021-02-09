@@ -678,7 +678,7 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
 
         //This will create a reminder for the local device. Need to find a good way to link online-
         //carer to local notifications now as we don't really want it being added straight to local device
-        _scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
+        scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
 
         //add reminder to database. Works for both local and carer so this part is okay
         await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
@@ -697,7 +697,7 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
 
             //This will create a reminder for the local device. Need to find a good way to link online-
             //carer to local notifications now as we don't really want it being added straight to local device
-            _scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day);
+            scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day);
 
             //add reminder to database. Works for both local and carer so this part is okay
             await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);
@@ -769,7 +769,7 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
     }
 
     print(stockRefillDay);
-    _scheduleDateTimeNotification(rId, "Stock reminder", "Stock of this med needs refilled!", stockRefillDay, "!" + currentStock.toString() + "**" + pName);
+    scheduleDateTimeNotification(rId, "Stock reminder", "Stock of this med needs refilled!", stockRefillDay, "!" + currentStock.toString() + "**" + pName);
 
     //add reminder to database. Works for both local and carer so this part is okay
     await FirebasePage().addReminder(currentPatientID, pName, rId, "Single", "13:00", stockRefillDay.day.toString() + '/' + stockRefillDay.month.toString() + '/' + stockRefillDay.year.toString(), interval);
@@ -777,29 +777,47 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
 }
 
 //DAILY NOTIFICATION
-Future<void> _scheduleDailyNotification(rId, name, description, time) async {
+Future<void> scheduleDailyNotification(rId, name, description, time) async {
   var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
   var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation(currentTimeZone));
 
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-    rId,
-    name,
-    description,
-    _nextInstanceOfTime(time),
-    generalNotificationDetails,
-    androidAllowWhileIdle: true,
-    uiLocalNotificationDateInterpretation:
-    UILocalNotificationDateInterpretation.absoluteTime,
-    matchDateTimeComponents: DateTimeComponents.time,
-    payload: createPayload(name),
-  );
+  if(fbUser == null){
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      rId,
+      name,
+      description,
+      nextInstanceOfTime(time),
+      generalNotificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+      payload: createPayload(name),
+    );
+  }
+
+  else{
+    await flutterLocalNotificationsPluginOnline.zonedSchedule(
+      rId,
+      name,
+      description,
+      nextInstanceOfTime(time),
+      generalNotificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.time,
+      payload: createPayload(name),
+    );
+  }
+
 }
 
 //WEEKLY NOTIFICATION
-Future<void> _scheduleWeeklyNotification(rId, name, description, time, dayV) async {
+Future<void> scheduleWeeklyNotification(rId, name, description, time, int dayV) async {
   var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
   var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
@@ -810,23 +828,40 @@ Future<void> _scheduleWeeklyNotification(rId, name, description, time, dayV) asy
     dayV = 7;
   }
 
-  print(_nextInstanceOfWeekly(time, dayV));
+  if(fbUser == null){
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      rId,
+      name,
+      description,
+      nextInstanceOfWeekly(time, dayV),
+      generalNotificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      payload: createPayload(name),
+    );
+  }
 
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-    rId,
-    name,
-    description,
-    _nextInstanceOfWeekly(time, dayV),
-    generalNotificationDetails,
-    androidAllowWhileIdle: true,
-    uiLocalNotificationDateInterpretation:
-    UILocalNotificationDateInterpretation.absoluteTime,
-    matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-    payload: createPayload(name),
-  );
+  else{
+
+    await flutterLocalNotificationsPluginOnline.zonedSchedule(
+      rId,
+      name,
+      description,
+      nextInstanceOfWeekly(time, dayV),
+      generalNotificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
+      payload: createPayload(name),
+    );
+  }
+
 }
 
-tz.TZDateTime _nextInstanceOfTime(Time t) {
+tz.TZDateTime nextInstanceOfTime(Time t) {
   final tz.TZDateTime now = tz.TZDateTime.now(tz.local);
   tz.TZDateTime scheduledDate = tz.TZDateTime(tz.local, now.year, now.month, now.day, t.hour, t.minute, t.second);
   if (scheduledDate.isBefore(now)) {
@@ -835,8 +870,8 @@ tz.TZDateTime _nextInstanceOfTime(Time t) {
   return scheduledDate;
 }
 
-tz.TZDateTime _nextInstanceOfWeekly(Time t, int d) {
-  tz.TZDateTime scheduledDate = _nextInstanceOfTime(t);
+tz.TZDateTime nextInstanceOfWeekly(Time t, int d) {
+  tz.TZDateTime scheduledDate = nextInstanceOfTime(t);
   while (scheduledDate.weekday != d) {
     scheduledDate = scheduledDate.add(const Duration(days: 1));
   }
@@ -844,24 +879,41 @@ tz.TZDateTime _nextInstanceOfWeekly(Time t, int d) {
 }
 
 //SCHEDULE STOCK NOTIFICATION FOR SPECIFIC DATE AND TIME
-Future<void> _scheduleDateTimeNotification(rId, name, description, date, payload) async {
+Future<void> scheduleDateTimeNotification(rId, name, description, date, payload) async {
   var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
   var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
   tz.initializeTimeZones();
   tz.setLocalLocation(tz.getLocation(currentTimeZone));
 
-  await flutterLocalNotificationsPlugin.zonedSchedule(
-    rId,
-    name,
-    description,
-    date,
-    generalNotificationDetails,
-    androidAllowWhileIdle: true,
-    uiLocalNotificationDateInterpretation:
-    UILocalNotificationDateInterpretation.absoluteTime,
-    payload: payload,
-  );
+  if(fbUser == null && date.isAfter(DateTime.now())){
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      rId,
+      name,
+      description,
+      date,
+      generalNotificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      payload: payload,
+    );
+  }
+
+  else if(date.isAfter(DateTime.now())){
+
+    await flutterLocalNotificationsPluginOnline.zonedSchedule(
+      rId,
+      name,
+      description,
+      date,
+      generalNotificationDetails,
+      androidAllowWhileIdle: true,
+      uiLocalNotificationDateInterpretation:
+      UILocalNotificationDateInterpretation.absoluteTime,
+      payload: payload,
+    );
+  }
 }
 
 //the payload will help create the CollectionPath by creating a string that can be split up with a delimiter

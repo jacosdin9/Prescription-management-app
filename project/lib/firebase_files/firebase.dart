@@ -6,6 +6,8 @@ import 'package:project/patient_files/addExistingPatient.dart';
 import 'package:project/prescriptions_files/addPrescription.dart';
 import 'package:project/prescriptions_files/prescriptionClass.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
+import 'package:timezone/data/latest.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
 
 class FirebasePage {
   static FirebaseFirestore firestoreDB = FirebaseFirestore.instance;
@@ -203,13 +205,14 @@ class FirebasePage {
     catchError((error) => print("FAILED TO DELETE NOTIFICATION: $error"));
   }
 
-  Future<void> addReminder(String patientId, String pName, int id, String freq,
-      String time, String day, int interval) {
-    CollectionReference reminderPath = deviceID != "" ?
-    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection(
-        'reminders') :
-    FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection(
-        'reminders');
+  Future<void> addReminder(String patientId, String pName, int id, String freq, String time, String day, int interval) {
+
+    CollectionReference reminderPath;
+
+    reminderPath = deviceID != "" ?
+    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders') :
+    FirebaseFirestore.instance.collection('carers').doc(findLeadCarerId(deviceID, patientId)).collection('reminders');
+
 
     return reminderPath.doc().set({
       "patientId": patientId,
@@ -304,16 +307,91 @@ class FirebasePage {
     }).then((value) => print("Prescription Updated"))
         .catchError((error) => print("Failed to update prescription: $error"));
   }
+
+  Future<void> updateCarerReminders() async{
+    CollectionReference overallRemindersCol = FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection("overallReminders");
+    CollectionReference assignedPatientsCol = FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection("assignedPatients");
+    CollectionReference remindersCol;
+
+    //delete all reminders currently in overallRemindersCollection
+    await overallRemindersCol.get().then((snapshot) => {
+      snapshot.docs.forEach((d) {
+        d.reference.delete();
+      })
+    });
+
+    //cancel all remainders currently downloaded on device
+    flutterLocalNotificationsPluginOnline.cancelAll();
+
+    //iterate through assignedPatients and get all patient reminders copied into overallReminders
+    await assignedPatientsCol.get().then((QuerySnapshot querySnapshot) => {
+      querySnapshot.docs.forEach((document) async {
+        //Locate patient's device's/lead carer's reminders collection
+        if(document.get("controlled") == false) {
+          print("not controlled!!: " + document.id);
+          remindersCol = FirebaseFirestore.instance.collection("devices").doc(document.get("deviceId")).collection("reminders");
+        }
+        else{
+          print("controlled!!: " + document.id);
+          remindersCol = FirebaseFirestore.instance.collection("carers").doc(await findLeadCarerId("", document.id)).collection("reminders");
+        }
+
+        await remindersCol.get().then((QuerySnapshot qs) => {
+          qs.docs.forEach((reminder) async {
+            if(reminder.get("patientId") == document.id){
+              overallRemindersCol.add(reminder.data());
+            }
+          }),
+        });
+      }),
+    });
+
+    await downloadOverallReminders();
+  }
+
+  Future<void> downloadOverallReminders() async {
+
+    CollectionReference overallRemindersCol = FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection("overallReminders");
+    int rId = await getReminderIdNo();
+
+    //iterate through overallReminders and download reminders to device
+    await overallRemindersCol.get().then((QuerySnapshot snapshot) => {
+      print("overall length: " + snapshot.size.toString()),
+      snapshot.docs.forEach((d) async {
+
+        Time t = Time(int.parse(d.get("time").split(":")[0]), int.parse(d.get("time").split(":")[1]));
+
+        if(d.get("frequency")=="Daily"){
+          scheduleDailyNotification(d.get("id"), d.get("prescription"), "Hey, " + d.get("patientId") + "! It's time to take your dose of " + d.get("prescription"), t);
+        }
+
+        else if(d.get("frequency")=="Specific days"){
+          scheduleWeeklyNotification(d.get("id"), d.get("prescription"), "Hey, " + d.get("patientId") + "! It's time to take your dose of " + d.get("prescription"), t, int.parse(d.get("day")));
+        }
+
+        //THE 1000 NEEDS CHANGED TO CURRENT STOCK
+        else if(d.get("frequency")=="Single"){
+          List split = d.get("day").split('/');
+          tz.initializeTimeZones();
+          tz.setLocalLocation(tz.getLocation(currentTimeZone));
+          tz.TZDateTime day = tz.TZDateTime(tz.local, int.parse(split[2]), int.parse(split[1]), int.parse(split[0]), 13, 0, 0);
+          scheduleDateTimeNotification(d.get("id"), "Stock reminder", "Stock of this med needs refilled!", day, "!" + 1000.toString() + "**" + d.get("prescription"));
+        }
+
+        rId += 1;
+      })
+    });
+  }
 }
 
 findLeadCarerId(String device, String patient) async {
-    DocumentReference patientReference = FirebaseFirestore.instance.collection('controlledPatients').doc(patient);
-    DocumentSnapshot patientRef = await patientReference.get();
+  DocumentReference patientReference = FirebaseFirestore.instance.collection('controlledPatients').doc(patient);
+  DocumentSnapshot patientRef = await patientReference.get();
 
-    if(patientRef.exists){
-      return patientRef.get('leadCarer');
-    }
-    return null;
+  if(patientRef.exists){
+    return patientRef.get('leadCarer');
+  }
+  return null;
 }
 
 Future<bool> checkIfDocExists(DocumentReference docRef) async {
@@ -328,7 +406,7 @@ Future<bool> checkIfDocExists(DocumentReference docRef) async {
 Future<int> getReminderIdNo() async {
   CollectionReference reminderPath = deviceID!="" ?
   FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders') :
-  FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('reminders');
+  FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('overallReminders');
 
   QuerySnapshot remSnapshot = await reminderPath.get();
   int currentMax = 0;

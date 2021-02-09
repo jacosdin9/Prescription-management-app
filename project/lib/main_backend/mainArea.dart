@@ -22,7 +22,6 @@ User fbUser;
 String deviceID = "";
 String currentPatientID = "";
 int recentIndex = 1;
-String currentTimeZone;
 var pageView;
 
 class MainArea extends StatefulWidget {

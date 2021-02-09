@@ -49,8 +49,14 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
       initialiseDeviceID();
     }
 
+    flutterLocalNotificationsPluginOnline.initialize(initializationSettings,
+      onSelectNotification: selectNotification,
+    );
+
     _currentIndex = 1;
     page = _children[_currentIndex];
+
+    FirebasePage().updateCarerReminders();
   }
 
   @override
@@ -237,6 +243,46 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
     });
   }
 
+  Future selectNotification(String payload) async {
+    var popUp;
+    print("NOTIFICATION HAS BEEN SELECTED");
+
+    if(payload[0] == '!'){
+      List split = (payload.substring(1)).split("**");
+      popUp = PopupAlert("STOCK REMINDER", split[1] + " has fallen below it's stock reminder. Remember to refill!\n\n Current stock: " + split[0]);
+    }
+
+    else if (payload[0] == '?') {
+      debugPrint('notification payload: $payload');
+
+      List split = (payload.substring(1)).split("**");
+      CollectionReference cr;
+      String prescriptionName;
+
+      //if reminder is for a local device
+      if(split[0] == "devices"){
+        cr = FirebaseFirestore.instance.collection("devices").doc(split[1]).collection("patients").doc(split[2]).collection("prescriptions");
+        prescriptionName = split[3];
+      }
+      else{
+        cr = FirebaseFirestore.instance.collection("controlledPatients").doc(split[1]).collection("prescriptions");
+        prescriptionName = split[2];
+      }
+
+      FirebasePage().findStockToReduce(cr, prescriptionName);
+
+      popUp = PopupAlert(prescriptionName + " reminder", "Reminder for " + prescriptionName + " has successfully been received.");
+
+    }
+
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (BuildContext context){
+        return popUp;
+      },
+    );
+  }
 }
 
 viewPage (int i){
