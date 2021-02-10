@@ -5,6 +5,7 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/main_backend/mainAreaOnline.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -682,7 +683,7 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
 
         //This will create a reminder for the local device. Need to find a good way to link online-
         //carer to local notifications now as we don't really want it being added straight to local device
-        scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t);
+        scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, currentPatientID);
 
         //add reminder to database. Works for both local and carer so this part is okay
         await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
@@ -701,7 +702,7 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
 
             //This will create a reminder for the local device. Need to find a good way to link online-
             //carer to local notifications now as we don't really want it being added straight to local device
-            scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day);
+            scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day, currentPatientID);
 
             //add reminder to database. Works for both local and carer so this part is okay
             await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);
@@ -781,7 +782,7 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
 }
 
 //DAILY NOTIFICATION
-Future<void> scheduleDailyNotification(rId, name, description, time) async {
+Future<void> scheduleDailyNotification(rId, name, description, time, patientId) async {
   var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
   var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
@@ -799,7 +800,7 @@ Future<void> scheduleDailyNotification(rId, name, description, time) async {
       uiLocalNotificationDateInterpretation:
       UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
-      payload: createPayload(name),
+      payload: createPayload(name, patientId),
     );
   }
 
@@ -814,14 +815,14 @@ Future<void> scheduleDailyNotification(rId, name, description, time) async {
       uiLocalNotificationDateInterpretation:
       UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.time,
-      payload: createPayload(name),
+      payload: createPayload(name, patientId),
     );
   }
 
 }
 
 //WEEKLY NOTIFICATION
-Future<void> scheduleWeeklyNotification(rId, name, description, time, int dayV) async {
+Future<void> scheduleWeeklyNotification(rId, name, description, time, int dayV, patientId) async {
   var androidDetails = AndroidNotificationDetails("ChannelID", "channelName", "channelDescription", importance: Importance.max, priority: Priority.high);
   var generalNotificationDetails = NotificationDetails(android: androidDetails);
 
@@ -843,7 +844,7 @@ Future<void> scheduleWeeklyNotification(rId, name, description, time, int dayV) 
       uiLocalNotificationDateInterpretation:
       UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-      payload: createPayload(name),
+      payload: createPayload(name, patientId),
     );
   }
 
@@ -859,7 +860,7 @@ Future<void> scheduleWeeklyNotification(rId, name, description, time, int dayV) 
       uiLocalNotificationDateInterpretation:
       UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.dayOfWeekAndTime,
-      payload: createPayload(name),
+      payload: createPayload(name, patientId),
     );
   }
 
@@ -921,7 +922,7 @@ Future<void> scheduleDateTimeNotification(rId, name, description, date, payload)
 }
 
 //the payload will help create the CollectionPath by creating a string that can be split up with a delimiter
-String createPayload(String pName){
+String createPayload(String pName, String patientId){
   String payload = "?";
 
   //does prescription belong to controlledPatients or device patients
@@ -936,7 +937,7 @@ String createPayload(String pName){
   }
 
   //add patientID
-  payload += currentPatientID;
+  payload += patientId;
 
   //add delimiter
   payload += "**";

@@ -12,7 +12,7 @@ InitializationSettings initializationSettings = InitializationSettings(android: 
 
 FlutterLocalNotificationsPlugin flutterLocalNotificationsPluginOnline = FlutterLocalNotificationsPlugin();
 AndroidInitializationSettings androidInitializeOnline = AndroidInitializationSettings('android_logo');
-InitializationSettings initializationSettingsOnline = InitializationSettings(android: androidInitialize);
+InitializationSettings initializationSettingsOnline = InitializationSettings(android: androidInitializeOnline);
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

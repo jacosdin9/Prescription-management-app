@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/main_backend/mainAreaOnline.dart';
 import 'package:project/patient_files/addExistingPatient.dart';
 import 'package:project/prescriptions_files/addPrescription.dart';
 import 'package:project/prescriptions_files/prescriptionClass.dart';
@@ -373,11 +374,11 @@ class FirebasePage {
         Time t = Time(int.parse(d.get("time").split(":")[0]), int.parse(d.get("time").split(":")[1]));
 
         if(d.get("frequency")=="Daily"){
-          scheduleDailyNotification(d.get("id"), d.get("prescription"), "Hey, " + d.get("patientId") + "! It's time to take your dose of " + d.get("prescription"), t);
+          scheduleDailyNotification(d.get("id"), d.get("prescription"), "Hey, " + d.get("patientId") + "! It's time to take your dose of " + d.get("prescription"), t, d.get("patientId"));
         }
 
         else if(d.get("frequency")=="Specific days"){
-          scheduleWeeklyNotification(d.get("id"), d.get("prescription"), "Hey, " + d.get("patientId") + "! It's time to take your dose of " + d.get("prescription"), t, int.parse(d.get("day")));
+          scheduleWeeklyNotification(d.get("id"), d.get("prescription"), "Hey, " + d.get("patientId") + "! It's time to take your dose of " + d.get("prescription"), t, int.parse(d.get("day")), d.get("patientId"));
         }
 
         //THE 1000 NEEDS CHANGED TO CURRENT STOCK
@@ -386,7 +387,7 @@ class FirebasePage {
           tz.initializeTimeZones();
           tz.setLocalLocation(tz.getLocation(currentTimeZone));
           tz.TZDateTime day = tz.TZDateTime(tz.local, int.parse(split[2]), int.parse(split[1]), int.parse(split[0]), 13, 0, 0);
-          scheduleDateTimeNotification(d.get("id"), "Stock reminder", "Stock of this med needs refilled!", day, "!" + 1000.toString() + "**" + d.get("prescription"));
+          scheduleDateTimeNotification(d.get("id"), "Stock reminder", "Stock of this med needs refilled!", day, "!" + 1000.toString() + "**" + d.get("prescription") + "**" + d.get("patientId"));
         }
       })
     });
