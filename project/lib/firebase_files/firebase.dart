@@ -324,9 +324,6 @@ class FirebasePage {
       })
     });
 
-    //cancel all remainders currently downloaded on device
-    await flutterLocalNotificationsPluginOnline.cancelAll();
-
     //iterate through assignedPatients and get all patient reminders copied into overallReminders
     await assignedPatientsCol.get().then((QuerySnapshot querySnapshot) => {
       querySnapshot.docs.forEach((document) async {
@@ -356,11 +353,21 @@ class FirebasePage {
   }
 
   Future<void> downloadOverallReminders() async {
-    CollectionReference overallRemindersCol = FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection("overallReminders");
+    CollectionReference overallRemindersCol = 
+    fbUser != null ?
+    FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection("overallReminders") :
+        FirebaseFirestore.instance.collection("devices").doc(deviceID).collection("reminders");
+
+    //cancel all remainders currently downloaded on device
+    if(fbUser != null){
+      await flutterLocalNotificationsPluginOnline.cancelAll();
+    }
+    else{
+      await flutterLocalNotificationsPlugin.cancelAll();
+    }
 
     //iterate through overallReminders and download reminders to device
     await overallRemindersCol.get().then((QuerySnapshot snapshot) => {
-      print("overall length: " + snapshot.size.toString()),
       snapshot.docs.forEach((d) async {
 
         Time t = Time(int.parse(d.get("time").split(":")[0]), int.parse(d.get("time").split(":")[1]));
@@ -381,7 +388,6 @@ class FirebasePage {
           tz.TZDateTime day = tz.TZDateTime(tz.local, int.parse(split[2]), int.parse(split[1]), int.parse(split[0]), 13, 0, 0);
           scheduleDateTimeNotification(d.get("id"), "Stock reminder", "Stock of this med needs refilled!", day, "!" + 1000.toString() + "**" + d.get("prescription"));
         }
-
       })
     });
   }

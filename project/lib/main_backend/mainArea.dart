@@ -286,7 +286,6 @@ class _MainAreaState extends State<MainArea> {
       },
     );
   }
-
 }
 
 Future<void> initialiseDeviceID() async {
@@ -296,6 +295,8 @@ Future<void> initialiseDeviceID() async {
 
   FirebasePage().createDevice(androidDeviceInfo.androidId);
   deviceID = androidDeviceInfo.androidId;
+
+  FirebasePage().downloadOverallReminders();
 }
 
 viewPage (int i){
