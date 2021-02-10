@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:project/main_backend/main.dart';
@@ -312,6 +314,8 @@ class FirebasePage {
     CollectionReference overallRemindersCol = FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection("overallReminders");
     CollectionReference assignedPatientsCol = FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection("assignedPatients");
     CollectionReference remindersCol;
+    DocumentReference rem;
+    int idCount = 0;
 
     //delete all reminders currently in overallRemindersCollection
     await overallRemindersCol.get().then((snapshot) => {
@@ -321,38 +325,38 @@ class FirebasePage {
     });
 
     //cancel all remainders currently downloaded on device
-    flutterLocalNotificationsPluginOnline.cancelAll();
+    await flutterLocalNotificationsPluginOnline.cancelAll();
 
     //iterate through assignedPatients and get all patient reminders copied into overallReminders
     await assignedPatientsCol.get().then((QuerySnapshot querySnapshot) => {
       querySnapshot.docs.forEach((document) async {
         //Locate patient's device's/lead carer's reminders collection
         if(document.get("controlled") == false) {
-          print("not controlled!!: " + document.id);
           remindersCol = FirebaseFirestore.instance.collection("devices").doc(document.get("deviceId")).collection("reminders");
         }
         else{
-          print("controlled!!: " + document.id);
           remindersCol = FirebaseFirestore.instance.collection("carers").doc(await findLeadCarerId("", document.id)).collection("reminders");
         }
 
-        await remindersCol.get().then((QuerySnapshot qs) => {
+        await remindersCol.get().then((QuerySnapshot qs) async => {
           qs.docs.forEach((reminder) async {
             if(reminder.get("patientId") == document.id){
-              overallRemindersCol.add(reminder.data());
+              rem = await overallRemindersCol.add(reminder.data());
+              rem.update({"id" : idCount});
+              idCount += 1;
             }
           }),
         });
       }),
     });
 
-    await downloadOverallReminders();
+    //wait 5 seconds before running next method, gives firebase the chance to finish updating
+    await Future.delayed(const Duration(seconds: 5), () => "5");
+    await FirebasePage().downloadOverallReminders();
   }
 
   Future<void> downloadOverallReminders() async {
-
     CollectionReference overallRemindersCol = FirebaseFirestore.instance.collection("carers").doc(fbUser.uid).collection("overallReminders");
-    int rId = await getReminderIdNo();
 
     //iterate through overallReminders and download reminders to device
     await overallRemindersCol.get().then((QuerySnapshot snapshot) => {
@@ -378,7 +382,6 @@ class FirebasePage {
           scheduleDateTimeNotification(d.get("id"), "Stock reminder", "Stock of this med needs refilled!", day, "!" + 1000.toString() + "**" + d.get("prescription"));
         }
 
-        rId += 1;
       })
     });
   }

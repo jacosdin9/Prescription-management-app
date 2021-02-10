@@ -248,11 +248,13 @@ class _MainAreaState extends State<MainArea> {
     var popUp;
     print("NOTIFICATION HAS BEEN SELECTED");
 
+    //stock reminder onSelect
     if(payload[0] == '!'){
       List split = (payload.substring(1)).split("**");
       popUp = PopupAlert("STOCK REMINDER", split[1] + " has fallen below it's stock reminder. Remember to refill!\n\n Current stock: " + split[0]);
     }
 
+    //reminder notification
     else if (payload[0] == '?') {
       debugPrint('notification payload: $payload');
 
@@ -271,9 +273,6 @@ class _MainAreaState extends State<MainArea> {
       }
 
       FirebasePage().findStockToReduce(cr, prescriptionName);
-
-      print("show this?");
-      debugPrint("hellpo");
 
       popUp = PopupAlert(prescriptionName + " reminder", "Reminder for " + prescriptionName + " has successfully been received.");
 

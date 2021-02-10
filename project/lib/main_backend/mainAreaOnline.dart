@@ -60,6 +60,11 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
@@ -180,6 +185,7 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
                   var androidDeviceInfo = await deviceInfo.androidInfo;
                   currentTimeZone = await FlutterNativeTimezone.getLocalTimezone();
                   deviceID = androidDeviceInfo.androidId;
+                  flutterLocalNotificationsPluginOnline.cancelAll();
 
                   Navigator.pop(context);
                   await Navigator.push(

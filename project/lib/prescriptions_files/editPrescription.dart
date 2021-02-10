@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/firebase_files/firebase.dart';
+import 'package:project/main_backend/mainArea.dart';
 import 'package:project/prescriptions_files/editPrescriptionInputPopups.dart';
 import 'package:project/prescriptions_files/prescriptionClass.dart';
 
@@ -437,8 +438,13 @@ class _EditPrescriptionState extends State<EditPrescription> {
                   ),
                   padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
                   onPressed: () async {
-                    FirebasePage().editPrescription(originalPrescriptionName, data);
                     Navigator.pop(context);
+
+                    await FirebasePage().editPrescription(originalPrescriptionName, data);
+
+                    if(fbUser != null){
+                      FirebasePage().updateCarerReminders();
+                    }
                   },
                   child: Text(
                     "DONE",

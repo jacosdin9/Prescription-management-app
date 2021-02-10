@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:project/calendar_files/calendar.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
@@ -24,8 +25,15 @@ class DashboardPage extends StatelessWidget {
             ),
             padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
             onPressed: () async {
-              await FirebasePage().updateCarerReminders();
-              List<PendingNotificationRequest> pendingNotificationRequests = await flutterLocalNotificationsPluginOnline.pendingNotificationRequests();
+              List<PendingNotificationRequest> pendingNotificationRequests;
+
+              if(fbUser!=null){
+                pendingNotificationRequests = await flutterLocalNotificationsPluginOnline.pendingNotificationRequests();
+              }
+              else{
+                pendingNotificationRequests = await flutterLocalNotificationsPlugin.pendingNotificationRequests();
+              }
+
               print("length: " + pendingNotificationRequests.length.toString());
               for(var p in pendingNotificationRequests){
                 print(p.id);

@@ -470,8 +470,12 @@ class _AddPrescriptionState extends State<AddPrescription>{
                       );
                       Navigator.pop(context);
 
-                      FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock, silentReminders);
+                      await FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock, silentReminders);
                       createNotifications(pName, dropDownValue, times, values, interval, silentReminders, pUnitsPerDosage, currentStock, stockNo);
+
+                      if(fbUser != null){
+                        await FirebasePage().updateCarerReminders();
+                      }
                     }
 
                     else if(nameExists == true){

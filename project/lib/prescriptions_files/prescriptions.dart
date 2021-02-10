@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/patient_files/changeUser.dart';
 import 'package:project/prescriptions_files/prescriptionCard.dart';
@@ -72,7 +73,7 @@ class PrescriptionPage extends StatelessWidget {
                   side: BorderSide(color: Colors.red),
                 ),
                 padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                onPressed: () {
+                onPressed: () async {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => AddPrescription()),
