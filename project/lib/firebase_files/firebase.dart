@@ -6,6 +6,7 @@ import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/patient_files/addExistingPatient.dart';
 import 'package:project/prescriptions_files/addPrescription.dart';
+import 'package:project/prescriptions_files/editPrescription.dart';
 import 'package:project/prescriptions_files/prescriptionClass.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -248,6 +249,8 @@ class FirebasePage {
               if(newStock<0){
                 newStock = 0;
               }
+
+              tempInt = newStock;
               id = doc.id;
               reduceStock(cr.doc(id), newStock);
 
@@ -390,6 +393,36 @@ class FirebasePage {
         }
       })
     });
+  }
+
+  Future<void> addRecord(String pName, DateTime date, int stock) async {
+    
+    CollectionReference recordsPath =
+        fbUser == null ?
+            FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records') :
+            FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('patients').doc(currentPatientID).collection('records');
+
+    QuerySnapshot recordsSnapshot = await recordsPath.get();
+
+    //check if prescription stock has already been recorded today, if so, update it.
+    for (QueryDocumentSnapshot x in recordsSnapshot.docs){
+      if(x.get("prescriptionName")==pName && (x.get("date") as Timestamp).toDate()==date ){
+        return recordsPath.doc(x.id).update({
+          'stock' : stock,
+        }).then((value) => print("STOCK RECORD UPDATED"))
+            .catchError((error) => print("FAILED TO UPDATE STOCK: $error"));
+      }
+    }
+
+    //if prescription stock hasn't been updated today, add new record.
+    return recordsPath.add({
+      "prescriptionName" : pName,
+      "date" : date,
+      "stock" : stock,
+    }).
+    then((value) => print("RECORD ADDED")).
+    catchError((error) => print("FAILED TO ADD RECORD: $error"));
+
   }
 }
 

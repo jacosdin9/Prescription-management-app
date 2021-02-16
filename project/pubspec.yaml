@@ -36,6 +36,7 @@ dependencies:
   flutter_local_notifications: 3.0.1+5
   flutter_native_timezone: 1.0.4
   string_validator: 0.1.4
+  draw_graph: ^0.0.2
 
   provider: ^4.3.2+1
 

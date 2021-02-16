@@ -12,9 +12,11 @@ import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:project/notifications_files/notificationPage.dart';
 import 'package:project/patient_files/changeUser.dart';
+import 'package:project/prescriptions_files/editPrescription.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/qr_files/generateQrPage.dart';
+import 'package:project/report_files/graph.dart';
 import 'package:provider/provider.dart';
 import 'main.dart';
 
@@ -208,6 +210,24 @@ class _MainAreaState extends State<MainArea> {
                 leading: Icon(Icons.swap_horiz),
                 title: Text('Select a patient'),
               ),
+
+              //Show report graph for patient
+              currentPatientID != "" ?
+              ListTile(
+                onTap: () async {
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Graph()),
+                  );
+
+                  setState(() {
+                    page = viewPage(_currentIndex);
+                  });
+
+                },
+                leading: Icon(Icons.bar_chart),
+                title: Text('Show stock report'),
+              ) : SizedBox(),
             ],
           ),
         ),
@@ -272,7 +292,10 @@ class _MainAreaState extends State<MainArea> {
         prescriptionName = split[2];
       }
 
-      FirebasePage().findStockToReduce(cr, prescriptionName);
+      await FirebasePage().findStockToReduce(cr, prescriptionName);
+      DateTime now = DateTime.now();
+      DateTime today = DateTime(now.year, now.month, now.day);
+      FirebasePage().addRecord(prescriptionName, today, tempInt);
 
       popUp = PopupAlert(prescriptionName + " reminder", "Reminder for " + prescriptionName + " has successfully been received.");
 

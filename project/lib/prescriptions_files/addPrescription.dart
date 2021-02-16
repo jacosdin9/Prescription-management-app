@@ -478,6 +478,9 @@ class _AddPrescriptionState extends State<AddPrescription>{
 
                       await FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock, silentReminders, lastRestockDate);
                       createNotifications(pName, dropDownValue, times, values, interval, silentReminders, pUnitsPerDosage, currentStock, stockNo);
+                      DateTime now = DateTime.now();
+                      DateTime today = DateTime(now.year, now.month, now.day);
+                      FirebasePage().addRecord(pName, today, currentStock);
 
                       if(fbUser != null){
                         await FirebasePage().updateCarerReminders();

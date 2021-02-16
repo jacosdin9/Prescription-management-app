@@ -8,6 +8,7 @@ import 'package:project/prescriptions_files/prescriptionClass.dart';
 String tempString;
 List tempList;
 bool tempBool;
+int tempInt;
 
 class EditPrescription extends StatefulWidget {
 
@@ -452,6 +453,9 @@ class _EditPrescriptionState extends State<EditPrescription> {
                     Navigator.pop(context);
 
                     await FirebasePage().editPrescription(originalPrescriptionName, data);
+                    DateTime now = DateTime.now();
+                    DateTime today = DateTime(now.year, now.month, now.day);
+                    FirebasePage().addRecord(data.name, today, data.stockNo);
 
                     if(fbUser != null){
                       FirebasePage().updateCarerReminders();
