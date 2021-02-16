@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
-import 'package:project/patient_files/changeUser.dart';
 import 'package:project/prescriptions_files/prescriptionCard.dart';
 
 import 'addPrescription.dart';
@@ -57,7 +55,7 @@ class PrescriptionPage extends StatelessWidget {
                         sliver: SliverList(
                           delegate: SliverChildBuilderDelegate(
                                 (context, index) =>
-                            PrescriptionCard(results[index].reference.id, results[index]['name'], results[index]['strength'], results[index]['strengthUnits'], results[index]['unitsPerDosage'], results[index]['reminderFreq'], results[index]['daysInterval'], results[index]['reminderTimes'], results[index]['specificDays'], results[index]['stockReminder'], results[index]['stockNo'], results[index]['silentReminders']),
+                            PrescriptionCard(results[index].reference.id, results[index]['name'], results[index]['strength'], results[index]['strengthUnits'], results[index]['unitsPerDosage'], results[index]['reminderFreq'], results[index]['daysInterval'], results[index]['reminderTimes'], results[index]['specificDays'], results[index]['stockReminder'], results[index]['stockNo'], results[index]['silentReminders'], (results[index]['lastRestockDate'] as Timestamp).toDate()),
                             childCount: results.length,
                           ),
                         ),

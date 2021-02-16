@@ -172,6 +172,7 @@ class StrengthInput extends StatelessWidget {
                 child: TextFormField(
                   controller: _textEditingController,
                   decoration: InputDecoration(hintText: "Enter a new strength value."),
+                  keyboardType: TextInputType.number,
                 ),
                 flex: 2,
               ),
@@ -187,10 +188,10 @@ class StrengthInput extends StatelessWidget {
                             side: BorderSide(color: Colors.orange),
                           ),
                           onPressed: () {
-                            tempString = _textEditingController.text;
-                            var isValid = isFloat(tempString);
+                            var isValid = isFloat(_textEditingController.text);
 
                             if(isValid){
+                              tempString = _textEditingController.text;
                               Navigator.pop(context);
                             }
                             else{
@@ -294,10 +295,10 @@ class StrengthUnitsInput extends StatelessWidget {
                             side: BorderSide(color: Colors.orange),
                           ),
                           onPressed: () {
-                            tempString = _textEditingController.text;
-                            var isValid = isAlpha(tempString);
+                            var isValid = isAlpha(_textEditingController.text);
 
                             if(isValid){
+                              tempString = _textEditingController.text;
                               Navigator.pop(context);
                             }
                             else{
@@ -386,6 +387,7 @@ class UnitsPerDosageInput extends StatelessWidget {
                 child: TextFormField(
                   controller: _textEditingController,
                   decoration: InputDecoration(hintText: "Enter new units per dosage."),
+                  keyboardType: TextInputType.number,
                 ),
                 flex: 2,
               ),
@@ -493,6 +495,7 @@ class RemainingStockInput extends StatelessWidget {
                 child: TextFormField(
                   controller: _textEditingController,
                   decoration: InputDecoration(hintText: "Enter new value for remaining stock."),
+                  keyboardType: TextInputType.number,
                 ),
                 flex: 2,
               ),
@@ -508,10 +511,11 @@ class RemainingStockInput extends StatelessWidget {
                             side: BorderSide(color: Colors.orange),
                           ),
                           onPressed: () {
-                            tempString = _textEditingController.text;
-                            var isValid = isNumeric(tempString);
+                            var isValid = isNumeric(_textEditingController.text);
 
                             if(isValid){
+                              tempBool = true;
+                              tempString = _textEditingController.text;
                               Navigator.pop(context);
                             }
                             else{
@@ -600,6 +604,7 @@ class StockReminderInput extends StatelessWidget {
                 child: TextFormField(
                   controller: _textEditingController,
                   decoration: InputDecoration(hintText: "Enter new value for stock reminder."),
+                  keyboardType: TextInputType.number,
                 ),
                 flex: 2,
               ),
@@ -615,10 +620,10 @@ class StockReminderInput extends StatelessWidget {
                             side: BorderSide(color: Colors.orange),
                           ),
                           onPressed: () {
-                            tempString = _textEditingController.text;
-                            var isValid = isNumeric(tempString);
+                            var isValid = isNumeric(_textEditingController.text);
 
                             if(isValid){
+                              tempString = _textEditingController.text;
                               Navigator.pop(context);
                             }
                             else{

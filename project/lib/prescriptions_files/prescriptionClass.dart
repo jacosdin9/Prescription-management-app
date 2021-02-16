@@ -11,6 +11,7 @@ class PrescriptionClass{
   int stockReminder;
   int stockNo;
   bool silentReminders;
+  DateTime lastRestockDate;
 
-  PrescriptionClass({this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo, this.silentReminders});
+  PrescriptionClass({this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo, this.silentReminders, this.lastRestockDate});
 }

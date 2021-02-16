@@ -5,7 +5,6 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
-import 'package:project/main_backend/mainAreaOnline.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:timezone/data/latest.dart' as tz;
@@ -19,6 +18,9 @@ class AddPrescription extends StatefulWidget{
 }
 
 class _AddPrescriptionState extends State<AddPrescription>{
+
+  DateTime today;
+  DateTime lastRestockDate;
 
   //page 1 variables
   String pName;
@@ -53,6 +55,9 @@ class _AddPrescriptionState extends State<AddPrescription>{
 
     boxHeight = 200;
     boxWidth = 400;
+
+    today = DateTime.now();
+    lastRestockDate = DateTime(today.year, today.month, today.day);
   }
 
   @override
@@ -471,7 +476,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                       );
                       Navigator.pop(context);
 
-                      await FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock, silentReminders);
+                      await FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock, silentReminders, lastRestockDate);
                       createNotifications(pName, dropDownValue, times, values, interval, silentReminders, pUnitsPerDosage, currentStock, stockNo);
 
                       if(fbUser != null){

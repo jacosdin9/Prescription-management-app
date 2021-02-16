@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
-import 'package:project/main_backend/mainAreaOnline.dart';
 import 'package:project/patient_files/addExistingPatient.dart';
 import 'package:project/prescriptions_files/addPrescription.dart';
 import 'package:project/prescriptions_files/prescriptionClass.dart';
@@ -20,9 +19,9 @@ class FirebasePage {
   //ADD PRESCRIPTION
   Future<void> addPrescription(String name, double strength, String strengthUnits,
       int unitsPerDosage, String reminderFreq, List reminderTimes, List specificDays,
-      int daysInterval, int stockReminder, int stockNo, bool silentReminders) {
-    CollectionReference prescriptionsTable = findPrescriptionsRef(
-        deviceID, currentPatientID);
+      int daysInterval, int stockReminder, int stockNo, bool silentReminders, DateTime lastRestockDate) {
+
+    CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
     return prescriptionsTable.
     add({
       'name': name,
@@ -36,6 +35,7 @@ class FirebasePage {
       'stockReminder': stockReminder,
       'stockNo': stockNo,
       'silentReminders' : silentReminders,
+      'lastRestockDate' : lastRestockDate,
     }).
     then((value) => print("PRESCRIPTION ADDED")).
     catchError((error) => print("FAILED TO ADD PRESCRIPTION: $error"));
@@ -45,7 +45,6 @@ class FirebasePage {
   Future<void> deletePrescription(String id) {
     CollectionReference prescriptionsTable = findPrescriptionsRef(
         deviceID, currentPatientID);
-
 
     return prescriptionsTable.
     doc(id).

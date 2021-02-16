@@ -31,6 +31,10 @@ class _EditPrescriptionState extends State<EditPrescription> {
   void initState() {
     super.initState();
     originalPrescriptionName = data.name;
+
+    if(data.silentReminders){
+      data.stockNo = updateStockForSilentReminders(data.lastRestockDate, data.unitsPerDosage, data.stockNo);
+    }
   }
 
   @override
@@ -180,6 +184,7 @@ class _EditPrescriptionState extends State<EditPrescription> {
                             GestureDetector(
                               onTap: () async {
                                 tempString = data.stockNo.toString();
+                                tempBool = false;
 
                                 var popUp = RemainingStockInput();
                                 await showDialog(
@@ -191,8 +196,14 @@ class _EditPrescriptionState extends State<EditPrescription> {
                                 );
 
                                 data.stockNo = int.parse(tempString);
-                                setState(() {});
 
+                                //if stock no. has been changed, update lastRestockDate to today
+                                if(tempBool){
+                                  DateTime today = DateTime.now();
+                                  data.lastRestockDate = DateTime(today.year, today.month, today.day);
+                                }
+
+                                setState(() {});
                               },
                               child: Container(
                                 padding: const EdgeInsets.symmetric(
@@ -460,4 +471,24 @@ class _EditPrescriptionState extends State<EditPrescription> {
       ),
     );
   }
+}
+
+updateStockForSilentReminders(DateTime lastRestockDate, int unitsPerDosage, int remainingStock){
+  DateTime now = DateTime.now();
+  DateTime today = DateTime(now.year, now.month, now.day);
+  int daysSince = 0;
+
+  while(today.isAfter(lastRestockDate)){
+    daysSince += 1;
+    today = today.subtract(Duration(days: 1));
+    print(today);
+  }
+
+  if(daysSince>=1){
+    print(remainingStock - (daysSince*unitsPerDosage));
+    return remainingStock - (daysSince*unitsPerDosage);
+  }
+
+  print("done");
+  return remainingStock;
 }

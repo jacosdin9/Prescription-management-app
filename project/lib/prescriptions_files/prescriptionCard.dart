@@ -15,14 +15,15 @@ class PrescriptionCard extends StatelessWidget {
   int stockReminder;
   int stockNo;
   bool silentReminders;
+  DateTime lastRestockDate;
 
-  PrescriptionCard(this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo, this.silentReminders);
+  PrescriptionCard(this.id, this.name, this.strength, this.strengthUnits, this.unitsPerDosage, this.reminderFreq, this.daysInterval, this.reminderTimes, this.specificDays, this.stockReminder, this.stockNo, this.silentReminders, this.lastRestockDate);
 
   @override
   Widget build(BuildContext context) {
 
-    final prescriptionThumbnail = new Container(
-      margin: new EdgeInsets.symmetric(
+    final prescriptionThumbnail = Container(
+      margin: EdgeInsets.symmetric(
           vertical: 16.0
       ),
       alignment: FractionalOffset.centerLeft,
@@ -39,32 +40,32 @@ class PrescriptionCard extends StatelessWidget {
       ),
     );
 
-    final prescriptionCardContent = new Container(
-      margin: new EdgeInsets.fromLTRB(76.0, 16.0, 16.0, 16.0),
-      constraints: new BoxConstraints.expand(),
-      child: new Column(
+    final prescriptionCardContent = Container(
+      margin: EdgeInsets.fromLTRB(76.0, 16.0, 16.0, 16.0),
+      constraints: BoxConstraints.expand(),
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          new Container(height: 4.0),
-          new Text(name),
-          new Container(height: 7.0),
-          new Text(reminderFreq.toString()),
-          new Container(height: 7.0),
-          new Text(id),
-          new Container(
-            margin: new EdgeInsets.symmetric(vertical: 8.0),
+          Container(height: 4.0),
+          Text(name),
+          Container(height: 7.0),
+          Text(reminderFreq.toString()),
+          Container(height: 7.0),
+          Text(id),
+          Container(
+            margin: EdgeInsets.symmetric(vertical: 8.0),
             height: 2.0,
             width: 18.0,
-            color: new Color(0xff00c6ff),
+            color: Color(0xff00c6ff),
           ),
 
         ],
       ),
     );
 
-    final prescriptionCard = new GestureDetector(
+    final prescriptionCard = GestureDetector(
         onTap: () {
-          var popUp = PrescriptionPopup(id, name, strength, strengthUnits, unitsPerDosage, reminderFreq, daysInterval, reminderTimes, specificDays, stockReminder, stockNo, silentReminders);
+          var popUp = PrescriptionPopup(id, name, strength, strengthUnits, unitsPerDosage, reminderFreq, daysInterval, reminderTimes, specificDays, stockReminder, stockNo, silentReminders, lastRestockDate);
 
           showDialog(
             context: context,
@@ -74,32 +75,32 @@ class PrescriptionCard extends StatelessWidget {
             },
           );
         },
-        child: new Container(
+        child: Container(
           child: prescriptionCardContent,
           height: 124.0,
-          margin: new EdgeInsets.only(left: 46.0),
-          decoration: new BoxDecoration(
+          margin: EdgeInsets.only(left: 46.0),
+          decoration: BoxDecoration(
             color: Colors.red,
             shape: BoxShape.rectangle,
-            borderRadius: new BorderRadius.circular(8.0),
+            borderRadius: BorderRadius.circular(8.0),
             boxShadow: <BoxShadow>[
-              new BoxShadow(
+              BoxShadow(
                 color: Colors.black,
                 blurRadius: 5.0,
-                offset: new Offset(0.0, 10.0),
+                offset: Offset(0.0, 10.0),
               ),
             ],
           ),
         )
     );
 
-    return new Container(
+    return Container(
         height: 120.0,
         margin: const EdgeInsets.symmetric(
           vertical: 16.0,
           horizontal: 24.0,
         ),
-        child: new Stack(
+        child: Stack(
           children: <Widget>[
             prescriptionCard,
             prescriptionThumbnail,
