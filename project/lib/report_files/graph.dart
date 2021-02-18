@@ -42,7 +42,7 @@ class _GraphState extends State<Graph> {
             LineGraph(
               features: features,
               size: Size(500, 400),
-              labelX: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
+              labelX: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8'],
               labelY: ['20.0', '40.0', '60.0', '80.0', '100.0'],
               showDescription: true,
               graphColor: Colors.red,
@@ -85,6 +85,8 @@ populateFeatures(List<String> prescriptionList) async {
   FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records') :
   FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('patients').doc(currentPatientID).collection('records');
 
+  List<Color> colors = [Colors.red, Colors.blue, Colors.yellow, Colors.orange, Colors.green, Colors.black, Colors.grey, Colors.purple, Colors.tealAccent, Colors.brown];
+
   //order collection by date
   Query recordsPathOrdered = recordsPath.orderBy('date');
 
@@ -109,16 +111,22 @@ populateFeatures(List<String> prescriptionList) async {
     recordDict[x.get('prescriptionName')].add(x.get('stock').toDouble() / 100);
   }
 
+  int colorCounter = 0;
   //populate features using recordDict
   for(String name in recordDict.keys){
-
     features.add(
       Feature(
         title: name,
-        color: Colors.blue,
+        color: colors[colorCounter],
         data: recordDict[name],
       )
     );
+
+    colorCounter += 1;
+
+    if(colorCounter > colors.length){
+      colorCounter = 0;
+    }
   }
 
   print(recordDict);
