@@ -122,6 +122,7 @@ class PrescriptionPopup extends StatelessWidget{
                       ),
                       onPressed: () {
                         deleteCorrespondingReminders();
+                        FirebasePage().deletePrescriptionRecords(name);
                         FirebasePage().deletePrescription(id);
                         Navigator.pop(context);
                         var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");

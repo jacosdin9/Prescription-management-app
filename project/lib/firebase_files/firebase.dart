@@ -272,6 +272,7 @@ class FirebasePage {
   Future<void> editPrescription(String originalPrescriptionName, PrescriptionClass data) async {
 
     DocumentReference prescriptionRef= findPrescriptionsRef(deviceID, currentPatientID).doc(data.id);
+    DocumentReference record;
 
     CollectionReference remindersCol =
     fbUser == null ? FirebaseFirestore.instance.collection("devices").doc(deviceID).collection('reminders') :
@@ -293,6 +294,26 @@ class FirebasePage {
       //if reminders previously existed for this prescription, they will have been deleted, so this creates the new updated ones.
       if(hasRemindersChanged == true){
         createNotifications(data.name, data.reminderFreq, data.reminderTimes, data.specificDays, data.daysInterval, data.silentReminders, data.unitsPerDosage,  data.stockNo, data.stockReminder);
+      }
+    }
+
+    //if name of prescription has been changed, update corresponding records in records collection
+    if(originalPrescriptionName != data.name){
+
+      CollectionReference recordsPath =
+      fbUser == null ?
+      FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records') :
+      FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('patients').doc(currentPatientID).collection('records');
+
+      QuerySnapshot recordsSnapshot = await recordsPath.get();
+
+      //if prescription name is same as original prescription name, update records to new name
+      for (QueryDocumentSnapshot x in recordsSnapshot.docs){
+        if(x.get('prescriptionName') == originalPrescriptionName){
+          recordsPath.doc(x.id).update({
+            'prescriptionName' : data.name,
+          });
+        }
       }
     }
 
@@ -423,6 +444,23 @@ class FirebasePage {
     then((value) => print("RECORD ADDED")).
     catchError((error) => print("FAILED TO ADD RECORD: $error"));
 
+  }
+
+  Future<void> deletePrescriptionRecords(String pName) async{
+
+    CollectionReference recordsPath =
+    fbUser == null ?
+    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records') :
+    FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('patients').doc(currentPatientID).collection('records');
+
+    QuerySnapshot recordsSnapshot = await recordsPath.get();
+
+    //if prescription name is same as original prescription name, update records to new name
+    for (QueryDocumentSnapshot x in recordsSnapshot.docs){
+      if(x.get('prescriptionName') == pName){
+        recordsPath.doc(x.id).delete();
+      }
+    }
   }
 }
 
