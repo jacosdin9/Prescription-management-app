@@ -21,13 +21,13 @@ class _GraphState extends State<Graph> {
 
     findSilentRemindersAndUpdate();
 
-    features = [
-      Feature(
-        title: "Drink Water",
-        color: Colors.blue,
-        data: [0.2, 0.8, 1, 0.7,],
-      ),
-    ];
+    // features = [
+    //   Feature(
+    //     title: "Drink Water",
+    //     color: Colors.blue,
+    //     data: [0.2, 0.8, 1, 0.7,],
+    //   ),
+    // ];
   }
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _GraphState extends State<Graph> {
               features: features,
               size: Size(500, 400),
               labelX: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5'],
-              labelY: ['20%', '40%', '60%', '80%', '100%'],
+              labelY: ['20.0', '40.0', '60.0', '80.0', '100.0'],
               showDescription: true,
               graphColor: Colors.red,
             ),
@@ -52,34 +52,82 @@ class _GraphState extends State<Graph> {
       ),
     );
   }
-}
 
-populateFeatures(){
-  //retrieve records collection from current patient
-  //x_axis = date
-  //y_axis = remaining stock
-}
+  findSilentRemindersAndUpdate() async {
+    print("running");
+    CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
 
+    QuerySnapshot prescriptionsSnapshot = await prescriptionsTable.get();
 
-findSilentRemindersAndUpdate() async {
-  print("running");
-  CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
+    List<String> prescriptionList = [];
 
-  QuerySnapshot prescriptionsSnapshot = await prescriptionsTable.get();
-
-  //if prescription requires silentReminders, ensure they're updated
-  for (QueryDocumentSnapshot x in prescriptionsSnapshot.docs){
-    if(x.get('silentReminders') == true){
-      await updateSilentRemindersRecords(x.get('name'), x.get('stockNo'), x.get('unitsPerDosage'));
+    //if prescription requires silentReminders, ensure they're updated
+    for (QueryDocumentSnapshot x in prescriptionsSnapshot.docs){
+      prescriptionList.add(x.get('name'));
+      if(x.get('silentReminders') == true){
+        await updateSilentRemindersRecords(x.get('name'), x.get('stockNo'), x.get('unitsPerDosage'));
+      }
     }
+
+    features = await populateFeatures(prescriptionList);
+
+
+    setState(() {});
+    print("complete");
   }
 
-  print("complete");
+}
+
+populateFeatures(List<String> prescriptionList) async {
+  //retrieve records collection from current patient
+  CollectionReference recordsPath =
+  fbUser == null ?
+  FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records') :
+  FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('patients').doc(currentPatientID).collection('records');
+
+  //order collection by date
+  Query recordsPathOrdered = recordsPath.orderBy('date');
+
+  Map recordDict = Map();
+
+  List<Feature> features = [];
+
+  // features = [
+  //   Feature(
+  //     title: "Drink Water",
+  //     color: Colors.blue,
+  //     data: [0.2, 0.8, 1, 0.7,],
+  //   ),
+  // ];
+
+  QuerySnapshot recordsSnapshot = await recordsPathOrdered.get();
+
+  for (QueryDocumentSnapshot x in recordsSnapshot.docs){
+    //if prescription name not already in dictionary, create a fresh list
+    recordDict.putIfAbsent(x.get('prescriptionName'), () => List<double>());
+
+    recordDict[x.get('prescriptionName')].add(x.get('stock').toDouble() / 100);
+  }
+
+  //populate features using recordDict
+  for(String name in recordDict.keys){
+
+    features.add(
+      Feature(
+        title: name,
+        color: Colors.blue,
+        data: recordDict[name],
+      )
+    );
+  }
+
+  print(recordDict);
+
+  return features;
 }
 
 updateSilentRemindersRecords(String pName, int remainingStock, int unitsPerDosage) async {
 
-  //find most recent record for prescription and set to startDate
   CollectionReference recordsPath =
   fbUser == null ?
   FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records') :
@@ -88,6 +136,7 @@ updateSilentRemindersRecords(String pName, int remainingStock, int unitsPerDosag
   DateTime now = DateTime.now();
   DateTime today = DateTime(now.year, now.month, now.day);
 
+  //find most recent record for prescription and set to startDate
   DateTime mostRecent = today.subtract(Duration(days: 365));
 
   QuerySnapshot recordsSnapshot = await recordsPath.get();
