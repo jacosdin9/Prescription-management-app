@@ -5,6 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:draw_graph/models/feature.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/prescriptions_files/prescriptions.dart';
+import 'package:intl/intl.dart';
+
+DateTime now = DateTime.now();
+DateTime today = DateTime(now.year, now.month, now.day);
 
 class Graph extends StatefulWidget{
   @override
@@ -14,12 +18,18 @@ class Graph extends StatefulWidget{
 class _GraphState extends State<Graph> {
 
   List<Feature> features;
+  List<String> xAxis = [];
+  List<String> yAxis = [];
+  DateTime selectedDate;
 
   @override
   void initState() {
     super.initState();
 
-    findSilentRemindersAndUpdate();
+    features = [];
+    selectedDate = today;
+
+    findSilentRemindersAndUpdate(today);
 
     // features = [
     //   Feature(
@@ -42,10 +52,20 @@ class _GraphState extends State<Graph> {
             LineGraph(
               features: features,
               size: Size(500, 400),
-              labelX: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7', 'Day 8'],
+              labelX: xAxis,
               labelY: ['20.0', '40.0', '60.0', '80.0', '100.0'],
               showDescription: true,
               graphColor: Colors.red,
+            ),
+            SizedBox(height: 50,),
+            RaisedButton(
+              onPressed: () => _selectDate(context), // Refer step 3
+              child: Text(
+                'Select date\n     ' + DateFormat('dd-MM').format(selectedDate),
+                style:
+                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+              ),
+              color: Colors.greenAccent,
             ),
           ],
         ),
@@ -53,12 +73,41 @@ class _GraphState extends State<Graph> {
     );
   }
 
-  findSilentRemindersAndUpdate() async {
+  _selectDate(BuildContext context) async {
+    final DateTime picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate, // Refer step 1
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null && picked != selectedDate)
+      findSilentRemindersAndUpdate(picked);
+      setState(() {
+        selectedDate = picked;
+      });
+  }
+
+  findSilentRemindersAndUpdate(DateTime date) async {
     print("running");
     CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
 
-    QuerySnapshot prescriptionsSnapshot = await prescriptionsTable.get();
+    //create x axis - dates of past 7 days
 
+    DateTime firstDateOfWeek = findFirstDateOfTheWeek(date);
+    DateTime lastDateOfWeek = findLastDateOfTheWeek(date);
+    String formattedDate;
+
+    List dates = [];
+    xAxis = [];
+
+    while(firstDateOfWeek.isBefore(lastDateOfWeek) || firstDateOfWeek == lastDateOfWeek){
+      formattedDate = DateFormat('dd-MM').format(firstDateOfWeek);
+      dates.add(firstDateOfWeek);
+      xAxis.add(formattedDate);
+      firstDateOfWeek = firstDateOfWeek.add(Duration(days: 1));
+    }
+
+    QuerySnapshot prescriptionsSnapshot = await prescriptionsTable.get();
     List<String> prescriptionList = [];
 
     //if prescription requires silentReminders, ensure they're updated
@@ -69,16 +118,14 @@ class _GraphState extends State<Graph> {
       }
     }
 
-    features = await populateFeatures(prescriptionList);
-
+    features = await populateFeatures(prescriptionList, dates);
 
     setState(() {});
     print("complete");
   }
-
 }
 
-populateFeatures(List<String> prescriptionList) async {
+populateFeatures(List<String> prescriptionList, List dates) async {
   //retrieve records collection from current patient
   CollectionReference recordsPath =
   fbUser == null ?
@@ -86,29 +133,53 @@ populateFeatures(List<String> prescriptionList) async {
   FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('patients').doc(currentPatientID).collection('records');
 
   List<Color> colors = [Colors.red, Colors.blue, Colors.yellow, Colors.orange, Colors.green, Colors.black, Colors.grey, Colors.purple, Colors.tealAccent, Colors.brown];
+  int originalStock = 0;
 
   //order collection by date
   Query recordsPathOrdered = recordsPath.orderBy('date');
 
   Map recordDict = Map();
-
   List<Feature> features = [];
-
-  // features = [
-  //   Feature(
-  //     title: "Drink Water",
-  //     color: Colors.blue,
-  //     data: [0.2, 0.8, 1, 0.7,],
-  //   ),
-  // ];
+  List<double> newList = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
 
   QuerySnapshot recordsSnapshot = await recordsPathOrdered.get();
 
+  print(dates);
+
   for (QueryDocumentSnapshot x in recordsSnapshot.docs){
     //if prescription name not already in dictionary, create a fresh list
-    recordDict.putIfAbsent(x.get('prescriptionName'), () => List<double>());
+    recordDict.putIfAbsent(x.get('prescriptionName'), () => List<double>.from(newList));
 
-    recordDict[x.get('prescriptionName')].add(x.get('stock').toDouble() / 100);
+    //find index of x-axis to insert record's stock value by using date
+    int index = dates.indexOf((x.get("date") as Timestamp).toDate());
+
+    //if date does not exist within specified range, do not add to dictionary
+    if(index != -1){
+      recordDict[x.get('prescriptionName')][index] = x.get('stock').toDouble() / 100;
+    }
+  }
+
+  //remove 0s from end of lists in dictionary
+  // if end value == 0.0, remove it.
+  // Do this until value is not 0.0.
+  bool removingEnd = true;
+  for(String name in recordDict.keys){
+    for(int i = 6; i>0; i--){
+      if(removingEnd && recordDict[name][i] == 0.0){
+        recordDict[name].removeAt(i);
+      }
+      else{
+        break;
+      }
+    }
+
+    // Then other 0.0s between values should become the previous value to prevent random dips to 0.
+    // (accounts for days being skipped and stock not going down)
+    for(int i = recordDict[name].length-1; i>0; i--){
+      if(recordDict[name][i] == 0.0){
+        recordDict[name][i] = recordDict[name][i-1];
+      }
+    }
   }
 
   int colorCounter = 0;
@@ -125,12 +196,12 @@ populateFeatures(List<String> prescriptionList) async {
     colorCounter += 1;
 
     if(colorCounter > colors.length){
-      colorCounter = 0;
+      print("Colours limit exceeded");
+      break;
     }
   }
 
   print(recordDict);
-
   return features;
 }
 
@@ -182,4 +253,14 @@ updateSilentRemindersRecords(String pName, int remainingStock, int unitsPerDosag
       mostRecent = mostRecent.add(Duration(days: 1));
     }
   }
+}
+
+// Find the first date of the week which contains the provided date.
+DateTime findFirstDateOfTheWeek(DateTime dateTime) {
+  return dateTime.subtract(Duration(days: dateTime.weekday - 1));
+}
+
+// Find last date of the week which contains provided date.
+DateTime findLastDateOfTheWeek(DateTime dateTime) {
+  return dateTime.add(Duration(days: DateTime.daysPerWeek - dateTime.weekday));
 }

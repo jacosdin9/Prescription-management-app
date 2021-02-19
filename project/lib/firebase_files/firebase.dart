@@ -272,7 +272,6 @@ class FirebasePage {
   Future<void> editPrescription(String originalPrescriptionName, PrescriptionClass data) async {
 
     DocumentReference prescriptionRef= findPrescriptionsRef(deviceID, currentPatientID).doc(data.id);
-    DocumentReference record;
 
     CollectionReference remindersCol =
     fbUser == null ? FirebaseFirestore.instance.collection("devices").doc(deviceID).collection('reminders') :
@@ -330,6 +329,7 @@ class FirebasePage {
       'strengthUnits' : data.strengthUnits,
       'unitsPerDosage' : data.unitsPerDosage,
       'silentReminders' : data.silentReminders,
+      'lastRestockDate' : data.lastRestockDate,
     }).then((value) => print("Prescription Updated"))
         .catchError((error) => print("Failed to update prescription: $error"));
   }
