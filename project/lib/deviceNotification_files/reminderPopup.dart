@@ -1,12 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:project/calendar_files/calendar.dart';
-import 'package:project/deviceNotification_files/devNotificationPage.dart';
-import 'package:project/firebase_files/firebase.dart';
-import 'package:project/main_backend/main.dart';
-import 'package:project/main_backend/mainArea.dart';
-import 'package:project/main_backend/popupAlert.dart';
-import 'package:project/prescriptions_files/addPrescription.dart';
 
 class ReminderPopup extends StatelessWidget{
 

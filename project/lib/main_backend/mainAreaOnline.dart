@@ -7,7 +7,6 @@ import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:project/authentication_files/logInPageRedirect.dart';
 import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
-import 'package:project/deviceNotification_files/devNotificationPage.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:project/notifications_files/notificationPage.dart';
@@ -137,24 +136,6 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
                       context,
                       MaterialPageRoute(builder: (context) => GenerateQrPage()),
                     );
-                    setState(() {
-                      page = viewPage(_currentIndex);
-                    });
-                  }
-              ) :
-              SizedBox(),
-
-              //if patient has been selected, show reminders tab
-              currentPatientID != "" ?
-              ListTile(
-                  leading: Icon(Icons.alarm_add),
-                  title: Text('Reminders'),
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => DevNotificationPage()),
-                    );
-
                     setState(() {
                       page = viewPage(_currentIndex);
                     });
