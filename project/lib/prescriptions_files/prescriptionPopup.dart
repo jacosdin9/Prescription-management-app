@@ -120,10 +120,13 @@ class PrescriptionPopup extends StatelessWidget{
                         borderRadius: BorderRadius.circular(18.0),
                         side: BorderSide(color: Colors.red),
                       ),
-                      onPressed: () {
-                        deleteCorrespondingReminders();
-                        FirebasePage().deletePrescriptionRecords(name);
-                        FirebasePage().deletePrescription(id);
+                      onPressed: () async {
+                        await deleteCorrespondingReminders();
+                        await FirebasePage().deletePrescriptionRecords(name);
+                        await FirebasePage().deletePrescription(id);
+                        if(fbUser != null){
+                          FirebasePage().updateCarerReminders();
+                        }
                         Navigator.pop(context);
                         var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");
                         showDialog(
@@ -154,8 +157,8 @@ class PrescriptionPopup extends StatelessWidget{
   }
 
   deleteCorrespondingReminders() async {
-    //if logged in, show carer's reminders list. else show local device's patients.
-    CollectionReference cr = fbUser != null ?
+    //if logged in, get carer's reminders list. else show local device's patients.
+    CollectionReference cr = deviceID == "" ?
     FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('reminders')
         :
     FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders')

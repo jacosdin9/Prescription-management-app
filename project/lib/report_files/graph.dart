@@ -3,13 +3,12 @@ import 'package:draw_graph/draw_graph.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:draw_graph/models/feature.dart';
-import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:intl/intl.dart';
+import 'package:project/prescriptions_files/prescriptions.dart';
 
 DateTime now = DateTime.now();
 DateTime today = DateTime(now.year, now.month, now.day);
-String tempDevID = deviceID.substring(0, deviceID.length);
 
 class Graph extends StatefulWidget{
   @override
@@ -92,11 +91,7 @@ class _GraphState extends State<Graph> {
   findSilentRemindersAndUpdate(DateTime date) async {
     print("running");
 
-    if(fbUser != null){
-      tempDevID = await findPatientsDeviceID(currentPatientID);
-    }
-
-    CollectionReference prescriptionsTable = FirebaseFirestore.instance.collection('devices').doc(tempDevID).collection('patients').doc(currentPatientID).collection('prescriptions');
+    CollectionReference prescriptionsTable = findPrescriptionsRef(deviceID, currentPatientID);
 
     //create x axis - dates of past 7 days
 
@@ -134,7 +129,9 @@ class _GraphState extends State<Graph> {
 
 populateFeatures(List<String> prescriptionList, List dates) async {
   //retrieve records collection from current patient
-  CollectionReference recordsPath = FirebaseFirestore.instance.collection('devices').doc(tempDevID).collection('patients').doc(currentPatientID).collection('records');
+  CollectionReference recordsPath = deviceID != "" ?
+  FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records'):
+  FirebaseFirestore.instance.collection('controlledPatients').doc(currentPatientID).collection('records');
 
   List<Color> colors = [Colors.red, Colors.blue, Colors.yellow, Colors.orange, Colors.green, Colors.black, Colors.grey, Colors.purple, Colors.tealAccent, Colors.brown];
   int originalStock = 0;
@@ -211,7 +208,9 @@ populateFeatures(List<String> prescriptionList, List dates) async {
 
 updateSilentRemindersRecords(String pName, int remainingStock, int unitsPerDosage) async {
 
-  CollectionReference recordsPath = FirebaseFirestore.instance.collection('devices').doc(tempDevID).collection('patients').doc(currentPatientID).collection('records');
+  CollectionReference recordsPath = deviceID != "" ?
+  FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records'):
+  FirebaseFirestore.instance.collection('controlledPatients').doc(currentPatientID).collection('records');
 
   DateTime now = DateTime.now();
   DateTime today = DateTime(now.year, now.month, now.day);

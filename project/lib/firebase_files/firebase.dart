@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:project/main_backend/main.dart';
@@ -208,13 +207,18 @@ class FirebasePage {
     catchError((error) => print("FAILED TO DELETE NOTIFICATION: $error"));
   }
 
-  Future<void> addReminder(String patientId, String pName, int id, String freq, String time, String day, int interval) {
+  Future<void> addReminder(String patientId, String pName, int id, String freq, String time, String day, int interval) async {
 
     CollectionReference reminderPath;
+    String leadCarer;
+
+    if(deviceID == ""){
+      leadCarer = await findLeadCarerId(deviceID, patientId);
+    }
 
     reminderPath = deviceID != "" ?
     FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders') :
-    FirebaseFirestore.instance.collection('carers').doc(findLeadCarerId(deviceID, patientId)).collection('reminders');
+    FirebaseFirestore.instance.collection('carers').doc(leadCarer).collection('reminders');
 
 
     return reminderPath.doc().set({
@@ -418,12 +422,9 @@ class FirebasePage {
 
   Future<void> addRecord(String pName, DateTime date, int stock) async {
 
-    String tempDevID = deviceID.substring(0, deviceID.length);
-    if(fbUser != null){
-      tempDevID = await findPatientsDeviceID(currentPatientID);
-    }
-    
-    CollectionReference recordsPath = FirebaseFirestore.instance.collection('devices').doc(tempDevID).collection('patients').doc(currentPatientID).collection('records');
+    CollectionReference recordsPath = deviceID != "" ?
+    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records'):
+        FirebaseFirestore.instance.collection('controlledPatients').doc(currentPatientID).collection('records');
 
     QuerySnapshot recordsSnapshot = await recordsPath.get();
 
@@ -445,17 +446,13 @@ class FirebasePage {
     }).
     then((value) => print("RECORD ADDED")).
     catchError((error) => print("FAILED TO ADD RECORD: $error"));
-
   }
 
   Future<void> deletePrescriptionRecords(String pName) async{
 
-    String tempDevID = deviceID.substring(0, deviceID.length);
-    if(fbUser != null){
-      tempDevID = await findPatientsDeviceID(currentPatientID);
-    }
-
-    CollectionReference recordsPath = FirebaseFirestore.instance.collection('devices').doc(tempDevID).collection('patients').doc(currentPatientID).collection('records');
+    CollectionReference recordsPath = deviceID != "" ?
+    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records'):
+    FirebaseFirestore.instance.collection('controlledPatients').doc(currentPatientID).collection('records');
 
     QuerySnapshot recordsSnapshot = await recordsPath.get();
 
