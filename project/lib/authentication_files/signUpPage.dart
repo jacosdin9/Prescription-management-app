@@ -3,7 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/firebase_files/firebase.dart';
-import 'package:project/main_backend/mainArea.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPage extends StatelessWidget {

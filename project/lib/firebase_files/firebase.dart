@@ -417,11 +417,13 @@ class FirebasePage {
   }
 
   Future<void> addRecord(String pName, DateTime date, int stock) async {
+
+    String tempDevID = deviceID.substring(0, deviceID.length);
+    if(fbUser != null){
+      tempDevID = await findPatientsDeviceID(currentPatientID);
+    }
     
-    CollectionReference recordsPath =
-        fbUser == null ?
-            FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records') :
-            FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('patients').doc(currentPatientID).collection('records');
+    CollectionReference recordsPath = FirebaseFirestore.instance.collection('devices').doc(tempDevID).collection('patients').doc(currentPatientID).collection('records');
 
     QuerySnapshot recordsSnapshot = await recordsPath.get();
 
@@ -448,10 +450,12 @@ class FirebasePage {
 
   Future<void> deletePrescriptionRecords(String pName) async{
 
-    CollectionReference recordsPath =
-    fbUser == null ?
-    FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(currentPatientID).collection('records') :
-    FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('patients').doc(currentPatientID).collection('records');
+    String tempDevID = deviceID.substring(0, deviceID.length);
+    if(fbUser != null){
+      tempDevID = await findPatientsDeviceID(currentPatientID);
+    }
+
+    CollectionReference recordsPath = FirebaseFirestore.instance.collection('devices').doc(tempDevID).collection('patients').doc(currentPatientID).collection('records');
 
     QuerySnapshot recordsSnapshot = await recordsPath.get();
 
@@ -527,4 +531,20 @@ Future<bool> checkIfNameExists(String nameToCheck) async {
     }),
   });
   return isFound;
+}
+
+findPatientsDeviceID(String patientID) async {
+  CollectionReference cr = FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('assignedPatients');
+
+  QuerySnapshot crQuery = await cr.get();
+
+  for (QueryDocumentSnapshot x in crQuery.docs){
+    print(x.id);
+    print(patientID);
+    if(x.id == patientID){
+      return x.get("deviceId");
+    }
+  }
+
+  return "";
 }

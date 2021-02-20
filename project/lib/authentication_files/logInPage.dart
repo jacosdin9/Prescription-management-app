@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/authentication_files/signUpPage.dart';
+import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:provider/provider.dart';
 
@@ -104,11 +105,17 @@ class LogInPage extends StatelessWidget {
                       side: BorderSide(color: Colors.red),
                     ),
                     padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => SignUpPage()),
+                    onPressed: () async {
+                      // Navigator.push(
+                      //   context,
+                      //   MaterialPageRoute(builder: (context) => SignUpPage()),
+                      // );
+
+                      await context.read<AuthenticationService>().signUp(
+                        email: emailController.text.trim(),
+                        password: passwordController.text.trim(),
                       );
+                      FirebasePage().createCarer(context.read<User>().uid);
                     },
                     child: Text(
                       "SIGN UP",
@@ -129,10 +136,6 @@ class LogInPage extends StatelessWidget {
                   child: Icon(Icons.cancel),
                   onPressed: () {
                     fbUser = FirebaseAuth.instance.currentUser;
-                    // int count = 0;
-                    // Navigator.popUntil(context, (route) {
-                    //   return count++ == 2;
-                    // });
                     Navigator.pop(context);
                   },
                 ),

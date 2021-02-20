@@ -20,14 +20,6 @@ class LogInPageRedirect extends StatelessWidget{
         )
       ],
 
-      // child: MaterialApp(
-      //   title: "Log-in redirect",
-      //   theme: ThemeData(
-      //     primarySwatch: Colors.red,
-      //   ),
-      //   home: AuthenticationWrapper(),
-      // ),
-
       child: Scaffold(
         body: AuthenticationWrapper(),
       )
