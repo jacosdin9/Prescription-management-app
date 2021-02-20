@@ -150,7 +150,7 @@ class _CalendarPageState extends State<CalendarPage>{
 downloadRemindersList() async {
   //if logged in, show carer's reminders list. else show local device's patients.
   CollectionReference cr = fbUser != null ?
-  FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('reminders')
+  FirebaseFirestore.instance.collection('carers').doc(fbUser.uid).collection('overallReminders')
       :
   FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('reminders')
   ;

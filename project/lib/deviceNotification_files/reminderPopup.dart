@@ -82,48 +82,10 @@ class ReminderPopup extends StatelessWidget{
               flex: 2,
             ),
 
-            // dialog bottom
-            Expanded(
-              child: RaisedButton(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(18.0),
-                  side: BorderSide(color: Colors.red),
-                ),
-                onPressed: () async {
+            // // dialog bottom
+            // Expanded(
+            // ),
 
-                  // delete the reminder from device with id value of rId
-                  await flutterLocalNotificationsPlugin.cancel(rId);
-
-                  //delete the reminder from database using the documentId of the reminder in database
-                  FirebasePage().deleteReminder(findRemindersRef(deviceID), dbId);
-
-                  //close reminder popup
-                  Navigator.pop(context);
-
-                  //show success popup
-                  var popUp = PopupAlert("SUCCESS", "Reminder has successfully been deleted");
-                  lastSelectedEvents = [];
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => MainArea(recentIndex)),
-                  );
-                  showDialog(
-                    context: context,
-                    barrierDismissible: true,
-                    builder: (BuildContext context){
-                      return popUp;
-                    },
-                  );
-                },
-                child: Text(
-                  "Delete reminder",
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontSize: 20,
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
