@@ -51,7 +51,7 @@ class PrescriptionCard extends StatelessWidget {
           Container(height: 7.0),
           Text(reminderFreq.toString()),
           Container(height: 7.0),
-          Text(id),
+          Text("Stock: " + stockNo.toString()),
           Container(
             margin: EdgeInsets.symmetric(vertical: 8.0),
             height: 2.0,

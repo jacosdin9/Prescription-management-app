@@ -8,6 +8,8 @@ import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/popupAlert.dart';
 import 'package:project/prescriptions_files/editPrescription.dart';
 import 'package:project/prescriptions_files/prescriptionClass.dart';
+import 'package:intl/intl.dart';
+
 
 class PrescriptionPopup extends StatelessWidget{
 
@@ -36,7 +38,7 @@ class PrescriptionPopup extends StatelessWidget{
       ),
       content: Container(
         width: 260.0,
-        height: 230.0,
+        height: 310.0,
         decoration: BoxDecoration(
           shape: BoxShape.rectangle,
           color: const Color(0xFFFFFF),
@@ -80,8 +82,15 @@ class PrescriptionPopup extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Strength: " + strength.toString() + strengthUnits),
+                  Text("Units per dosage: " + unitsPerDosage.toString()),
                   Text("Reminder frequency: " + reminderFreq.toString()),
                   Text("Reminder times: " + reminderTimes.toString()),
+                  Text("Stock reminder level: " + stockReminder.toString()),
+                  Text("Silent reminders: " + silentReminders.toString()),
+                  Text("Last restock date: " + DateFormat('dd-MM-yy').format(lastRestockDate),),
+
+
+
                 ],
               ),
               flex: 2,

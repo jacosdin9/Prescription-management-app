@@ -69,13 +69,19 @@ class ChangeUserPage extends StatelessWidget{
                                         popMethod();
                                       },
                                       child: Container(
-                                        height: 30,
-                                        margin: new EdgeInsets.symmetric(vertical: 8.0),
-                                        color: Colors.grey,
+                                        height: 60,
+                                        margin: const EdgeInsets.all(15.0),
+                                        padding: const EdgeInsets.all(15.0),
+                                        decoration: BoxDecoration(
+                                          border: Border.all(color: Colors.blueAccent, width: 6),
+                                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                                          color: Colors.grey,
+                                        ),
                                         child: fbUser != null ?
                                           Text("Controlled patient?: " + results[index].get('controlled').toString() + "   ---   ID: " + results[index].id) :
-                                          Text(results[index].id),
+                                          Text(results[index].get("name")),
                                       ),
+
                                     ),
                                 childCount: results.length,
                               ),
@@ -87,64 +93,70 @@ class ChangeUserPage extends StatelessWidget{
                   ) :
                       Text("NO USERS FOUND"),
 
-                  fbUser != null ?
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.red),
-                    ),
-                    padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => AddExistingPatient()),
-                      );
-                    },
-                    child: Text(
-                      "ADD EXISTING PATIENT",
-                      style: TextStyle(
-                        fontSize: 20,
-                      ),
-                    ),
-                  ) :
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      fbUser != null ?
+                      RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.red),
+                        ),
+                        padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => AddExistingPatient()),
+                          );
+                        },
+                        child: Text(
+                          "ADD EXISTING PATIENT",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
+                      ) :
                       SizedBox(height:0),
 
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.red),
-                    ),
-                    padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => CreateUser()),
-                      );
-                    },
-                    child: Text(
-                      "CREATE USER",
-                      style: TextStyle(
-                        fontSize: 20,
+                      RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.red),
+                        ),
+                        padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => CreateUser()),
+                          );
+                        },
+                        child: Text(
+                          "CREATE USER",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
-                    ),
-                  ),
 
-                  RaisedButton(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18.0),
-                      side: BorderSide(color: Colors.red),
-                    ),
-                    padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                    onPressed: () {
-                      popMethod();
-                    },
-                    child: Text(
-                      "BACK",
-                      style: TextStyle(
-                        fontSize: 20,
+                      RaisedButton(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18.0),
+                          side: BorderSide(color: Colors.red),
+                        ),
+                        padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                        onPressed: () {
+                          popMethod();
+                        },
+                        child: Text(
+                          "BACK",
+                          style: TextStyle(
+                            fontSize: 20,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
+                  SizedBox(height: 20),
                 ]
               );
           }

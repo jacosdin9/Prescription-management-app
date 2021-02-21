@@ -60,6 +60,7 @@ class LogInPage extends StatelessWidget {
                         padding: EdgeInsets.only(left: 15, right: 15, top: 5),
                         child: TextFormField(
                           controller: passwordController,
+                          obscureText: true,
                           decoration: InputDecoration(
                             labelText: "Password",
                             hintText: "Enter password",

@@ -38,7 +38,6 @@ class _CalendarPageState extends State<CalendarPage>{
       setStateIfMounted();
     });
 
-
   }
 
   @override
@@ -47,10 +46,11 @@ class _CalendarPageState extends State<CalendarPage>{
     super.dispose();
   }
 
-  void _onDaySelected(DateTime day, List events, List holidays) {
+  Future<void> _onDaySelected(DateTime day, List events, List holidays) async {
     print('CALLBACK: _onDaySelected');
     lastSelectedDay = day;
     lastSelectedEvents = events;
+    events.sort((a,b) => a.get("time").compareTo(b.get("time")));
     setState(() {
       _selectedEvents = events;
     });
@@ -127,10 +127,15 @@ class _CalendarPageState extends State<CalendarPage>{
                                   );
                                 },
                                 child: Container(
-                                  height: 30,
-                                  margin: EdgeInsets.symmetric(vertical: 8.0),
-                                  color: Colors.grey,
-                                  child: Text(_selectedEvents[index].get("time") + " - " + _selectedEvents[index].get("patientId") + " - " + _selectedEvents[index].get("prescription")),
+                                  height: 50,
+                                  margin: const EdgeInsets.all(15.0),
+                                  padding: const EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(color: Colors.blueAccent, width: 6),
+                                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    color: Colors.grey,
+                                  ),
+                                  child: Text(_selectedEvents[index].get("time") + " - " + _selectedEvents[index].get("prescription")),
                                 ),
                               ),
                       childCount: _selectedEvents.length,

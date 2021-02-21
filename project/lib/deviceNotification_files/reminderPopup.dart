@@ -42,7 +42,7 @@ class ReminderPopup extends StatelessWidget{
                       color: Colors.white,
                     ),
                     child: Text(
-                      patientId,
+                      prescription,
                       style: TextStyle(
                         color: Colors.black,
                         fontWeight: FontWeight.bold,
@@ -70,6 +70,7 @@ class ReminderPopup extends StatelessWidget{
                   Text("Reminder frequency: " + freq),
                   freq == 'Single' ? Text("Type: Stock reminder") : Text("Type: Dosage reminder"),
                   Text("Time: " + time),
+
                 ],
               ),
               flex: 2,

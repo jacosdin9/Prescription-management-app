@@ -60,6 +60,21 @@ class _EditPrescriptionState extends State<EditPrescription> {
                       sliver: SliverList(
                         delegate: SliverChildListDelegate(
                           [
+
+                            //General details text
+                            Container(
+                              height: 20,
+                              margin: const EdgeInsets.all(17.0),
+                              // color: Colors.black,
+                              child: Text(
+                                "General details:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.blue,
+                                ),
+                              ),
+                            ),
+
                             //NAME
                             GestureDetector(
                               onTap: () async {
@@ -78,17 +93,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
                                 setState(() {});
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.blueAccent, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Name: " + data.name),
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
 
                             //STRENGTH
                             GestureDetector(
@@ -108,17 +125,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
                                 setState(() {});
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.blueAccent, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Strength: " + data.strength.toString()),
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
 
                             //STRENGTH UNITS
                             GestureDetector(
@@ -138,17 +157,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
                                 setState(() {});
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.blueAccent, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Strength Units: " + data.strengthUnits),
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
 
                             //UNITS PER DOSAGE
                             GestureDetector(
@@ -169,17 +190,33 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.blueAccent, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Units Per Dosage: " + data.unitsPerDosage.toString()),
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
+
+                            //General details text
+                            Container(
+                              height: 20,
+                              margin: const EdgeInsets.all(17.0),
+                              // color: Colors.black,
+                              child: Text(
+                                "Stock details:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              ),
+                            ),
 
                             //REMAINING STOCK
                             GestureDetector(
@@ -207,17 +244,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
                                 setState(() {});
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.red, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Remaining Stock: " + data.stockNo.toString()),
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
 
                             //STOCK REMINDER
                             GestureDetector(
@@ -238,17 +277,33 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.red, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Stock Reminder: " + data.stockReminder.toString()),
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
+
+                            //Reminder details text
+                            Container(
+                              height: 20,
+                              margin: const EdgeInsets.all(17.0),
+                              // color: Colors.black,
+                              child: Text(
+                                "Reminder details:",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.orange,
+                                ),
+                              ),
+                            ),
 
                             //REMINDER FREQUENCY
                             GestureDetector(
@@ -269,17 +324,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.orange, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Reminder Frequency: " + data.reminderFreq),
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
 
                             //SILENT REMINDER
                             GestureDetector(
@@ -300,17 +357,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                               },
                               child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.orange, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Silent Reminders: " + data.silentReminders.toString()),
                               ),
                             ),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
 
                             //REMINDER TIMES
                             data.reminderFreq != "None" ?
@@ -333,16 +392,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
                               },
                               child:
                                 Container(
-                                  padding: const EdgeInsets.symmetric(vertical: 25.0),
-                                  height: 70,
+                                  height: 60,
+                                  margin: const EdgeInsets.all(15.0),
+                                  padding: const EdgeInsets.all(15.0),
                                   decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.blueAccent)
+                                    border: Border.all(color: Colors.orange, width: 6),
+                                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                                    color: Colors.grey,
                                   ),
                                   child: Text("Reminder Times: " + data.reminderTimes.toString()),
                                 )
                               ):SizedBox(height: 0),
 
-                            SizedBox(height: 5),
+                            SizedBox(height: 1),
 
                             //REMINDER DAYS
                             data.reminderFreq == "Specific days" ?
@@ -367,17 +429,19 @@ class _EditPrescriptionState extends State<EditPrescription> {
 
                               child:
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 25.0),
-                                height: 70,
+                                height: 60,
+                                margin: const EdgeInsets.all(15.0),
+                                padding: const EdgeInsets.all(15.0),
                                 decoration: BoxDecoration(
-                                    border: Border.all(color: Colors.blueAccent)
+                                  border: Border.all(color: Colors.orange, width: 6),
+                                  borderRadius: BorderRadius.all(Radius.circular(20)),
+                                  color: Colors.grey,
                                 ),
                                 child: Text("Reminder Days"),
                               )
                             ): SizedBox(height: 0,),
 
-                            //SizedBox(height: 5),
+                            //SizedBox(height: 1),
                             //
                             // //DAYS INTERVAL
                             // data.reminderFreq == "Days Interval" ?
@@ -400,11 +464,13 @@ class _EditPrescriptionState extends State<EditPrescription> {
                             //     },
                             //   child:
                             //   Container(
-                            //     padding: const EdgeInsets.symmetric(
-                            //         vertical: 25.0),
-                            //     height: 70,
+                            //     height: 60,
+                            //     margin: const EdgeInsets.all(15.0),
+                            //     padding: const EdgeInsets.all(15.0),
                             //     decoration: BoxDecoration(
-                            //         border: Border.all(color: Colors.blueAccent)
+                            //       border: Border.all(color: Colors.orange, width: 6),
+                            //       borderRadius: BorderRadius.all(Radius.circular(20)),
+                            //       color: Colors.grey,
                             //     ),
                             //     child: Text("Name: " + data.daysInterval.toString()),
                             //   )

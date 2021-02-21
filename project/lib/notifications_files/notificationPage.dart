@@ -72,10 +72,15 @@ class NotificationsPage extends StatelessWidget {
                                             }
                                           },
                                           child: Container(
-                                            height: 30,
-                                            margin: new EdgeInsets.symmetric(vertical: 8.0),
-                                            color: Colors.grey,
-                                            child: Text(results[index].id),
+                                            height: 60,
+                                            margin: const EdgeInsets.all(15.0),
+                                            padding: const EdgeInsets.all(15.0),
+                                            decoration: BoxDecoration(
+                                              border: Border.all(color: Colors.blueAccent, width: 6),
+                                              borderRadius: BorderRadius.all(Radius.circular(20)),
+                                              color: Colors.grey,
+                                            ),
+                                            child: Text("Carer request"),
                                           ),
                                         ),
                                     childCount: results.length,
@@ -90,6 +95,7 @@ class NotificationsPage extends StatelessWidget {
                           child: Text("YOU HAVE 0 NOTIFICATIONS"),
                         ),
 
+                      SizedBox(height: 50),
                       RaisedButton(
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(18.0),
