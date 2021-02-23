@@ -410,7 +410,6 @@ class _AddPrescriptionState extends State<AddPrescription>{
                                     "How much stock do you currently have?",
                                     style: TextStyle(
                                       fontSize: 20,
-                                      color: Colors.red,
                                       fontWeight: FontWeight.bold
                                     ),
                                   ),
@@ -425,6 +424,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
+                                          color: Colors.red,
                                         ),
                                       ),
 
@@ -456,7 +456,6 @@ class _AddPrescriptionState extends State<AddPrescription>{
                                     "If stock goes below this point, remind me to refill",
                                     style: TextStyle(
                                       fontSize: 20,
-                                      color: Colors.red,
                                       fontWeight: FontWeight.bold
                                     ),
                                   ),
@@ -471,6 +470,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                                         textAlign: TextAlign.center,
                                         style: TextStyle(
                                           fontSize: 20,
+                                          color: Colors.red,
                                         ),
                                       ),
 
