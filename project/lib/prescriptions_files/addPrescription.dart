@@ -382,48 +382,121 @@ class _AddPrescriptionState extends State<AddPrescription>{
                     body: Column(
                       children: [
                         Center(
-                          child: Column(
-                            children: [
-                              Text("\nWould you like to set up a reminder for when stock falls below a certain level?"),
-
-                              SizedBox(height: 200,),
-
-                              //Select current stock number
-                              RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.red),
-                                ),
-                                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                                onPressed: () {
-                                  _currentStockNumberPicker();
-                                },
-                                child: Text(
-                                  "Select current stock number\n" + currentStock.toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                  ),
-                                ),
+                          child: Container(
+                              margin: const EdgeInsets.all(20.0),
+                              alignment: Alignment.center,
+                              padding: const EdgeInsets.all(3.0),
+                              decoration: BoxDecoration(
+                                color: Colors.grey,
+                                border: Border.all(color: Colors.blueAccent),
+                                borderRadius: BorderRadius.all(Radius.circular(20)),
                               ),
+                              height: 500,
+                              width: 500,
 
-                              //select stock limit number
-                              RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(18.0),
-                                  side: BorderSide(color: Colors.red),
-                                ),
-                                padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
-                                onPressed: () async {
-                                  _stockLimitNumberPicker();
-                                },
-                                child: Text(
-                                  "Select stock limit\n" + stockNo.toString(),
-                                  style: TextStyle(
-                                    fontSize: 20,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "\nStock tracking",
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 30,
+                                    ),
                                   ),
-                                ),
-                              ),
-                            ],
+
+                                  SizedBox(height: 60),
+
+                                  Text(
+                                    "How much stock do you currently have?",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 10),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Current stock number: " + currentStock.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+
+                                      SizedBox(width: 40),
+
+                                      //Select current stock number
+                                      RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(18.0),
+                                          side: BorderSide(color: Colors.red),
+                                        ),
+                                        padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                                        onPressed: () {
+                                          _currentStockNumberPicker();
+                                        },
+                                        child: Text(
+                                          "Edit",
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  SizedBox(height: 60),
+
+                                  Text(
+                                    "If stock goes below this point, remind me to refill",
+                                    style: TextStyle(
+                                      fontSize: 20,
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold
+                                    ),
+                                  ),
+
+                                  SizedBox(height: 10),
+
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Stock reminder quantity: " + stockNo.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
+                                      ),
+
+                                      SizedBox(width: 20),
+
+                                      //select stock limit number
+                                      RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(18.0),
+                                          side: BorderSide(color: Colors.red),
+                                        ),
+                                        padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                                        onPressed: () async {
+                                          _stockLimitNumberPicker();
+                                        },
+                                        child: Text(
+                                          "Edit",
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )
                           ),
                         ),
                       ],
