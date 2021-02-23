@@ -6,6 +6,7 @@ import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/popupAlert.dart';
+import 'package:project/prescriptions_files/prescriptions.dart';
 import 'package:weekday_selector/weekday_selector.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -688,10 +689,11 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
       int rId = await getReminderIdNo();
       for(String time  in times){
         Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
+        String patientName = await findPatientNameFromID(deviceID, currentPatientID);
 
         //This will create a reminder for the local device. Need to find a good way to link online-
         //carer to local notifications now as we don't really want it being added straight to local device
-        scheduleDailyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, currentPatientID);
+        scheduleDailyNotification(rId, pName, "Hey, " + patientName + "! It's time to take your dose of " + pName, t, currentPatientID);
 
         //add reminder to database. Works for both local and carer so this part is okay
         await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
@@ -707,10 +709,11 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
         if(dayValues[day] == true){
           for(String time  in times){
             Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
+            String patientName = await findPatientNameFromID(deviceID, currentPatientID);
 
             //This will create a reminder for the local device. Need to find a good way to link online-
             //carer to local notifications now as we don't really want it being added straight to local device
-            scheduleWeeklyNotification(rId, pName, "Hey, " + currentPatientID + "! It's time to take your dose of " + pName, t, day, currentPatientID);
+            scheduleWeeklyNotification(rId, pName, "Hey, " + patientName + "! It's time to take your dose of " + pName, t, day, currentPatientID);
 
             //add reminder to database. Works for both local and carer so this part is okay
             await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);

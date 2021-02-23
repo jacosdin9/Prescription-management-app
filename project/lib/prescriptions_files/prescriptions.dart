@@ -110,3 +110,17 @@ CollectionReference findPrescriptionsRef(String deviceID, patientID){
     return FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(patientID).collection('prescriptions');
   }
 }
+
+Future findPatientNameFromID(String deviceID, patientID) async {
+  DocumentReference patient;
+  if(deviceID == ""){
+    patient = FirebaseFirestore.instance.collection('controlledPatients').doc(patientID);
+  }
+  else{
+    patient =  FirebaseFirestore.instance.collection('devices').doc(deviceID).collection('patients').doc(patientID);
+  }
+
+  DocumentSnapshot patientQuery = await patient.get();
+
+  return patientQuery.get("name");
+}

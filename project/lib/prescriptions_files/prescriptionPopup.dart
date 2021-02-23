@@ -82,15 +82,16 @@ class PrescriptionPopup extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Strength: " + strength.toString() + strengthUnits),
+                  SizedBox(height: 5),
                   Text("Units per dosage: " + unitsPerDosage.toString()),
+                  SizedBox(height: 5),
                   Text("Reminder frequency: " + reminderFreq.toString()),
-                  Text("Reminder times: " + reminderTimes.toString()),
-                  Text("Stock reminder level: " + stockReminder.toString()),
+                  SizedBox(height: 5),
+                  Text("Stock reminder quantity: " + stockReminder.toString()),
+                  SizedBox(height: 5),
                   Text("Silent reminders: " + silentReminders.toString()),
+                  SizedBox(height: 5),
                   Text("Last restock date: " + DateFormat('dd-MM-yy').format(lastRestockDate),),
-
-
-
                 ],
               ),
               flex: 2,

@@ -30,14 +30,6 @@ class _GraphState extends State<Graph> {
     selectedDate = today;
 
     findSilentRemindersAndUpdate(today);
-
-    // features = [
-    //   Feature(
-    //     title: "Drink Water",
-    //     color: Colors.blue,
-    //     data: [0.2, 0.8, 1, 0.7,],
-    //   ),
-    // ];
   }
   @override
   Widget build(BuildContext context) {
@@ -48,7 +40,7 @@ class _GraphState extends State<Graph> {
         ),
         body: Column(
           children: [
-            Text("GRAPH PAGE YEAH"),
+            SizedBox(height: 50),
             LineGraph(
               features: features,
               size: Size(500, 400),
@@ -58,14 +50,29 @@ class _GraphState extends State<Graph> {
               graphColor: Colors.red,
             ),
             SizedBox(height: 50,),
-            RaisedButton(
-              onPressed: () => _selectDate(context), // Refer step 3
-              child: Text(
-                'Select date\n     ' + DateFormat('dd-MM').format(selectedDate),
-                style:
-                TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
-              ),
-              color: Colors.greenAccent,
+            Row(
+              children: [
+                Expanded(
+                  child: RaisedButton(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(18.0),
+                      side: BorderSide(color: Colors.red),
+                    ),
+                    padding: EdgeInsets.fromLTRB(30, 30, 30, 30),
+                    onPressed: () => _selectDate(context), // Refer step 3
+                    child: Text(
+                      'Select date\n     ' + DateFormat('dd-MM').format(selectedDate),
+                      style:
+                      TextStyle(
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 20,
+                      ),
+                    ),
+                    color: Colors.greenAccent,
+                  ),
+                )
+              ],
             ),
           ],
         ),

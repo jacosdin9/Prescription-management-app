@@ -67,8 +67,11 @@ class ReminderPopup extends StatelessWidget{
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text("Prescription: " + prescription),
+                  SizedBox(height: 5),
                   Text("Reminder frequency: " + freq),
+                  SizedBox(height: 5),
                   freq == 'Single' ? Text("Type: Stock reminder") : Text("Type: Dosage reminder"),
+                  SizedBox(height: 5),
                   Text("Time: " + time),
 
                 ],
