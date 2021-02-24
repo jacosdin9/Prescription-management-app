@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/calendar_files/calendar.dart';
+import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/prescriptions_files/editPrescriptionInputPopups.dart';
@@ -522,6 +524,8 @@ class _EditPrescriptionState extends State<EditPrescription> {
                     DateTime now = DateTime.now();
                     DateTime today = DateTime(now.year, now.month, now.day);
                     FirebasePage().addRecord(data.name, today, data.stockNo);
+
+                    selectedRemindersList = await downloadRemindersList();
 
                     if(fbUser != null){
                       FirebasePage().updateCarerReminders();

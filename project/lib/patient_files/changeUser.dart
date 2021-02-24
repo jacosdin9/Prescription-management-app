@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:project/calendar_files/calendar.dart';
+import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'addExistingPatient.dart';
 import 'createUser.dart';
@@ -61,8 +63,9 @@ class ChangeUserPage extends StatelessWidget{
                               delegate: new SliverChildBuilderDelegate(
                                     (context, index) =>
                                     GestureDetector(
-                                      onTap: () {
+                                      onTap: () async {
                                         currentPatientID = results[index].id;
+                                        selectedRemindersList = await downloadRemindersList();
                                         if(fbUser!=null){
                                           deviceID = results[index].get('deviceId');
                                         }

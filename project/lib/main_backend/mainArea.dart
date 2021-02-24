@@ -183,6 +183,11 @@ class _MainAreaState extends State<MainArea> {
                     MaterialPageRoute(builder: (context) => ChangeUserPage()),
                   );
 
+                  patientName = await findPatientNameFromID(deviceID, currentPatientID);
+
+                  patientsRemindersForToday = findTodaysDosesForPatient(selectedRemindersList);
+                  patientsRemindersForToday.sort((a,b) => a.get("time").compareTo(b.get("time")));
+
                   setState(() {
                     page = viewPage(_currentIndex);
                   });

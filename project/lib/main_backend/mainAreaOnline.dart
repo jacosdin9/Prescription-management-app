@@ -176,6 +176,8 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
                   );
 
                   FirebasePage().downloadOverallReminders();
+                  patientName = "";
+                  selectedRemindersList = [];
                 },
                 leading: Icon(Icons.logout),
                 title: Text('Log out'),
@@ -188,6 +190,11 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
                     context,
                     MaterialPageRoute(builder: (context) => ChangeUserPage()),
                   );
+
+                  patientName = await findPatientNameFromID(deviceID, currentPatientID);
+
+                  patientsRemindersForToday = findTodaysDosesForPatient(selectedRemindersList);
+                  patientsRemindersForToday.sort((a,b) => a.get("time").compareTo(b.get("time")));
 
                   setState(() {
                     page = viewPage(_currentIndex);

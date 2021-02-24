@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:numberpicker/numberpicker.dart';
+import 'package:project/calendar_files/calendar.dart';
+import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
@@ -551,7 +553,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                       Navigator.pop(context);
 
                       await FirebasePage().addPrescription(pName, pStrength, pStrengthUnits, pUnitsPerDosage, dropDownValue, times, values, interval, stockNo, currentStock, silentReminders, lastRestockDate);
-                      createNotifications(pName, dropDownValue, times, values, interval, silentReminders, pUnitsPerDosage, currentStock, stockNo);
+                      await createNotifications(pName, dropDownValue, times, values, interval, silentReminders, pUnitsPerDosage, currentStock, stockNo);
                       DateTime now = DateTime.now();
                       DateTime today = DateTime(now.year, now.month, now.day);
                       FirebasePage().addRecord(pName, today, currentStock);
@@ -559,6 +561,8 @@ class _AddPrescriptionState extends State<AddPrescription>{
                       if(fbUser != null){
                         await FirebasePage().updateCarerReminders();
                       }
+
+                      selectedRemindersList = await downloadRemindersList();
                     }
 
                     else if(nameExists == true){

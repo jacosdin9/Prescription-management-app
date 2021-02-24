@@ -135,7 +135,7 @@ class _CalendarPageState extends State<CalendarPage>{
                                     borderRadius: BorderRadius.all(Radius.circular(20)),
                                     color: Colors.grey,
                                   ),
-                                  child: Text(_selectedEvents[index].get("time") + " - " + _selectedEvents[index].get("prescription")),
+                                  child: Text(_selectedEvents[index].get("time") + " - " + _selectedEvents[index].get("patientId") + " - " + _selectedEvents[index].get("prescription")),
                                 ),
                               ),
                       childCount: _selectedEvents.length,

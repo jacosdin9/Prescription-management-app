@@ -16,13 +16,50 @@ class GenerateQrPage extends StatelessWidget {
         body: Center(
           child: Column(
             children: [
+
+              SizedBox(height: 20),
+
+              Text(
+                "Scan this QR code to automatically fill out device ID and patient ID",
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.red,
+                ),
+              ),
+
               QrImage(
                 data: deviceID + "***" + currentPatientID,
                 version: QrVersions.auto,
                 size: 250.0,
               ),
-              Text("Device ID: " + deviceID),
-              Text("Patient ID: " + currentPatientID),
+
+              SizedBox(height: 60),
+
+              Text(
+                "Device ID: " + deviceID,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              SizedBox(height: 20),
+
+              Text(
+                "Patient ID: " + currentPatientID,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+
+              SizedBox(height: 20),
+
               RaisedButton(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(18.0),

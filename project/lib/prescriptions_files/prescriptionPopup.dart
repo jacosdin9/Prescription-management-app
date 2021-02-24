@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/calendar_files/calendar.dart';
+import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/firebase_files/firebase.dart';
 import 'package:project/main_backend/main.dart';
 import 'package:project/main_backend/mainArea.dart';
@@ -137,6 +138,7 @@ class PrescriptionPopup extends StatelessWidget{
                         if(fbUser != null){
                           FirebasePage().updateCarerReminders();
                         }
+                        selectedRemindersList = await downloadRemindersList();
                         Navigator.pop(context);
                         var popUp = PopupAlert("SUCCESS", "Prescription has successfully been deleted");
                         showDialog(

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/authentication_files/logInPage.dart';
+import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/mainAreaOnline.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,8 @@ class AuthenticationWrapper extends StatelessWidget{
     if(firebaseUser != null){
       currentPatientID = "";
       deviceID = "";
+      selectedRemindersList = [];
+      patientName = "";
       print("main area online");
       return MainAreaOnline(1);
     }
