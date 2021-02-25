@@ -66,6 +66,7 @@ class ChangeUserPage extends StatelessWidget{
                                       onTap: () async {
                                         currentPatientID = results[index].id;
                                         selectedRemindersList = await downloadRemindersList();
+                                        lastSelectedEvents = [];
                                         if(fbUser!=null){
                                           deviceID = results[index].get('deviceId');
                                         }

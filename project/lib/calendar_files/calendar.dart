@@ -135,7 +135,7 @@ class _CalendarPageState extends State<CalendarPage>{
                                     borderRadius: BorderRadius.all(Radius.circular(20)),
                                     color: Colors.grey,
                                   ),
-                                  child: Text(_selectedEvents[index].get("time") + " - " + _selectedEvents[index].get("patientId") + " - " + _selectedEvents[index].get("prescription")),
+                                  child: Text(_selectedEvents[index].get("time") + " - " + _selectedEvents[index].get("prescription")),
                                 ),
                               ),
                       childCount: _selectedEvents.length,
@@ -171,52 +171,57 @@ createCalendar(List reminders){
   for(QueryDocumentSnapshot rem in reminders){
     DateTime dateToAdd;
 
-    //if reminder if for a specific day
-    if(rem.get("frequency") == "Specific days"){
-      dateToAdd = findNextInstanceOfDay(int.parse(rem.get("day")));
+    //only include reminders of currently selected patient
+    if(rem.get("patientId") == currentPatientID){
 
-      for(int i=0; i<10; i++){
+      //if reminder if for a specific day
+      if(rem.get("frequency") == "Specific days"){
+        dateToAdd = findNextInstanceOfDay(int.parse(rem.get("day")));
+
+        for(int i=0; i<10; i++){
+          events.putIfAbsent(dateToAdd, () => List());
+          events[dateToAdd].add(rem);
+          dateToAdd = dateToAdd.add(Duration(days: 7));
+        }
+      }
+
+      //if reminder is to be daily
+      else if(rem.get("frequency") == "Daily"){
+        var nowFull = DateTime.now();
+        dateToAdd = DateTime(nowFull.year, nowFull.month, nowFull.day);
+
+        for(int i=0; i<70; i++){
+          events.putIfAbsent(dateToAdd, () => List());
+          events[dateToAdd].add(rem);
+          dateToAdd = dateToAdd.add(Duration(days: 1));
+        }
+      }
+
+      //if reminder is a one off
+      else if(rem.get("frequency") == "Single"){
+        String day = rem.get("day");
+        List daySplit = day.split('/');
+        dateToAdd = DateTime(int.parse(daySplit[2]), int.parse(daySplit[1]), int.parse(daySplit[0]));
+
         events.putIfAbsent(dateToAdd, () => List());
         events[dateToAdd].add(rem);
-        dateToAdd = dateToAdd.add(Duration(days: 7));
       }
-    }
 
-    //if reminder is to be daily
-    else if(rem.get("frequency") == "Daily"){
-      var nowFull = DateTime.now();
-      dateToAdd = DateTime(nowFull.year, nowFull.month, nowFull.day);
+      //if reminder is every *interval* days
+      else if(rem.get("frequency") == "Days interval"){
+        var nowFull = DateTime.now();
+        dateToAdd = DateTime(nowFull.year, nowFull.month, nowFull.day);
+        int i = 0;
+        int interval = rem.get("interval");
 
-      for(int i=0; i<70; i++){
-        events.putIfAbsent(dateToAdd, () => List());
-        events[dateToAdd].add(rem);
-        dateToAdd = dateToAdd.add(Duration(days: 1));
+        while(i < 70){
+          events.putIfAbsent(dateToAdd, () => List());
+          events[dateToAdd].add(rem);
+          dateToAdd = dateToAdd.add(Duration(days: interval));
+          i += interval;
+        }
       }
-    }
 
-    //if reminder is a one off
-    else if(rem.get("frequency") == "Single"){
-      String day = rem.get("day");
-      List daySplit = day.split('/');
-      dateToAdd = DateTime(int.parse(daySplit[2]), int.parse(daySplit[1]), int.parse(daySplit[0]));
-
-      events.putIfAbsent(dateToAdd, () => List());
-      events[dateToAdd].add(rem);
-    }
-
-    //if reminder is every *interval* days
-    else if(rem.get("frequency") == "Days interval"){
-      var nowFull = DateTime.now();
-      dateToAdd = DateTime(nowFull.year, nowFull.month, nowFull.day);
-      int i = 0;
-      int interval = rem.get("interval");
-
-      while(i < 70){
-        events.putIfAbsent(dateToAdd, () => List());
-        events[dateToAdd].add(rem);
-        dateToAdd = dateToAdd.add(Duration(days: interval));
-        i += interval;
-      }
     }
   }
 

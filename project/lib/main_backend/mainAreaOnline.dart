@@ -197,6 +197,7 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
                   patientsRemindersForToday.sort((a,b) => a.get("time").compareTo(b.get("time")));
 
                   setState(() {
+                    _currentIndex = 1;
                     page = viewPage(_currentIndex);
                   });
 

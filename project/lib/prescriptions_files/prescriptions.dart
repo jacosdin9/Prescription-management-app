@@ -90,15 +90,52 @@ class PrescriptionPage extends StatelessWidget {
 
       },
     ) :
-      Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            //show current patient id
-            Text("SELECT A PATIENT TO SEE THEIR PRESCRIPTIONS HERE"),
-          ],
-        ),
-      );
+          Center(
+            child: Container(
+              height: 150,
+              margin: const EdgeInsets.all(15.0),
+              padding: const EdgeInsets.all(10.0),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.blueAccent, width: 6),
+                borderRadius: BorderRadius.all(Radius.circular(20)),
+                color: Colors.grey,
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "SELECT A PATIENT TO SEE PRESCRIPTIONS HERE",
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
+                  ),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "(You can find the 'Select a patient' option in the drawer",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.red,
+                        ),
+                      ),
+                      Icon(Icons.menu),
+                      Text(
+                        ")",
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: Colors.red,
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
+          );
+
   }
 }
 
