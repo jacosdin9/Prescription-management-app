@@ -42,9 +42,9 @@ class _DashboardPageState extends State<DashboardPage> {
         margin: const EdgeInsets.all(20.0),
         padding: const EdgeInsets.all(3.0),
         decoration: BoxDecoration(
-          border: Border.all(color: Colors.blueAccent),
+          border: Border.all(color: Colors.red, width: 6),
           borderRadius: BorderRadius.all(Radius.circular(20)),
-          color: Colors.white,
+          color: Colors.grey,
         ),
         child: Column(
           children: [
@@ -86,7 +86,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                   decoration: BoxDecoration(
                                     border: Border.all(color: Colors.blueAccent, width: 6),
                                     borderRadius: BorderRadius.all(Radius.circular(20)),
-                                    color: Colors.grey,
+                                    color: Colors.white,
                                   ),
                                   child: Text(patientsRemindersForToday[index].get("time") + " - " + patientsRemindersForToday[index].get("prescription")),
                                 ),

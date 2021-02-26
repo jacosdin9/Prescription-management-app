@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/main_backend/mainArea.dart';
+import 'package:project/prescriptions_files/prescriptions.dart';
 import 'addExistingPatient.dart';
 import 'createUser.dart';
 
@@ -52,15 +53,15 @@ class ChangeUserPage extends StatelessWidget{
                   //If no patients created yet, ask user to create one. Else display users
                   results.length != 0 ?
                   Expanded(
-                    child: new Container(
-                      child: new CustomScrollView(
+                    child: Container(
+                      child: CustomScrollView(
                         scrollDirection: Axis.vertical,
                         shrinkWrap: false,
                         slivers: <Widget>[
-                          new SliverPadding(
+                          SliverPadding(
                             padding: const EdgeInsets.symmetric(vertical: 24.0),
-                            sliver: new SliverList(
-                              delegate: new SliverChildBuilderDelegate(
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate(
                                     (context, index) =>
                                     GestureDetector(
                                       onTap: () async {
@@ -82,10 +83,9 @@ class ChangeUserPage extends StatelessWidget{
                                           color: Colors.grey,
                                         ),
                                         child: fbUser != null ?
-                                          Text("Controlled patient?: " + results[index].get('controlled').toString() + "   ---   ID: " + results[index].id) :
+                                          Text(findPatientNameFromID(results[index].get("deviceId"), results[index].id).toString()) :
                                           Text(results[index].get("name")),
                                       ),
-
                                     ),
                                 childCount: results.length,
                               ),

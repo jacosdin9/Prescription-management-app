@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:project/authentication_files/authentication.dart';
 import 'package:project/authentication_files/logInPage.dart';
+import 'package:project/calendar_files/calendar.dart';
 import 'package:project/dashboard_files/dashboard.dart';
 import 'package:project/main_backend/mainArea.dart';
 import 'package:project/main_backend/mainAreaOnline.dart';
@@ -45,6 +46,7 @@ class AuthenticationWrapper extends StatelessWidget{
       deviceID = "";
       selectedRemindersList = [];
       patientName = "";
+      lastSelectedEvents = [];
       print("main area online");
       return MainAreaOnline(1);
     }

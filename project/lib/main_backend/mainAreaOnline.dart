@@ -178,6 +178,7 @@ class _MainAreaOnlineState extends State<MainAreaOnline> {
                   FirebasePage().downloadOverallReminders();
                   patientName = "";
                   selectedRemindersList = [];
+                  lastSelectedEvents = [];
                 },
                 leading: Icon(Icons.logout),
                 title: Text('Log out'),
