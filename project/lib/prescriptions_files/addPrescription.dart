@@ -340,7 +340,7 @@ class _AddPrescriptionState extends State<AddPrescription>{
                                               IconButton(
                                                 icon: Icon(Icons.info),
                                                 onPressed: () {
-                                                  var popUp = PopupAlert("Silent reminders", "- You won't receive a reminder for each and every dose\n- Dose times will still be recorded to assist stock refill reminders.");
+                                                  var popUp = PopupAlert("Silent reminders", "You won't receive a reminder for each and every dose, however, dose times will still be recorded to determine stock refill reminders and reports.");
 
                                                   showDialog(
                                                     context: context,

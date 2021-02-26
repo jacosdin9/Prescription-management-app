@@ -728,7 +728,7 @@ class _ReminderFrequencyInputState extends State<ReminderFrequencyInput> {
                       tempString = newValue;
                     });
                   },
-                  items: ["None", "Daily", "Specific days", "Days interval"]
+                  items: ["None", "Daily", "Specific days"]
                       .map((value) => DropdownMenuItem(
                     child: SizedBox(
                       width: 240.0, // for example
