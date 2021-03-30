@@ -116,7 +116,7 @@ class _DashboardPageState extends State<DashboardPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  "SELECT A PATIENT TO SEE TODAY'S DOSES HERE",
+                  "SELECT A PATIENT TO SEE TODAY'S DOSES",
                   style: TextStyle(
                     fontSize: 20,
                   ),
@@ -130,6 +130,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       style: TextStyle(
                         fontSize: 15,
                         color: Colors.red,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
                     Icon(Icons.menu),

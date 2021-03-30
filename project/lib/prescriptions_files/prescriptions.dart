@@ -105,7 +105,7 @@ class PrescriptionPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Text(
-                    "SELECT A PATIENT TO SEE PRESCRIPTIONS HERE",
+                    "SELECT A PATIENT TO SEE PRESCRIPTIONS",
                     style: TextStyle(
                       fontSize: 20,
                     ),
@@ -119,6 +119,7 @@ class PrescriptionPage extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 15,
                           color: Colors.red,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                       Icon(Icons.menu),
