@@ -85,10 +85,8 @@ class FirebasePage {
   }
 
   //CREATE CONTROLLED PATIENT COLLECTION
-  Future<void> createControlledPatient(String carerID, String name, int age,
-      double weight, String measurement) {
-    CollectionReference controlledPatientTable = firestoreDB.collection(
-        'controlledPatients');
+  Future<void> createControlledPatient(String carerID, String name, int age, double weight, String measurement) {
+    CollectionReference controlledPatientTable = firestoreDB.collection('controlledPatients');
     CollectionReference carerTable = firestoreDB.collection('carers').doc(
         fbUser.uid).collection('assignedPatients');
 
@@ -149,8 +147,7 @@ class FirebasePage {
     });
   }
 
-  Future<void> createCarerRequest(String carer, String device,
-      String patient) async {
+  Future<void> createCarerRequest(String carer, String device, String patient) async {
     String leadCarerId = "";
 
     //check if carer request is going directly to user, or if it is going to lead carer
@@ -160,13 +157,11 @@ class FirebasePage {
 
     //create path to designated notifications area
     DocumentReference notificationPath = device != "" ?
-    FirebaseFirestore.instance.collection('devices').doc(device).collection(
-        'patients').doc(patient) :
+    FirebaseFirestore.instance.collection('devices').doc(device).collection('patients').doc(patient) :
     FirebaseFirestore.instance.collection('carers').doc(leadCarerId);
 
     //create path to carer's assignedPatients area so we can check if patient already exists there
-    DocumentReference patientExistPath = FirebaseFirestore.instance.collection(
-        'carers').doc(carer).collection('assignedPatients').doc(patient);
+    DocumentReference patientExistPath = FirebaseFirestore.instance.collection('carers').doc(carer).collection('assignedPatients').doc(patient);
 
     //if patient does not already exist in carer's assignedPatient list, add it.
     if (!(await checkIfDocExists(patientExistPath))) {

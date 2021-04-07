@@ -768,11 +768,10 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
         Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
         String patientName = await findPatientNameFromID(deviceID, currentPatientID);
 
-        //This will create a reminder for the local device. Need to find a good way to link online-
-        //carer to local notifications now as we don't really want it being added straight to local device
+        //This will schedule a reminder notification for the local device.
         scheduleDailyNotification(rId, pName, "Hey, " + patientName + "! It's time to take your dose of " + pName, t, currentPatientID);
 
-        //add reminder to database. Works for both local and carer so this part is okay
+        //add reminder to Firebase Firestore as a new document in current patient's collection.
         await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, "all", interval);
         rId += 1;
       }
@@ -780,7 +779,6 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
 
     else if(freq == "Specific days"){
       int rId = await getReminderIdNo();
-
       //for dayV in day values
       for(int day = 0; day<dayValues.length; day++){
         if(dayValues[day] == true){
@@ -788,11 +786,10 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
             Time t = Time(int.parse(time.split(":")[0]), int.parse(time.split(":")[1]));
             String patientName = await findPatientNameFromID(deviceID, currentPatientID);
 
-            //This will create a reminder for the local device. Need to find a good way to link online-
-            //carer to local notifications now as we don't really want it being added straight to local device
+            //This will create a reminder for the local device.
             scheduleWeeklyNotification(rId, pName, "Hey, " + patientName + "! It's time to take your dose of " + pName, t, day, currentPatientID);
 
-            //add reminder to database. Works for both local and carer so this part is okay
+            //add reminder to Firebase Firestore as a new document in current patient's collection.
             await FirebasePage().addReminder(currentPatientID, pName, rId, freq, time, day.toString(), interval);
             rId += 1;
           }
@@ -848,7 +845,6 @@ createNotifications(String pName, String freq, List times, List dayValues, int i
         while (currentStock>stockLimit) {
           stockRefillDay = stockRefillDay.add(const Duration(days: 1));
 
-          print(stockRefillDay.weekday);
           if(selectedDays.contains(stockRefillDay.weekday)){
             currentStock -= stockPerDay;
           }
